@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DCA Portal | Enterprise Content & Course Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ==================== الهوية البصرية: الكحلي #050b55 والأورنج #f47403 والأبيض ==================== */
+        :root {
+            --navy: #050b55;
+            --navy-light: #0d1880;
+            --navy-soft: #eef0ff;
+            --orange: #f47403;
+            --orange-hover: #d96500;
+            --orange-soft: #fff4eb;
+            --bg-main: #ffffff;
+            --bg-sec: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #050b55;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+            --header-bg: #050b55;
+            --header-text: #ffffff;
+            --shadow: 0 4px 15px rgba(5, 11, 85, 0.06);
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #030626;
+            --bg-sec: #050b55;
+            --card-bg: #081063;
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+            --border-color: #1e2985;
+            --navy-soft: #121c7a;
+            --orange-soft: #3b2008;
+            --header-bg: #02041a;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.25s, color 0.25s; }
+
+        /* ==================== شاشة تسجيل الدخول ==================== */
+        #loginOverlay {
+            position: fixed; inset: 0; background: linear-gradient(135deg, #02052e 0%, #050b55 70%, #1a2278 100%);
+            display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 1rem;
+        }
+        .login-card {
+            background: var(--card-bg); color: var(--text-main); border-radius: 16px; max-width: 440px; width: 100%;
+            padding: 2.2rem; box-shadow: 0 25px 50px rgba(0,0,0,0.5); border-top: 5px solid var(--orange); text-align: center;
+        }
+        .login-logo { max-height: 65px; margin-bottom: 0.8rem; object-fit: contain; }
+        .login-card h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.2rem; }
+        .login-card p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.4rem; }
+        .form-group { text-align: start; margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .form-input {
+            width: 100%; padding: 0.6rem 0.85rem; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-sec); color: var(--text-main); font-size: 0.88rem; outline: none;
+        }
+        .form-input:focus { border-color: var(--orange); }
+
+        /* ==================== الأزرار والشارات ==================== */
+        .btn {
+            padding: 0.42rem 0.85rem; border: none; border-radius: 7px; cursor: pointer; font-weight: 700;
+            font-size: 0.78rem; transition: 0.2s; display: inline-flex; align-items: center; gap: 0.35rem; text-decoration: none;
+        }
+        .btn-orange { background: var(--orange); color: #fff; }
+        .btn-orange:hover { background: var(--orange-hover); transform: translateY(-1px); }
+        .btn-navy { background: var(--navy); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+        .btn-navy:hover { background: var(--navy-light); }
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+        .btn-header { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+        .btn-header:hover { background: var(--orange); border-color: var(--orange); }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-danger { background: #ef4444; color: #fff; }
+
+        /* ==================== الهيدر الرئيسي ==================== */
+        header {
+            background: var(--header-bg); color: var(--header-text); padding: 0.8rem 1.5rem;
+            border-bottom: 3px solid var(--orange); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
+        }
+        .header-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 1700px; margin: 0 auto; }
+        .brand-box { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; }
+        .brand-logo { height: 44px; max-width: 150px; object-fit: contain; }
+        .brand-title h1 { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; }
+        .brand-title span.orange-dot { color: var(--orange); }
+        .brand-title p { font-size: 0.72rem; color: #cbd5e1; }
+        .header-tools { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+        .badge-role { background: var(--orange); color: #fff; padding: 0.18rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 800; }
+        .notif-badge { background: var(--orange); color: #fff; padding: 0.05rem 0.4rem; border-radius: 10px; font-size: 0.7rem; font-weight: 800; }
+
+        /* ==================== شريط المسار (Breadcrumbs) ==================== */
+        .breadcrumb-bar {
+            background: var(--bg-sec); border-bottom: 1px solid var(--border-color); padding: 0.55rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem;
+        }
+        .breadcrumb-links { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 700; flex-wrap: wrap; }
+        .crumb-item { cursor: pointer; color: var(--text-muted); transition: 0.2s; }
+        .crumb-item:hover { color: var(--orange); }
+        .crumb-item.active { color: var(--orange); font-weight: 800; }
+
+        /* ==================== الحاوية الرئيسية والداشبورد الشخصية ==================== */
+        .page-container { max-width: 1700px; width: 100%; margin: 0 auto; padding: 1.2rem 1.5rem; flex: 1; }
+
+        .user-dashboard {
+            background: var(--bg-sec); border: 1px solid var(--border-color); border-right: 5px solid var(--orange);
+            border-radius: 12px; padding: 1.1rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+        }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.9rem; }
+        .dash-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.8rem; }
+        .kpi-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;
+        }
+        .kpi-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+        .kpi-num { font-size: 1.5rem; font-weight: 800; color: var(--orange); }
+        .kpi-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
+
+        /* ==================== بطاقات البوابة متعددة المستويات (Portal Cards) ==================== */
+        .portal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.2rem; margin-top: 1rem; }
+        .portal-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-top: 4px solid var(--navy);
+            border-radius: 12px; padding: 1.4rem; box-shadow: var(--shadow); transition: 0.25s; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .portal-card:hover { border-top-color: var(--orange); transform: translateY(-3px); }
+        .portal-card-icon { font-size: 2rem; margin-bottom: 0.6rem; }
+        .portal-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.4rem; }
+        .portal-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.2rem; }
+        .portal-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding-top: 0.8rem; border-top: 1px dashed var(--border-color); }
+
+        /* ==================== تخطيط صفحة استركشر الكورس ==================== */
+        .course-layout { display: flex; gap: 1.2rem; align-items: flex-start; }
+        .course-sidebar { width: 310px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .course-main { flex: 1; display: flex; flex-direction: column; gap: 1.2rem; min-width: 0; }
+
+        .box-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; box-shadow: var(--shadow); }
+        .box-card h3 { font-size: 0.92rem; font-weight: 800; margin-bottom: 0.7rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
+
+        .unit-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+        .unit-item { padding: 0.5rem 0.7rem; border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .unit-item:hover { background: var(--navy-soft); }
+        .unit-item.active { background: var(--navy); color: #fff; border-right: 4px solid var(--orange); }
+
+        /* ==================== تصميم الوحدات والنقاط ونظام الـ 4 مراحل (4-Stage Pipeline) ==================== */
+        .module-container { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+        .module-head { background: var(--navy); color: #fff; padding: 1rem 1.3rem; border-bottom: 3px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
+        .module-head h2 { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
+        .sec-container { padding: 1.1rem 1.3rem; border-bottom: 2px solid var(--border-color); }
+        .sec-container:last-child { border-bottom: none; }
+        .sec-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px dashed var(--border-color); }
+        .sec-code-pill { background: var(--orange); color: #fff; padding: 0.12rem 0.55rem; border-radius: 5px; font-size: 0.82rem; font-weight: 800; }
+
+        .topic-item { border: 1px solid var(--border-color); border-radius: 9px; background: var(--card-bg); margin-bottom: 0.7rem; overflow: hidden; transition: 0.2s; }
+        .topic-item.my-turn { border: 2px solid var(--orange); box-shadow: 0 0 0 3px rgba(244, 116, 3, 0.12); }
+        .topic-top-bar { padding: 0.7rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; background: var(--bg-sec); }
+        .topic-title-box { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 240px; cursor: pointer; flex-wrap: wrap; }
+        .t-code { background: var(--navy); color: #fff; padding: 0.15rem 0.5rem; border-radius: 5px; font-size: 0.76rem; font-weight: 800; }
+        .t-title { font-weight: 700; font-size: 0.9rem; }
+
+        /* شريط المراحل الأربع (Pipeline Stepper) */
+        .pipeline-stepper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; padding: 0.65rem 1rem; border-top: 1px solid var(--border-color); background: var(--card-bg); }
+        .step-box {
+            border: 1px solid var(--border-color); border-radius: 7px; padding: 0.45rem 0.6rem; font-size: 0.73rem;
+            display: flex; flex-direction: column; gap: 0.2rem; position: relative; background: var(--bg-sec);
+        }
+        .step-box.active-stage { border-color: var(--orange); background: var(--orange-soft); }
+        .step-box.done-stage { border-color: #10b981; background: rgba(16, 185, 129, 0.08); }
+        .step-box.rejected-stage { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .step-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
+
+        .topic-body-pane { padding: 1rem; border-top: 1px solid var(--border-color); background: var(--bg-sec); display: none; }
+        .topic-body-pane.open { display: block; }
+        .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.8rem; margin-bottom: 0.9rem; }
+        .guide-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-size: 0.78rem; }
+        .guide-card h5 { color: var(--orange); font-size: 0.8rem; margin-bottom: 0.35rem; }
+        .action-panel { background: var(--card-bg); border: 2px solid var(--navy); border-radius: 9px; padding: 0.9rem; margin-top: 0.6rem; }
+
+        /* ==================== النوافذ المنبثقة (Modals) ==================== */
+        .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 5, 46, 0.75); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 1rem; }
+        .modal-box { background: var(--card-bg); color: var(--text-main); border-radius: 14px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; border-top: 5px solid var(--orange); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+
+        @media (max-width: 1050px) {
+            .course-layout { flex-direction: column; }
+            .course-sidebar { width: 100%; }
+            .pipeline-stepper { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== 1. شاشة تسجيل الدخول ==================== -->
+<div id="loginOverlay">
+    <div class="login-card">
+        <img id="loginLogoImg" class="login-logo" src="" alt="DCA Logo" style="display:none;">
+        <h2 id="loginPortalTitle">DCA <span style="color:var(--orange)">Portal</span></h2>
+        <p id="lblLoginSub">بوابة إدارة المحتوى والمشروعات التدريبية المتكاملة</p>
+        <form onsubmit="handleAuthLogin(event)">
+            <div class="form-group">
+                <label id="lblUser">اسم المستخدم (Username):</label>
+                <input type="text" id="authUser" class="form-input" placeholder="admin / username" required>
+            </div>
+            <div class="form-group">
+                <label id="lblPass">كلمة المرور (Password):</label>
+                <input type="password" id="authPass" class="form-input" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-orange" style="width:100%; justify-content:center; padding:0.7rem; font-size:0.92rem;" id="btnLoginSubmit">تسجيل الدخول إلى البوابة</button>
+            <div id="loginErr" style="color:#ef4444; font-size:0.78rem; font-weight:700; margin-top:0.6rem; display:none;">❌ بيانات الدخول غير صحيحة!</div>
+        </form>
+    </div>
+</div>
+
+<!-- ==================== 2. الهيدر العلوي ==================== -->
+<header>
+    <div class="header-wrap">
+        <div class="brand-box" onclick="navigatePortal('HOME')">
+            <img id="headerLogoImg" class="brand-logo" src="" alt="DCA Logo" style="display:none;">
+            <div class="brand-title">
+                <h1>DCA <span class="orange-dot">Portal</span></h1>
+                <p id="lblHeaderSub">منصة دي سي إيه</p>
+            </div>
+        </div>
+        <div class="header-tools">
+            <span id="activeUserBadge" class="badge-role">👤 ...</span>
+            <button class="btn btn-header" onclick="openInboxModal()">
+                🔔 <span id="lblInboxBtn">صندوق الرسائل</span>
+                <span id="unreadNotifCount" class="notif-badge">0</span>
+            </button>
+            <button class="btn btn-header" onclick="openPasswordModal()">🔑 <span id="lblPassBtn">كلمة المرور</span></button>
+            <button class="btn btn-header" id="btnSuperSettings" style="display:none;" onclick="openSuperSettingsModal()">⚙️ <span id="lblSettingsBtn">إعدادات البوابة واللوجو</span></button>
+            <button class="btn btn-header" id="btnUsersMgr" style="display:none;" onclick="openUsersModal()">👥 <span id="lblUsersBtn">إدارة الفريق</span></button>
+            <button class="btn btn-header" onclick="toggleTheme()" id="themeBtn" title="Light / Dark Mode">🌙 Dark</button>
+            <button class="btn btn-header" onclick="toggleLanguage()" id="langBtn">🌐 EN</button>
+            <button class="btn btn-header" onclick="syncFromCloud(true)" title="تحديث من السحابة">🔄</button>
+            <button class="btn btn-danger" onclick="handleLogout()">🚪</button>
+        </div>
+    </div>
+</header>
+
+<!-- ==================== 3. شريط المسار (Breadcrumbs) ==================== -->
+<div class="breadcrumb-bar">
+    <div class="breadcrumb-links" id="breadcrumbContainer"></div>
+    <div style="font-size:0.75rem; font-weight:700;" id="cloudSyncIndicator">☁️ متصل بالسحابة</div>
+</div>
+
+<!-- ==================== 4. منطقة العرض الديناميكية ==================== -->
+<div class="page-container">
+    <!-- الداشبورد الشخصية لليوزر -->
+    <div class="user-dashboard" id="personalDashboard"></div>
+    <!-- محتوى المستوى الحالي (المستوى 1 أو 2 أو 3 أو الاستركشر) -->
+    <div id="mainViewPort"></div>
+</div>
+
+<!-- ==================== 5. النوافذ المنبثقة (Modals) ==================== -->
+<!-- نافذة صندوق الإشعارات والرسائل الداخلي -->
+<div class="modal-backdrop" id="inboxModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>🔔 صندوق الإشعارات والرسائل الداخلية (Internal Mail)</h3>
+            <button class="btn btn-danger" onclick="closeModal('inboxModal')">إغلاق ×</button>
+        </div>
+        <div id="inboxListContainer" style="display:flex; flex-direction:column; gap:0.6rem;"></div>
+    </div>
+</div>
+
+<!-- نافذة تغيير كلمة المرور الخاصة باليوزر -->
+<div class="modal-backdrop" id="passwordModal">
+    <div class="modal-box" style="max-width:420px;">
+        <div class="modal-header">
+            <h3>🔑 تغيير كلمة المرور الخاصة بحسابك</h3>
+            <button class="btn btn-danger" onclick="closeModal('passwordModal')">×</button>
+        </div>
+        <div class="form-group">
+            <label>كلمة المرور الحالية:</label>
+            <input type="password" id="oldPassInput" class="form-input">
+        </div>
+        <div class="form-group">
+            <label>كلمة المرور الجديدة:</label>
+            <input type="password" id="newPassInput" class="form-input">
+        </div>
+        <button class="btn btn-orange" style="width:100%; justify-content:center;" onclick="changeMyPassword()">حفظ كلمة المرور الجديدة</button>
+    </div>
+</div>
+
+<!-- نافذة إعدادات السوبر أدمن (رفع لوجو Light & Dark + إعدادات الإيميل الخلفي EmailJS) -->
+<div class="modal-backdrop" id="superSettingsModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>⚙️ إعدادات السوبر أدمن (اللوجو والربط البريدي)</h3>
+            <button class="btn btn-danger" onclick="closeModal('superSettingsModal')">×</button>
+        </div>
+        <div class="form-group">
+            <label>☀️ رفع صورة لوجو الوضع الفاتح (Light Mode Logo):</label>
+            <input type="file" accept="image/*" class="form-input" onchange="uploadLogoFile(event, 'light')">
+        </div>
+        <div class="form-group">
+            <label>🌙 رفع صورة لوجو الوضع الليلي (Dark Mode Logo):</label>
+            <input type="file" accept="image/*" class="form-input" onchange="uploadLogoFile(event, 'dark')">
+        </div>
+        <hr style="margin:1rem 0; border-color:var(--border-color);">
+        <h4 style="margin-bottom:0.5rem; color:var(--orange);">📧 إعدادات إرسال الإيميلات التلقائية في الخلفية (EmailJS - اختياري)</h4>
+        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.6rem;">لإرسال إيميل تلقائي في الخلفية عند كل تسليم، ضع بيانات حساب EmailJS المجاني الخاص بالشركة:</p>
+        <div class="form-group">
+            <label>Service ID:</label>
+            <input type="text" id="ejsService" class="form-input" placeholder="service_xxxxx">
+        </div>
+        <div class="form-group">
+            <label>Template ID:</label>
+            <input type="text" id="ejsTemplate" class="form-input" placeholder="template_xxxxx">
+        </div>
+        <div class="form-group">
+            <label>Public Key:</label>
+            <input type="text" id="ejsKey" class="form-input" placeholder="Public Key">
+        </div>
+        <button class="btn btn-orange" onclick="savePortalSettings()">💾 حفظ إعدادات البوابة في السحابة</button>
+    </div>
+</div>
+
+<!-- نافذة إدارة حسابات الفريق والصلاحيات (Super Admin / Admin) -->
+<div class="modal-backdrop" id="usersModal">
+    <div class="modal-box" style="max-width:780px;">
+        <div class="modal-header">
+            <h3>👥 إدارة حسابات الفريق والصلاحيات والوظائف</h3>
+            <button class="btn btn-danger" onclick="closeModal('usersModal')">×</button>
+        </div>
+        <div id="usersTableContainer" style="margin-bottom:1rem; max-height:280px; overflow-y:auto;"></div>
+        <div style="background:var(--bg-sec); padding:1rem; border-radius:10px; border:1px solid var(--border-color);">
+            <h4 style="color:var(--orange); margin-bottom:0.6rem; font-size:0.9rem;">➕ إنشاء حساب عضو جديد (فصل الصلاحية الإدارية عن الوظيفة):</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.6rem;">
+                <input type="text" id="uNewName" class="form-input" placeholder="الاسم الكامل (مثال: أ. محمد)">
+                <input type="text" id="uNewUser" class="form-input" placeholder="Username (مثال: mohamed)" style="direction:ltr;">
+                <input type="text" id="uNewPass" class="form-input" placeholder="Password (مثال: Mo@123)" style="direction:ltr;">
+                <input type="email" id="uNewEmail" class="form-input" placeholder="البريد الإلكتروني للشركة" style="direction:ltr;">
+                <select id="uNewSysRole" class="form-input">
+                    <option value="user">صلاحية الموقع: User (عضو فريق)</option>
+                    <option value="admin">صلاحية الموقع: Admin (مدير محتوى)</option>
+                    <option value="superadmin">صلاحية الموقع: Super Admin</option>
+                </select>
+                <select id="uNewJobRole" class="form-input">
+                    <option value="writer">الوظيفة: ✍️ كاتب علمي (Writer)</option>
+                    <option value="proofreader">الوظيفة: 🔍 مراجع لغوي (Proofreader)</option>
+                    <option value="formatter">الوظيفة: 🎨 منسق (Formatter)</option>
+                    <option value="template">الوظيفة: 📄 مسؤول تمبلت (Template)</option>
+                </select>
+            </div>
+            <button class="btn btn-orange" style="margin-top:0.8rem;" onclick="createOrUpdateUser()">➕ حفظ الحساب في السحابة</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================================
+// 🔗 إعدادات السحابة وحساب السوبر أدمن الرئيسي
+// ============================================================================
+const FIREBASE_BASE_URL = "https://dca-courses-management-default-rtdb.firebaseio.com";
+const MASTER_SUPER_USER = "admin";
+const MASTER_SUPER_PASS = "DCA@2023";
+
+// ============================================================================
+// 📚 قاعدة البيانات الكاملة للكورس (الجزء الأول: الوحدات 01 إلى 04)
+// ============================================================================
+const COURSE_DATA = [
+  {
+    code: "01", title: "مقدمة في مراقبة الوثائق وإدارة المعلومات",
+    overview: "تأسيس الفهم الشامل لبيئة المشروعات الهندسية، ولماذا تعتبر المعلومات والوثائق هي العصب المحرك للمشروع، وصولاً إلى تعريف علمي وعملي لضبط الوثائق وإدارة المعلومات والمعايير الدولية الحاكمة لهما.",
+    sections: [
+      {
+        code: "01.01", title: "فهم طبيعة المشروعات الهندسية",
+        why: "المبتدئ لا يمكنه فهم ضبط الوثائق دون فهم بيئة المشروع الهندسي، والمحترف يحتاج لربط تدفق الوثائق بدورة حياة المشروع.",
+        how: "يُقسم الشرح إلى تمهيد عن خصائص المشروع، يليه رسم توضيحي لدورة حياة المشروع، ثم جدول للأطراف والتخصصات الهندسية.",
+        topics: [
+          ["01.01.01", "طبيعة المشروعات الهندسية وخصائصها العامة", "تعريف المشروع الهندسي، خصائصه (مؤقت، مخرج فريد، قيود الوقت والتكلفة والجودة)، وكيف تخلق هذه الخصائص زخماً معلوماتياً.", ["Project", "Temporary", "Deliverables", "Triple Constraints"]],
+          ["01.01.02", "دورة حياة المشروع الهندسي", "شرح مراحل المشروع (الفكرة، التصميم، الطرح والتعاقد، التنفيذ، التسليم) ونوعية الوثائق المتولدة في كل مرحلة.", ["Project Life Cycle", "Design", "Procurement", "Construction", "Handover"]],
+          ["01.01.03", "الأطراف المشاركة في المشروع والتخصصات الهندسية المختلفة", "خريطة الأطراف (المالك، مدير المشروع، الاستشاري، المقاول العام، مقاول الباطن، المورد) والتخصصات (مدني، معماري، MEP).", ["Stakeholders", "Client", "PMC", "Consultant", "Contractor", "Vendor", "Civil, Arch, MEP"]],
+          ["01.01.04", "ترابط الأعمال والأنشطة ومسارات العمل داخل المشروع", "كيف يعتمد كل تخصص وطرف على مخرجات الآخر، وأثر تأخر معلومة أو مخطط في تعطيل مسار عمل كامل.", ["Interdependencies", "Workflows", "Coordination"]]
+        ]
+      },
+      {
+        code: "01.02", title: "الحاجة إلى المعلومات والتوثيق",
+        why: "ترسيخ قناعة بأن التوثيق ليس روتيناً ورقياً بل هو خط الدفاع الأول لحماية حقوق الأطراف وضمان تنفيذ المشروع بشكل صحيح.",
+        how: "استخدم سيناريوهات مقارنة (مشروع بدون توثيق مقابل مشروع موثق) مع ذكر أمثلة حقيقية لمخاطر غياب المعلومة.",
+        topics: [
+          ["01.02.01", "الدور العام للمعلومات والمستندات في دعم تنفيذ المشروع", "المستندات كذاكرة للمشروع، وأساس للتنفيذ في الموقع، وأداة لإثبات الحقوق التعاقدية والمالية.", ["Project Memory", "Single Source of Truth", "Contractual Evidence"]],
+          ["01.02.02", "احتياج الأطراف لتبادل المعلومات والتنسيق فيما بينها", "لماذا لا يكفي التواصل الشفهي في المشروعات؟ وكيف تتحول القرارات الفنية إلى قنوات تبادل رسمية موثقة.", ["Formal Communication", "Information Exchange", "Coordination"]],
+          ["01.02.03", "أهمية دقة المعلومات واكتمالها وإتاحتها في الوقت المناسب", "مخاطر العمل بمخطط قديم أو معلومة ناقصة (هدم وإعادة عمل Rework، مطالبات تعاقدية Claims، تأخير الجدول الزمني).", ["Rework Cost", "Claims", "Timely Access", "Accuracy"]]
+        ]
+      },
+      {
+        code: "01.03", title: "نشأة وإطار إدارة الوثائق والمعلومات",
+        why: "التمييز الدقيق بين مفهوم Document Control التنفيذي ومفهوم Information Management الشامل، وربطهما بالمعايير العالمية.",
+        how: "جدول مقارنة واضح بين المصطلحين، يليه استعراض مبسط للمواصفات القياسية العالمية (ISO).",
+        topics: [
+          ["01.03.01", "تعريف ضبط الوثائق (Document Control)", "التعريف المهني لضبط الوثائق كعملية منهجية للتحكم في إنشاء، مراجعة، تعديل، إصدار، توزيع، وأرشفة المستندات.", ["Document Control", "Controlled Document", "Version Control"]],
+          ["01.03.02", "تعريف إدارة المعلومات (Information Management)", "التعريف الأوسع لإدارة المعلومات (جمع، هيكلة، معالجة، تأمين، وإيصال البيانات والمعلومات لدعم اتخاذ القرار).", ["Information Management", "Information Governance", "Knowledge Management"]],
+          ["01.03.03", "دور مراقبة الوثائق في بيئة المشروع", "دور مراقبة الوثائق كـ (حارس بوابة Gatekeeper) يضمن عدم دخول أو خروج أي وثيقة إلا بعد استيفاء الشروط الشكلية والمرجعية.", ["Gatekeeper", "Quality Check", "Audit Trail"]],
+          ["01.03.04", "الغرض من مراقبة الوثائق وقيمتها", "القيمة المضافة: تقليل المخاطر، سرعة استرجاع المعلومة، ضمان العمل على أحدث إصدار، الامتثال للتدقيق (Audit).", ["Risk Mitigation", "Traceability", "Compliance"]],
+          ["01.03.05", "العلاقة بين مراقبة الوثائق وإدارة المعلومات", "كيف تعتبر مراقبة الوثائق القلب التشغيلي والجزء التطبيقي لمنظومة إدارة المعلومات الأوسع في المشروع.", ["Operational vs Strategic", "IM Framework"]],
+          ["01.03.06", "المعايير القياسية العالمية المنظمة للمجال (ISO 9001, ISO 19650, ISO 15489)", "إضافة احترافية: شرح متطلبات ISO 9001 للمعلومات الموثقة (بند 7.5)، ومعيار ISO 19650 لإدارة المعلومات الهندسية والـ BIM، ومعيار ISO 15489 لإدارة السجلات.", ["ISO 9001", "ISO 19650", "ISO 15489", "Documented Information"], true]
+        ]
+      }
+    ]
+  },
+  {
+    code: "02", title: "أساسيات البيانات والمعلومات والمستندات في المشروعات الهندسية",
+    overview: "تشريح اللبنات الأساسية التي يتعامل معها مسؤول ضبط الوثائق يومياً، والتفريق بين البيانات والمعلومات والمستندات والسجلات، وتصنيف المستندات الهندسية والتعاقدية، وشرح بنيتها والـ Metadata.",
+    sections: [
+      {
+        code: "02.01", title: "المفاهيم الأساسية للبيانات والمعلومات والمستندات والسجلات",
+        why: "تصحيح الخلط الشائع بين المستند (الحي القابل للتعديل) والسجل (التاريخي الثابت)، وبين البيانات الخام والمعلومات المعالجة.",
+        how: "استخدم هرم المعرفة (DIKW) وجدول مقارنة تطبيقي بأمثلة من مستندات المشروع.",
+        topics: [
+          ["02.01.01", "مفهوم البيانات والمعلومات والفرق بينهما", "تعريف البيانات (حقائق وأرقام خام) وكيف تتحول إلى معلومة مفيدة عند وضعها في سياق هندسي واضح.", ["Raw Data", "Information", "Context"]],
+          ["02.01.02", "مفهوم المستندات والسجلات (Documents vs. Records) والفرق الجوهري بينهما", "تعديل جوهري: الفرق بين المستند (وعاء قابل للتعديل والتحديث مثل إجراء عمل أو مخطط قيد المراجعة) والسجل (وثيقة تثبت حدثاً وقع ولا تقبل التعديل مثل محضر استلام أو فاتورة).", ["Document", "Record", "Living Document", "Immutable Evidence"], true],
+          ["02.01.03", "العلاقة بين البيانات والمعلومات والمستندات والسجلات", "رحلة التحول: كيف تتجمع البيانات لتكون معلومات داخل مستند، ومتى يتحول هذا المستند بعد اعتماده أو تنفيذه إلى سجل رسمي.", ["Information Hierarchy", "Record Declaration"]],
+          ["02.01.04", "دورة حياة المعلومات والمستندات في المشروع الهندسي", "مراحل حياة المعلومة من التخطيط والإنشاء مروراً بالمراجعة والاستخدام والتحديث وحتى الأرشفة أو الإتلاف.", ["Information Lifecycle", "Creation", "Active Use", "Retention"]]
+        ]
+      },
+      {
+        code: "02.02", title: "تصنيف المعلومات والمستندات في المشروعات الهندسية",
+        why: "تعريف المتدرب بكافة أنواع الوثائق التي سيراها في الواقع العملي (فنية، تعاقدية، مراسلات، جودة) وكيف يتم تصنيفها.",
+        how: "قوائم مصنفة وجداول تحتوي على اسم المستند بالإنجليزية والعربية، الغرض منه، ومثال عليه.",
+        topics: [
+          ["02.02.01", "أنواع المستندات في المشروعات الهندسية وفقًا لطبيعتها ووظيفتها", "استعراض شامل: المخططات (Drawings)، التقديمات (Submittals: Shop Drawings, Material, Method Statement)، طلبات الاستفسار والفحص (RFI, IR, MIR)، والتقارير.", ["Drawings", "Material Submittal", "Shop Drawing", "Method Statement", "RFI", "IR / MIR"]],
+          ["02.02.02", "تصنيف المستندات وفقًا للتخصصات الهندسية ومجالات العمل", "تقسيم المستندات حسب الأقسام: معماري، إنشائي، ميكانيكا، كهرباء، بنية تحتية، سلامة وصحة مهنية (HSE)، وجودة (QA/QC).", ["Discipline Classification", "Arch / Civil / MEP", "QA/QC & HSE Docs"]],
+          ["02.02.03", "تصنيف المستندات وفقًا لمرحلة المشروع والغرض من استخدامها", "مستندات مرحلة التصميم (Tender/IFC Drawings)، مستندات التنفيذ، ومستندات الإغلاق والتسليم (As-Built, O&M).", ["Tender Docs", "IFC (Issued for Construction)", "As-Built"]],
+          ["02.02.04", "التمييز بين المستندات الفنية والإدارية والتعاقدية", "الفروق الجوهرية في الحساسية وطريقة التداول بين مستندات العقد والأوامر التغييرية (VO) والمراسلات الرسمية (Letters) وبين المستندات الهندسية الدورية.", ["Contractual Docs", "Variation Orders (VO)", "Official Letters", "Technical Submittals"]]
+        ]
+      },
+      {
+        code: "02.03", title: "خصائص المعلومات والمستندات في بيئة المشروعات الهندسية",
+        why: "وضع معايير الجودة التي يقيس بها مسؤول ضبط الوثائق صلاحية أي مستند قبل قبوله أو تداوله.",
+        how: "شرح الخصائص الأربع في نقاط محددة مع قائمة فحص (Checklist) لما تعنيه كل خاصية عملياً.",
+        topics: [
+          ["02.03.01", "دقة المعلومات واكتمالها ووضوحها", "ماذا يعني اكتمال المستند؟ (وجود المرفقات، التوقيعات، الأختام، وضوح الطباعة أو المسح الضوئي، صحة الأرقام المرجعية).", ["Completeness", "Legibility", "Accuracy", "Attachments"]],
+          ["02.03.02", "موثوقية المعلومات واتساقها", "صدور المعلومة من جهة مخولة، وعدم تضارب البيانات داخل المستند الواحد أو مع المستندات المرجعية الأخرى.", ["Reliability", "Consistency", "Authorized Source"]],
+          ["02.03.03", "إتاحة المعلومات وتوقيتها وملاءمتها للاستخدام", "وصول المستند للشخص المعني في التوقيت الصحيح وبالصيغة المناسبة للعمل (مثلاً PDF للاعتماد و DWG/Native للتعديل).", ["Accessibility", "Timeliness", "File Formats (PDF vs Native)"]],
+          ["02.03.04", "قابلية تتبّع المعلومات والمستندات ومصادرها", "القدرة على تتبع تاريخ المستند (من أنشأه؟ متى أُرسل؟ ما هي المراسلات المرتبطة به؟ ولماذا تم تعديله؟).", ["Traceability", "Audit Trail", "Reference Linking"]]
+        ]
+      },
+      {
+        code: "02.04", title: "السياق والغرض من استخدام المعلومات في المشروع الهندسي",
+        why: "فهم أن المستند الواحد يُقرأ ويُستخدم بطرق مختلفة حسب الطرف المستلم وحالة إصدار المستند.",
+        how: "أمثلة عملية تربط بين (غرض الإصدار Purpose of Issue) وبين الإجراء المتوقع من الطرف المستلم.",
+        topics: [
+          ["02.04.01", "الغرض من إنشاء المعلومات والمستندات واستخدامها", "تحديد الغرض من الإصدار: للعلم (For Information)، للمراجعة والاعتماد (For Review/Approval)، للتنفيذ (For Construction).", ["Purpose of Issue", "For Approval", "For Information", "For Construction"]],
+          ["02.04.02", "احتياجات المعلومات لدى الأطراف المعنية بالمشروع", "ماذا يحتاج المالك (تقارير إنجاز وتكلفة) مقابل الاستشاري (تقديمات فنية للمراجعة) مقابل المقاول (مخططات معتمدة للتنفيذ)؟", ["Information Needs", "Stakeholder Requirements"]],
+          ["02.04.03", "استخدام المعلومات في التنسيق واتخاذ القرارات داخل المشروع", "كيف تعتمد اجتماعات التنسيق والإدارة على تقارير وسجلات ضبط الوثائق لاتخاذ قرارات حاسمة.", ["Decision Making", "Progress Meetings", "Coordination"]],
+          ["02.04.04", "أثر سياق المعلومات وحدود استخدامها على تفسيرها", "خطورة استخدام مستند خارج الغرض الذي أُصدر من أجله (مثل التنفيذ في الموقع باستخدام مخطط أُصدر للمراجعة المبدئية فقط Preliminary).", ["Context of Use", "Preliminary vs IFC", "Misuse Risks"]]
+        ]
+      },
+      {
+        code: "02.05", title: "بنية المستندات ومكوناتها الأساسية",
+        why: "تدريب العين الفاحصة لمسؤول ضبط الوثائق على تشريح أي مستند أو لوحة هندسية واستخراج بياناتها التعريفية (Metadata).",
+        how: "عرض تشريحي لصفحة الغلاف (Cover Page) وخرطوشة اللوحة الهندسية (Drawing Title Block) وجدول للـ Metadata.",
+        topics: [
+          ["02.05.01", "المكونات الأساسية للمستند الهندسي", "تشريح المستند: صفحة الغلاف (Cover Sheet)، جدول المراجعات (Revision History)، المتن، المرفقات، وخرطوشة المخطط (Title Block).", ["Cover Page", "Title Block", "Revision History Table"]],
+          ["02.05.02", "البيانات التعريفية للمستند (Document Metadata) وأهميتها", "شرح مفهوم (البيانات عن البيانات): رقم المستند، العنوان، رقم المراجعة، التاريخ، التخصص، المُنشئ، والحالة.", ["Metadata", "Attributes", "Document Properties"]],
+          ["02.05.03", "العلاقة بين محتوى المستند وبياناته التعريفية", "ضرورة تطابق البيانات المكتوبة على غلاف المستند مع محتواه الداخلي ومع ما يتم تسجيله في السجلات (MDR).", ["Data Alignment", "Metadata Integrity"]],
+          ["02.05.04", "تنظيم المعلومات داخل المستندات لتسهيل فهمها واستخدامها", "الفهرسة الداخلية، ترقيم الصفحات، وضوح العناوين والملاحق لتسهيل المراجعة والإشارة المرجعية.", ["Indexing", "Pagination", "Cross-referencing"]],
+          ["02.05.05", "القوالب الموحدة للمستندات ودورها في تنظيم المعلومات", "أهمية استخدام نماذج وقوالب قياسية موحدة (Standard Templates) تحمل شعارات المشروع وتضمن ثبات شكل المخرجات.", ["Standard Templates", "Project Branding", "Standardization"]]
+        ]
+      }
+    ]
+  },
+  {
+    code: "03", title: "وظيفة ضبط الوثائق ودور مسؤول ضبط الوثائق في المشروع الهندسي",
+    overview: "ترسم هذه الوحدة الصورة المهنية الكاملة لوظيفة Document Controller، وموقعه في الهيكل التنظيمي، ومهامه اليومية، وحدود صلاحياته، وعلاقته بجميع الأقسام، والمهارات اللازمة لتفوقه وحل المشكلات.",
+    sections: [
+      {
+        code: "03.01", title: "طبيعة عمل مسؤول ضبط الوثائق داخل المشروع الهندسي",
+        why: "تهيئة المتدرب نفسياً ومهنياً لطبيعة العمل اليومي وموقعه الحيوي كحلقة وصل مركزية في المشروع.",
+        how: "رسم للهيكل التنظيمي للمشروع يوضح موقع الـ DC، مع وصف ليوم عمل نموذجي.",
+        topics: [
+          ["03.01.01", "موقع مسؤول ضبط الوثائق ضمن فريق المشروع", "تبعية مسؤول ضبط الوثائق في الهيكل التنظيمي (تحت مدير المشروع، أو مدير الجودة QA/QC، أو مدير التحكم بالمشروعات Project Controls).", ["Organizational Chart", "Project Controls", "QA/QC", "Reporting Line"]],
+          ["03.01.02", "طبيعة بيئة العمل اليومية لمسؤول ضبط الوثائق", "طبيعة العمل بين المكاتب الرئيسية ومكاتب الموقع (Site Office)، والتعامل مع ضغط التقديمات والمواعيد النهائية.", ["Site Office vs Head Office", "Work Environment", "Daily Rhythm"]],
+          ["03.01.03", "دور مسؤول ضبط الوثائق في دعم سير العمل بالمشروع", "كيف يسرّع الـ DC عجلة المشروع بمنع تكدس الأوراق وضمان تدفق التقديمات والردود دون تأخير.", ["Workflow Facilitation", "Bottleneck Prevention"]],
+          ["03.01.04", "طبيعة التعامل مع المستندات والمعلومات خلال مراحل المشروع", "تغير تركيز عمل الـ DC من مرحلة التأسيس (بناء السجلات والقوالب) إلى الذروة (التداول الكثيف) ثم الإغلاق (الأرشفة والتسليم).", ["Phase-based Focus", "Peak Construction", "Handover Phase"]]
+        ]
+      },
+      {
+        code: "03.02", title: "المهام والمسؤوليات الأساسية لمسؤول ضبط الوثائق",
+        why: "تحديد الوصف الوظيفي (Job Description) بدقة، والأهم: توضيح ما يقع ضمن مسؤوليته وما لا يقع ضمنها.",
+        how: "قائمة مهام مقسمة (يومية/أسبوعية/شهرية) + جدول يوضح (مسؤوليات الـ DC مقابل مسؤوليات المهندس المختص).",
+        topics: [
+          ["03.02.01", "المهام اليومية والأسبوعية لمسؤول ضبط الوثائق", "استلام وفحص المستندات، التسجيل في الـ Logs، إصدار الـ Transmittals، التوزيع، المسح الضوئي، وتحديث التقارير الأسبوعية.", ["Daily Tasks", "Logging", "Transmittals", "Weekly Reports"]],
+          ["03.02.02", "مسؤوليات مسؤول ضبط الوثائق تجاه المستندات والمعلومات", "الفحص الشكلي (Quality Check)، التحقق من الترقيم والمراجعة، الحفظ الآمن، ومنع تداول النسخ الملغاة.", ["Quality Check (QC)", "Version Integrity", "Secure Filing"]],
+          ["03.02.03", "التنسيق والتواصل مع أطراف المشروع", "إدارة نقطة الاتصال الرسمية (Single Point of Contact) لاستلام وتسليم الوثائق مع نظرائه لدى الاستشاري والمالك والمقاولين.", ["Single Point of Contact (SPOC)", "Counterparts Coordination"]],
+          ["03.02.04", "متابعة المستندات والمواعيد والالتزامات المرتبطة بها", "مراقبة مدد المراجعة التعاقدية وتنبيه الفريق الهندسي قبل فوات الموعد النهائي للرد (Overdue Alerts).", ["Turnaround Time", "Due Dates", "Overdue Tracking"]],
+          ["03.02.05", "حدود مسؤوليات وصلاحيات مسؤول ضبط الوثائق", "نقطة حاسمة: الـ DC مسؤول عن الفحص الشكلي والمرجعي والنظامي، وليس مسؤولاً عن تأليف المحتوى الفني أو اتخاذ قرار الاعتماد الهندسي.", ["Scope of Authority", "Format vs Technical Content", "Accountability"]]
+        ]
+      },
+      {
+        code: "03.03", title: "العلاقة بين مسؤول ضبط الوثائق وباقي أدوار المشروع",
+        why: "تمكين المتدرب من فهم لغة واحتياجات كل قسم يتعامل معه داخل المشروع وخارجه.",
+        how: "مخطط علاقات يوضح (ماذا يأخذ الـ DC من كل قسم؟ وماذا يعطيه؟).",
+        topics: [
+          ["03.03.01", "العلاقة مع مدير المشروع وفريق إدارة المشروع", "إمداد مدير المشروع بالمراسلات الهامة وتقارير حالة التقديمات والاختناقات لدعم اتخاذ القرار.", ["Project Manager (PM)", "Executive Dashboards", "Escalation"]],
+          ["03.03.02", "العلاقة مع الفرق الهندسية والتخصصات الفنية", "استلام المخططات والتقديمات من المكتب الفني (Technical Office) ومهندسي الموقع، ومساعدتهم في الترقيم الصحيح وتوفير أحدث المخططات.", ["Technical Office", "Site Engineers", "Drawing Distribution"]],
+          ["03.03.03", "العلاقة مع الاستشاري والمقاول والعميل", "بروتوكول التعامل الرسمي في تسليم واستلام الحوافظ (Transmittals) ومطابقة السجلات الدورية مع الـ DC لدى الطرف الآخر.", ["Client / Consultant DC", "Log Reconciliation", "Submission Protocol"]],
+          ["03.03.04", "العلاقة مع فرق الجودة والتخطيط والتكاليف والتخصصات المساندة", "التكامل مع الجودة (في الـ NCR, IR والتدقيق)، ومع التخطيط (تواريخ الـ MDR والجدول الزمني)، ومع العقود (المراسلات والـ VO).", ["QA/QC", "Planning Engineer", "Contracts & QS"]],
+          ["03.03.05", "توزيع الأدوار والمسؤوليات والتنسيق بين أطراف المشروع", "استخدام مصفوفة المسؤوليات (RACI Matrix) لتوضيح من يُنشئ، من يراجع، من يعتمد، ومن يوثق ويوزع.", ["RACI Matrix", "Role Clarity", "Workflow Coordination"]]
+        ]
+      },
+      {
+        code: "03.04", title: "المهارات والكفاءات المطلوبة لمسؤول ضبط الوثائق",
+        why: "توجيه المتدرب لبناء المهارات الشخصية والتقنية التي تنقله من مدخل بيانات عادي إلى أخصائي إدارة معلومات محترف.",
+        how: "تقسيم المهارات إلى (مهارات شخصية Soft Skills) و(مهارات تقنية وأدوات Hard Skills).",
+        topics: [
+          ["03.04.01", "المهارات التنظيمية وإدارة الأولويات", "إدارة الوقت، ترتيب المهام العاجلة (مثل تقديمات المسار الحرج)، والحفاظ على بيئة عمل رقمية وورقية منظمة.", ["Time Management", "Prioritization", "Organization"]],
+          ["03.04.02", "مهارات التواصل الكتابي والشفهي والتعامل المهني", "صياغة رسائل البريد الإلكتروني المهنية، اللباقة في رفض المستندات غير المطابقة، والتواصل الفعال.", ["Business Writing", "Professional Etiquette", "Assertiveness"]],
+          ["03.04.03", "الدقة والانتباه إلى التفاصيل", "القدرة على التقاط الأخطاء الدقيقة في أرقام المخططات، التواريخ، أرقام المراجعات، والمرفقات الناقصة.", ["Attention to Detail", "Zero-error Mindset", "Proofreading"]],
+          ["03.04.04", "مهارات حل المشكلات والتعامل مع التحديات", "التفكير التحليلي لتتبع المستندات المفقودة، وحل تعارضات الترقيم، ومعالجة الاختناقات في مسار العمل.", ["Problem Solving", "Root Cause Analysis", "Troubleshooting"]],
+          ["03.04.05", "المهارات الرقمية والتعامل مع أدوات العمل", "إتقان الإكسيل المتقدم (Advanced Excel)، برامج تعديل الـ PDF (مثل Adobe Acrobat / Bluebeam)، وأنظمة الـ EDMS.", ["Advanced Excel", "PDF Tools (Bluebeam/Acrobat)", "EDMS Proficiency"]]
+        ]
+      },
+      {
+        code: "03.05", title: "التحديات الشائعة في وظيفة ضبط الوثائق وكيفية التعامل معها",
+        why: "إعطاء المتدرب خلاصة خبرات عملية لمواجهة المواقف الصعبة التي تتكرر في كل المشروعات الهندسية.",
+        how: "عرض كل نقطة في صورة: (المشكلة الشائعة -> سببها -> الحل المهني خطوة بخطوة).",
+        topics: [
+          ["03.05.01", "التعامل مع نقص المعلومات والأخطاء في المستندات", "إجراء الفحص المسبق (Gatekeeping Check) وإرجاع المستند للمنشئ لتصحيحه قبل تسجيله وإرساله رسمياً.", ["Pre-submission Check", "Rejection Criteria", "Correction Loop"]],
+          ["03.05.02", "التعامل مع تأخر الاستجابات وعدم الالتزام بالمواعيد", "آلية إرسال التذكيرات الاستباقية (Reminders) وتقارير المتأخرات (Overdue Reports) قبل تفاقم التأخير.", ["Proactive Reminders", "Overdue Logs", "Follow-up"]],
+          ["03.05.03", "التعامل مع تعارض المعلومات أو اختلاف البيانات بين المستندات", "كيفية التصرف عند اختلاف البيانات بين الغلاف والمخطط أو تضارب رقم المراجعة، وتجميد التداول حتى التوضيح.", ["Discrepancy Resolution", "Log Reconciliation", "Hold on Distribution"]],
+          ["03.05.04", "التعامل مع تعدد الطلبات وضغط العمل وتعارض الأولويات", "كيفية إدارة أوقات الذروة (تقديم عشرات المخططات في نهاية الأسبوع) وترتيب الأولويات بالتنسيق مع مدير المشروع.", ["Peak Workload Management", "Batch Processing", "Priority Alignment"]],
+          ["03.05.05", "التعامل مع المواقف المهنية الصعبة وحل الخلافات", "الرد المهني على محاولات تجاوز النظام (إرسال مستندات باليد بدون Transmittal أو الضغط لتسجيل مستند بتاريخ قديم).", ["Bypassing System", "Backdating Prevention", "Professional Integrity"]]
+        ]
+      }
+    ]
+  },
+  {
+    code: "04", title: "تأسيس منظومة ضبط الوثائق وإدارة المعلومات بالمشروع",
+    overview: "دليل عملي لتأسيس نظام ضبط وثائق من الصفر عند بداية المشروع: قراءة متطلبات العقد، تحليل الأطراف، تصميم شجرة المجلدات، بناء نظام التكويد والترقيم، وإنشاء السجلات (MDR) والنماذج والإجراءات.",
+    sections: [
+      {
+        code: "04.01", title: "فهم متطلبات المشروع ووثائقه المرجعية",
+        why: "تعليم المتدرب ألا يبدأ بتصميم أي نظام من خياله، بل يستخرج القواعد الحاكمة من العقد والمواصفات أولاً.",
+        how: "استعراض لأهم البنود التعاقدية والمواصفات التي تذكر شروط تقديم المستندات ومدد المراجعة.",
+        topics: [
+          ["04.01.01", "نظرة عامة على وثائق المشروع ومصادر متطلباته", "مكونات حزمة وثائق المشروع المرجعية (العقد، الشروط العامة والخاصة، المواصفات، نطاق العمل).", ["Project Baseline Docs", "Scope of Work (SOW)", "Employer's Information Requirements (EIR)"]],
+          ["04.01.02", "العقد ومرفقاته ودورهما في تحديد متطلبات المشروع", "استخراج شروط المراسلات الرسمية، عناوين التبليغ، ومدد المراجعة التعاقدية (مثلاً 14 أو 21 يوماً) وعدد النسخ الورقية والإلكترونية.", ["Contract Conditions", "Review Period", "Notice Clauses", "Deliverable Formats"]],
+          ["04.01.03", "المواصفات والإجراءات والمعايير المرجعية للمشروع", "قراءة القسم الأول من المواصفات (General Specifications - Submittals Procedures) وخطة الجودة (PQP).", ["Project Specifications", "Submittal Procedures", "Project Quality Plan (PQP)"]],
+          ["04.01.04", "تحديد متطلبات ضبط الوثائق وإدارة المعلومات بالمشروع", "تلخيص كافة المتطلبات المستخرجة في قائمة مرجعية لتكون الأساس الذي تُبنى عليه إجراءات وسجلات المشروع.", ["DC Requirements Matrix", "IM Plan Baseline"]]
+        ]
+      },
+      {
+        code: "04.02", title: "تحليل نطاق المشروع وأطرافه واحتياجاته المعلوماتية",
+        why: "تصميم النظام ليكون مفصلاً على مقاس المشروع (حجمه، مبانيه، أطرافه، وتخصصاته).",
+        how: "خطوات عملية لتحويل هيكل تجزئة العمل (WBS) وقائمة الأطراف إلى قواعد لتقسيم وتوزيع الوثائق.",
+        topics: [
+          ["04.02.01", "فهم نطاق المشروع وطبيعته ومكوناته الرئيسية", "فهم تقسيمات المشروع الجغرافية والهندسية (المناطق Zones، المباني Buildings، المستويات Levels) وربطها بـ WBS.", ["Project Scope", "WBS (Work Breakdown Structure)", "Zones & Buildings"]],
+          ["04.02.02", "تحديد الأطراف المعنية بالمشروع وأدوارها الرئيسية", "حصر كافة الشركات والجهات المشاركة في المشروع وتحديد رموزها التعريفية (Originator Codes).", ["Stakeholder Register", "Originator Codes", "Entities"]],
+          ["04.02.03", "تحديد احتياجات المعلومات لدى أطراف المشروع", "بناء مصفوفة توزيع المستندات (Document Distribution Matrix) التي تحدد من يستلم ماذا (للإجراء Action أم للعلم Info).", ["Distribution Matrix", "Action vs Info", "Information Routing"]],
+          ["04.02.04", "تحديد التخصصات الهندسية ومجالات العمل المؤثرة في منظومة ضبط الوثائق", "اعتماد قائمة التخصصات الرسمية في المشروع (معماري، إنشائي، ميكانيكا، كهرباء، إلخ) لتوحيد الفلترة والتصنيف.", ["Discipline List", "Standard Breakdown"]]
+        ]
+      },
+      {
+        code: "04.03", title: "تصميم الهيكل التنظيمي للمجلدات ونظام حفظ المستندات",
+        why: "إنهاء فوضى حفظ الملفات على الأجهزة أو السيرفرات، وضمان وصول أي شخص لأي ملف في ثوانٍ.",
+        how: "رسم شجري واضح (Folder Tree Diagram) يوضح المستويات القياسية لتنظيم المجلدات الرقمية والورقية.",
+        topics: [
+          ["04.03.01", "مفهوم هيكل المجلدات وأهميته في تنظيم مستندات المشروع", "أهمية وجود شجرة مجلدات موحدة على السيرفر المشترك (Shared Drive) ومطابقتها مع الأرشيف الورقي.", ["Folder Structure", "Shared Server", "Physical vs Digital Filing"]],
+          ["04.03.02", "أسس تصميم هيكل المجلدات بما يتناسب مع طبيعة المشروع", "التدرج المنطقي من العام إلى الخاص، وتجنب المسارات الطويلة جداً أو المجلدات الشخصية العشوائية.", ["Logical Hierarchy", "Depth Limit", "Standardization"]],
+          ["04.03.03", "تنظيم المجلدات وفقًا للتخصصات والأطراف ومراحل المشروع", "نماذج عملية لتقسيم المجلدات الرئيسية (مراسلات، تقديمات فنية، مخططات، عقود، جودة) وتفريعاتها.", ["Category-based Folders", "Discipline Subfolders", "Incoming / Outgoing"]],
+          ["04.03.04", "قواعد تسمية المجلدات وتنظيم مستوياتها", "استخدام البادئات الرقمية (01_Incoming, 02_Outgoing) لضمان ثبات الترتيب الأبجدي ومنع تكرار الأسماء.", ["Folder Naming Convention", "Numeric Prefixes"]],
+          ["04.03.05", "تنظيم المستندات وحفظها داخل الهيكل المعتمد", "قواعد حفظ الملفات داخل المجلدات (فصل الملفات السارية Current عن الملغاة Superseded، وحفظ الـ Native بجانب الـ PDF).", ["Current vs Superseded", "File Naming", "Archiving Rules"]]
+        ]
+      },
+      {
+        code: "04.04", title: "نظام تعريف المستندات وترقيمها وتصنيفها",
+        why: "نظام الترقيم (Numbering System) هو العمود الفقري لضبط الوثائق؛ بدونه يستحيل تتبع أو ربط أي مستند.",
+        how: "تشريح بصري لكود مستند قياسي (مثلاً: PRJ-CON-ARC-SHD-B01-0001) وتوضيح دلالة كل مقطع فيه.",
+        topics: [
+          ["04.04.01", "مفهوم نظام تعريف المستندات وترقيمها وأهميته", "لماذا يحتاج كل مستند إلى معرف فريد (Unique ID) لا يتكرر أبداً طوال عمر المشروع؟ (تم تصحيح الترقيم المطبعي هنا).", ["Document Numbering System", "Unique Identifier", "Coding Convention"]],
+          ["04.04.02", "مكونات رقم المستند ودلالة الرموز المستخدمة فيه", "شرح حقول كود المستند: [كود المشروع] - [كود المنشئ] - [المبنى/المنطقة] - [التخصص] - [نوع المستند] - [الرقم التسلسلي].", ["Project Code", "Originator", "Zone/Volume", "Discipline", "Doc Type", "Serial Number"]],
+          ["04.04.03", "قواعد ترقيم المستندات وتوحيد نظام التعريف بالمشروع", "قواعد كتابة الأكواد (عدد الخانات، الأصفار البادئة 0001، الفواصل المسموحة، وحجز الأرقام التسلسلية).", ["Leading Zeros", "Delimiters", "Number Reservation"]],
+          ["04.04.04", "التمييز بين رقم المستند وعنوانه ونوعه وتخصصه", "عدم الخلط بين رقم المستند الثابت وبين عنوانه الوصفي أو رقم مراجعته المتغير.", ["Doc ID vs Title", "Revision Suffix"]],
+          ["04.04.05", "تصنيف المستندات باستخدام الرموز والمعرّفات المعتمدة بالمشروع", "جداول الاختصارات القياسية للتخصصات (ARC, STR, MEC, ELE) ولأنواع المستندات (DRW, MAT, MST, RFI, LTR).", ["Standard Abbreviations", "Discipline Codes", "Document Type Codes"]]
+        ]
+      },
+      {
+        code: "04.05", title: "إعداد سجلات ضبط الوثائق وأدوات المتابعة الأساسية",
+        why: "تمكين المتدرب من تصميم وإدارة السجلات (Logs) وعلى رأسها سجل المستندات الرئيسي (MDR).",
+        how: "استعراض لأعمدة وحقول سجل الـ MDR وسجل المراسلات، وكيفية ربطهما بالتقارير.",
+        topics: [
+          ["04.05.01", "مفهوم سجلات ضبط الوثائق وأهميتها في المشروع", "دور السجلات كقاعدة بيانات مركزية ترصد حالة وتاريخ كل وثيقة دخلت أو خرجت من المشروع.", ["Document Logs", "Tracking Registers", "Central Database"]],
+          ["04.05.02", "سجل المستندات الرئيسي (Master Document Register - MDR) ووظيفته", "تعريف الـ MDR (ويسمى أيضاً MDL)، وكيف يجمع كافة المخططات والتقديمات المتوقعة والفعلية وتواريخها وحالاتها.", ["Master Document Register (MDR)", "Master Deliverable List (MDL)", "Baseline Dates"]],
+          ["04.05.03", "سجلات متابعة تداول المستندات والمراسلات", "السجلات المتخصصة: سجل المراسلات الصادرة والواردة، سجل الـ Submittals، سجل الـ RFI، سجل الـ IR، وسجل الـ NCR.", ["Correspondence Log", "Submittal Log", "RFI Log", "IR & NCR Logs"]],
+          ["04.05.04", "تحديد البيانات الأساسية وحقول سجلات ضبط الوثائق", "الأعمدة الإلزامية في أي سجل: الرقم، العنوان، المراجعة، رقم الـ Transmittal، تاريخ الإرسال، تاريخ الرد المتوقع، تاريخ الرد الفعلي، كود الحالة، والملاحظات.", ["Log Columns/Fields", "Transmittal Ref", "Submission & Return Dates", "Action Code"]],
+          ["04.05.05", "العلاقة بين سجلات ضبط الوثائق وأدوات المتابعة والتقارير", "كيف تُستخدم بيانات السجلات لاستخراج الجداول المحورية (Pivot Tables) والرسوم البيانية لتقارير الأداء.", ["Data Extraction", "Pivot Tables", "Status Reporting"]]
+        ]
+      },
+      {
+        code: "04.06", title: "النماذج والإجراءات التنظيمية في منظومة ضبط الوثائق",
+        why: "توحيد طريقة العمل بين جميع أطراف المشروع من خلال دستور مكتوب (Procedure) ونماذج موحدة (Forms).",
+        how: "عرض هيكل إجراء ضبط الوثائق القياسي، وقائمة بالنماذج الأساسية التي يصممها أو يديرها الـ DC.",
+        topics: [
+          ["04.06.01", "مفهوم النماذج والإجراءات التنظيمية ودورها في ضبط الوثائق", "الفرق بين الإجراء (الوثيقة التي تشرح خطوات العمل والقواعد) والنموذج (القالب الفارغ الذي يُملأ لتنفيذ الإجراء).", ["Procedure vs Form", "Standard Operating Procedure (SOP)"]],
+          ["04.06.02", "أنواع النماذج المستخدمة في ضبط الوثائق بالمشروعات الهندسية", "نماذج لا غنى عنها: حافظة الإرسال (Transmittal Form)، غلاف التقديم (Submittal Cover)، نموذج RFI، نموذج IR، وقالب الخطاب الرسمي.", ["Transmittal Form", "Submittal Cover Sheet", "RFI / IR Forms"]],
+          ["04.06.03", "الإجراءات التنظيمية الأساسية لضبط الوثائق وإدارة المعلومات", "مكونات إجراء ضبط الوثائق بالمشروع (Document Control Procedure): الغرض، النطاق، التعريفات، المسؤوليات، نظام الترقيم، وخطوات التداول.", ["Document Control Procedure", "Information Management Plan"]],
+          ["04.06.04", "العلاقة بين النماذج والإجراءات وسير العمل بالمشروع", "كيف يترجم الإجراء مسار العمل (Workflow) إلى خطوات عملية، وكيف تنتقل النماذج عبر هذا المسار.", ["Workflow Mapping", "Process Integration"]],
+          ["04.06.05", "مسؤوليات الأطراف في استخدام النماذج والالتزام بالإجراءات", "كيفية تعميم الإجراءات والنماذج المعتمدة على جميع الأطراف في بداية المشروع (Kick-off) وإلزامهم بها.", ["Procedure Rollout", "Compliance Enforcement"]]
+        ]
+      }
+    ]
+  },
+{
+    code: "05", title: "فهم دورة عمل المستندات في المشروعات الهندسية",
+    overview: "تتبع رحلة المستند خطوة بخطوة في الواقع العملي: من لحظة إنشائه وفحصه وتجهيزه، إلى إرساله بحافظة رسمية، ومراجعته واعتماده بأكواد المراجعة، وتوزيعه، ومتابعة تأخيراته، وضبط إصداراته (Revisions)، حتى إغلاقه وأرشفته.",
+    sections: [
+      {
+        code: "05.01", title: "المراحل الأساسية لدورة عمل المستند",
+        why: "رسم الخريطة الذهنية الكاملة لرحلة المستند قبل الدخول في تفاصيل كل محطة.",
+        how: "مخطط انسيابي (Flowchart) يوضح مسار المستند بين المقاول والاستشاري والمالك.",
+        topics: [
+          ["05.01.01", "نظرة عامة على دورة عمل المستند داخل المشروع الهندسي", "مفهوم دورة عمل المستند (Document Workflow) كنهر متصل يربط المكتب الفني بالموقع والاستشاري.", ["Document Workflow", "End-to-End Cycle"]],
+          ["05.01.02", "المراحل الرئيسية التي يمر بها المستند خلال دورة عمله", "المحطات السبع: الإنشاء -> الفحص والتجهيز -> الإرسال والتسليم -> المراجعة والاعتماد -> التوزيع -> التحديث (إن لزم) -> الأرشفة.", ["Creation", "Submission", "Review & Approval", "Distribution", "Archiving"]],
+          ["05.01.03", "انتقال المستندات بين الأطراف خلال دورة العمل", "مسارات الانتقال الرسمية (من المقاول للاستشاري للاعتماد، ومن الاستشاري للمقاول بالرد، والتوزيع الداخلي).", ["External vs Internal Routing", "Submission Loop"]],
+          ["05.01.04", "العلاقة بين دورة عمل المستند وسير العمل بالمشروع", "كيف يؤدي توقف المستند في أي محطة من دورته إلى توقف التوريد أو التنفيذ الفعلي في الموقع.", ["Site Impact", "Critical Path Alignment"]]
+        ]
+      },
+      {
+        code: "05.02", title: "إنشاء المستندات وتجهيزها للتداول",
+        why: "ضبط جودة المستند قبل خروجه أو عند دخوله، لأن الخطأ في البداية يستمر طوال الدورة.",
+        how: "قائمة فحص (Quality Checklist) يستخدمها الـ DC عند استلام مستند لإرساله أو استلام مستند وارد.",
+        topics: [
+          ["05.02.01", "الجهات المسؤولة عن إنشاء المستندات وإعدادها", "الأقسام المنشئة للوثائق (المكتب الفني، مهندسو الموقع، قسم الجودة، قسم العقود، الموردون) ودورهم في المراجعة الداخلية.", ["Originators", "Internal Technical Review"]],
+          ["05.02.02", "تجهيز المستندات قبل تداولها بين أطراف المشروع", "استيفاء الغلاف القياسي، التوقيعات الداخلية، دمج المرفقات، والتأكد من جودة ملف الـ PDF والنسخ الورقية.", ["Document Packaging", "Cover Sheet Signing", "Compilation"]],
+          ["05.02.03", "تحديد الغرض من إصدار المستند والجهة المستقبلة له", "تحديد كود الغرض من الإصدار (For Approval, For Information, For Construction) وتحديد المستلم الرئيسي ونسخ العلم (CC).", ["Issue Purpose", "To / CC Recipients"]],
+          ["05.02.04", "دور مسؤول ضبط الوثائق في استقبال المستندات وتجهيزها للتداول", "الفحص الشكلي الصارم (رقم المستند، رقم المراجعة، تطابق العنوان، وجود المرفقات) وإعداد حافظة الإرسال (Transmittal).", ["Gatekeeper QC Check", "Transmittal Preparation"]],
+          ["05.02.05", "استلام المستندات الواردة وتسجيلها والتحقق من اكتمال بياناتها", "إجراءات استلام البريد الوارد: مطابقة المحتويات مع الـ Transmittal المرفق، ختم الاستلام (Received Stamp)، والتسجيل الفوري في السجلات.", ["Incoming Mail Processing", "Received Stamp", "Verification"]]
+        ]
+      },
+      {
+        code: "05.03", title: "مراجعة المستندات واعتمادها داخل المشروع",
+        why: "فهم جوهر العملية الهندسية للتقديمات (Submittals) ومعاني أكواد الاعتماد وكيفية إدارة دورة إعادة التقديم.",
+        how: "جدول تفصيلي لأكواد المراجعة القياسية (A, B, C, D) ومخطط لدورة إعادة التقديم (Resubmission Loop).",
+        topics: [
+          ["05.03.01", "مفهوم مراجعة المستندات واعتمادها والفرق بينهما", "الفرق بين المراجعة الفنية (فحص المطابقة للمواصفات وإبداء الملاحظات) والاعتماد الرسمي (التصريح بالتنفيذ أو التوريد).", ["Technical Review vs Approval", "Endorsement"]],
+          ["05.03.02", "مراحل مراجعة المستندات والجهات المسؤولة عنها", "المراجعة الداخلية قبل الإرسال، ثم مراجعة مهندسي الاستشاري حسب التخصصات، وتجميع الملاحظات في ورقة رد موحدة (Comment Sheet).", ["Internal Review", "Consultant Review", "Comment Sheet (CRS)"]],
+          ["05.03.03", "حالات المستند ونتائج المراجعة والاعتماد (Action Codes)", "شرح أكواد الاعتماد القياسية: (Code A: Approved / معتمد)، (Code B: Approved as Noted / معتمد مع ملاحظات)، (Code C: Revise & Resubmit / يعدل ويعاد تقديمه)، (Code D: Rejected / مرفوض).", ["Action Codes (A, B, C, D)", "Approved", "Approved as Noted", "Revise & Resubmit"]],
+          ["05.03.04", "التعامل مع ملاحظات المراجعة وإعادة تقديم المستندات", "ماذا يحدث عندما يأخذ المستند كود B أو C؟ كيفية استيفاء الملاحظات، رفع رقم المراجعة (مثلاً من Rev 00 إلى Rev 01)، وإعادة التقديم.", ["Resubmission Process", "Addressing Comments", "Revision Increment"]],
+          ["05.03.05", "دور مسؤول ضبط الوثائق في متابعة المراجعة والاعتماد", "توزيع المستند على المراجعين الداخليين، مراقبة المهلة الزمنية، تجميع الردود، ختم المستند بختم الحالة، وإصداره رسمياً.", ["Internal Routing", "Action Stamp", "Review Tracking"]]
+        ]
+      },
+      {
+        code: "05.04", title: "إصدار المستندات وتوزيعها وتداولها بين أطراف المشروع",
+        why: "ضمان أن كل مستند يخرج أو يُوزع يتم عبر قناة رسمية موثقة تمنع إنكار الاستلام.",
+        how: "شرح تطبيقي لنموذج الـ Transmittal ومصفوفة التوزيع وآليات الإرسال الورقي والإلكتروني.",
+        topics: [
+          ["05.04.01", "مفهوم إصدار المستندات وتوزيعها وتداولها والفرق بينها", "الفرق بين الإصدار الرسمي (Official Issue)، التوزيع الداخلي والخارجي (Distribution)، والتداول اليومي (Circulation).", ["Issuance", "Distribution", "Circulation"]],
+          ["05.04.02", "تحديد الجهات المستقبلة للمستندات ونطاق التوزيع", "تطبيق مصفوفة التوزيع (Distribution Matrix) لضمان وصول المخططات المعتمدة للموقع والأقسام المعنية فور اعتمادها.", ["Controlled Distribution", "Distribution Matrix Application"]],
+          ["05.04.03", "آليات إرسال المستندات وتداولها بين أطراف المشروع", "استخدام حافظة الإرسال (Document Transmittal) كوثيقة تسليم قانونية، وقنوات الإرسال (ورقي باليد، بريد إلكتروني، أو عبر نظام EDMS).", ["Document Transmittal", "Hardcopy vs Electronic Delivery"]],
+          ["05.04.04", "توثيق عمليات إصدار المستندات وإرسالها واستلامها", "أهمية الحصول على توقيع وختم وتاريخ الاستلام على نسخة الـ Transmittal (Acknowledgment of Receipt) وحفظها كدليل.", ["Proof of Delivery", "Signed Transmittal", "Acknowledgment"]],
+          ["05.04.05", "دور مسؤول ضبط الوثائق في إدارة توزيع المستندات ومتابعة تداولها", "التأكد من وصول النسخ الصحيحة للأشخاص المعنيين، وسحب النسخ القديمة عند توزيع إصدار جديد.", ["Distribution Control", "Recall of Obsolete Copies"]]
+        ]
+      },
+      {
+        code: "05.05", title: "متابعة المستندات والردود والمواعيد المرتبطة بها",
+        why: "تحويل دور الـ DC من مجرد مسجل للبيانات إلى مراقب نشط يحمي المشروع من التأخيرات التعاقدية.",
+        how: "أمثلة لمعادلات حساب تاريخ الاستحقاق (Due Date) وأيام التأخير (Aging/Overdue Days) وآلية التصعيد.",
+        topics: [
+          ["05.05.01", "مفهوم متابعة المستندات والردود والمواعيد وأهميتها", "لماذا نتابع التقديمات المفتوحة (Pending Submittals)؟ لتجنب تعطيل الموقع ومنع تراكم المطالبات الزمنية.", ["Pending Submittals", "Expediting", "Time Impact"]],
+          ["05.05.02", "تحديد المواعيد المستهدفة للردود والإجراءات المطلوبة", "كيفية حساب تاريخ الرد المتوقع بناءً على المدة التعاقدية (مثلاً: تاريخ الإرسال + 14 يوم تقويمي أو عمل).", ["Target Return Date", "Contractual Turnaround Time"]],
+          ["05.05.03", "متابعة الردود المتأخرة والمستندات التي تجاوزت مواعيدها المستهدفة", "تصنيف المستندات إلى: مفتوحة ضمن الوقت (Open/In-time)، تقترب من الموعد (Due Soon)، ومتأخرة (Overdue) مع حساب عمر التأخير.", ["Overdue Analysis", "Aging Report", "Pending Action"]],
+          ["05.05.04", "تصعيد حالات التأخير ومتابعة الإجراءات التصحيحية", "متى وكيف يقوم الـ DC بتصعيد التأخيرات (Escalation) إلى مدير القسم أو مدير المشروع للتدخل الرسمي؟", ["Escalation Matrix", "Corrective Action", "Management Alert"]],
+          ["05.05.05", "دور مسؤول ضبط الوثائق في إعداد تقارير المتابعة وتوضيح حالة المستندات", "إصدار تقارير المتابعة الدورية (Weekly Pending & Overdue Logs) وعرضها في الاجتماعات الأسبوعية.", ["Status Logs", "Weekly Progress Meetings"]]
+        ]
+      },
+      {
+        code: "05.06", title: "ضبط مراجعات المستندات وإدارة الإصدارات",
+        why: "منع الكارثة الأكبر في المشروعات الهندسية: تنفيذ أعمال في الموقع باستخدام مخطط ملغى أو مراجعة قديمة.",
+        how: "مقارنة بين طرق ترقيم المراجعات (أبجدي A, B, C مقابل رقمي 00, 01, 02) وإجراءات ختم وسحب الملغى.",
+        topics: [
+          ["05.06.01", "مفهوم مراجعات المستندات وإصداراتها والفرق بينهما", "معنى المراجعة (Revision) كتحديث يطرأ على المستند، والفرق بين المراجعات المسودة/المبدئية والإصدارات الرسمية.", ["Revision vs Version", "Draft vs Official Issue"]],
+          ["05.06.02", "آليات ترقيم مراجعات المستندات وإصداراتها وتحديثها", "العرف الهندسي القياسي: استخدام الحروف أو الأرقام للمراجعات (Rev A, B أو Rev 00, 01, 02) ومتى يتغير رقم المراجعة.", ["Revision Coding (Alpha vs Numeric)", "Rev 00 / Rev 01"]],
+          ["05.06.03", "التحكم في المستندات السارية والملغاة والمستبدلة", "إجراءات التعامل مع المستندات الملغاة: ختم النسخ الورقية بختم (SUPERSEDED / OBSCLETE) ونقل الملفات الرقمية لمجلد الأرشيف الملغى.", ["Current / Latest", "Superseded Stamp", "Obsolete Control"]],
+          ["05.06.04", "تتبّع التغييرات التي تطرأ على المستندات وسجل مراجعاتها", "أهمية سجل المراجعات على المخطط (Revision Block) ووضع سحابة التعديل (Revision Cloud & Triangle) لتوضيح مكان التعديل.", ["Revision History", "Revision Cloud", "Change Tracking"]],
+          ["05.06.05", "دور مسؤول ضبط الوثائق في ضمان استخدام المراجعة الصحيحة للمستند", "إصدار قائمة أحدث المخططات المعتمدة (Latest Approved Drawing Register) والتفتيش الدوري على المخططات الموجودة بالموقع.", ["Latest Drawing Register", "Site Spot-checks"]]
+        ]
+      },
+      {
+        code: "05.07", title: "إغلاق دورة عمل المستند وحفظه وأرشفته",
+        why: "فهم متى تنتهي دورة التداول النشطة للمستند وكيف يُحفظ كمرجع آمن يسهل الرجوع إليه لسنوات.",
+        how: "معايير إغلاق الدورة، والفرق بين الحفظ اليومي والأرشفة طويلة الأمد.",
+        topics: [
+          ["05.07.01", "مفهوم إغلاق دورة عمل المستند والحفظ والأرشفة والفرق بينها", "الفرق بين إغلاق المعاملة (Workflow Closure)، الحفظ التشغيلي اليومي (Filing)، والأرشفة طويلة المدى (Archiving).", ["Workflow Closure", "Active Filing", "Long-term Archiving"]],
+          ["05.07.02", "معايير تحديد المستندات الجاهزة للإغلاق والأرشفة", "متى نعتبر دورة المستند مغلقة؟ (عند حصول التقديم على كود A، أو الرد النهائي على الـ RFI، أو إغلاق الـ NCR).", ["Closure Criteria", "Final Status Achievement"]],
+          ["05.07.03", "حفظ المستندات النهائية وإتاحتها للرجوع إليها", "تنظيم خزائن الملفات الورقية (Box Files & Spine Labels) والمجلدات الرقمية بحيث يمكن استرجاع أي مستند في دقائق.", ["Physical Indexing", "Spine Labels", "Fast Retrieval"]],
+          ["05.07.04", "متطلبات الاحتفاظ بالمستندات ومدد حفظها", "جدول مدد الاحتفاظ بالسجلات (Retention Schedule) وفقاً للعقد والقوانين (مثلاً: الاحتفاظ بالوثائق لمدة 10 سنوات بعد التسليم).", ["Retention Period", "Retention Schedule", "Legal Compliance"]],
+          ["05.07.05", "دور مسؤول ضبط الوثائق في إغلاق دورة العمل والحفظ والأرشفة", "التحقق من اكتمال ملف المعاملة (الطلب + المرفقات + الردود + الـ Transmittals) قبل إغلاقه وأرشفته.", ["Dossier Completeness", "Archive Integrity"]]
+        ]
+      }
+    ]
+  },
+  {
+    code: "06", title: "مقدمة إلى أنظمة إدارة المستندات والمعلومات (EDMS & CDE)",
+    overview: "تنقل هذه الوحدة المتدرب إلى العصر الرقمي الحديث، فتشرح الأنظمة الإلكترونية (EDMS)، وأشهر المنصات العالمية المستخدمة في المشروعات الكبرى، بالإضافة إلى مفهوم بيئة البيانات المشتركة (CDE) وأتمتة مسارات العمل.",
+    sections: [
+      {
+        code: "06.01", title: "المفاهيم الأساسية لأنظمة إدارة المستندات والمعلومات",
+        why: "فهم فلسفة التحول من العمل اليدوي (Excel & Folders) إلى الأنظمة السحابية والمركزية المتكاملة.",
+        how: "مقارنة بين العمل التقليدي والعمل عبر نظام إلكتروني، مع توضيح الوظائف الأساسية لأي نظام.",
+        topics: [
+          ["06.01.01", "مفهوم أنظمة إدارة المستندات والمعلومات والغرض منها", "تعريف الأنظمة الإلكترونية كمنصات مركزية تدير دورة حياة المستند بالكامل وتوحد مصدر المعلومة بين جميع الأطراف.", ["EDMS", "Centralized Platform", "Cloud Collaboration"]],
+          ["06.01.02", "الوظائف العامة لأنظمة إدارة المستندات والمعلومات", "الوظائف الأساسية: المستودع المركزي، البحث المتقدم بالـ Metadata، التحكم في الإصدارات، مسارات العمل الآلية، وسجل التتبع.", ["Repository", "Metadata Search", "Automated Workflows", "Audit Trail"]],
+          ["06.01.03", "دور الأنظمة في دعم ضبط الوثائق وإدارة المعلومات بالمشروع", "كيف تمنع الأنظمة تكرار الترقيم، وتلغي الحاجة لإدخال البيانات يدوياً في الإكسيل، وتربط المراسلات بالتقديمات تلقائياً.", ["Auto-validation", "Real-time Registers", "Document Linking"]],
+          ["06.01.04", "المزايا العامة لاستخدام الأنظمة الإلكترونية في إدارة المستندات والمعلومات", "السرعة، تقليل الأخطاء البشرية، الوصول من أي مكان، الأمان العالي، وإصدار التقارير اللحظية بضغطة زر.", ["Efficiency", "Error Reduction", "Instant Reporting"]],
+          ["06.01.05", "حدود أنظمة إدارة المستندات والمعلومات ودور المستخدم في نجاحها", "قاعدة (Garbage In, Garbage Out): النظام أداة قوية لكنه لا يغني عن الفحص البشري الدقيق والالتزام بالإجراءات.", ["System Limitations", "User Discipline", "Data Quality"]]
+        ]
+      },
+      {
+        code: "06.02", title: "أنواع أنظمة إدارة المستندات والمعلومات وأمثلتها العالمية",
+        why: "تعريف المتدرب بأسماء وطبيعة الأنظمة التي تطلبها الشركات الكبرى في إعلانات التوظيف.",
+        how: "تصنيف الأنظمة مع استعراض لأشهر المنصات في السوق الهندسي (Aconex, ACC/BIM 360, ProjectWise, SharePoint).",
+        topics: [
+          ["06.02.01", "التصنيفات الرئيسية لأنظمة إدارة المستندات والمعلومات", "الفرق بين أنظمة إدارة المحتوى المؤسسي (ECM)، أنظمة المستندات الهندسية (EDMS)، ومنصات إدارة المشروعات التعاونية.", ["ECM", "EDMS", "Project Management Information Systems (PMIS)"]],
+          ["06.02.02", "أنظمة إدارة المستندات الإلكترونية (EDMS) ومجالات استخدامها", "تركيز أنظمة الـ EDMS على التحكم الصارم في المخططات، التقديمات، المراجعات، وحوافظ الإرسال الهندسية.", ["Engineering Document Control", "Drawing Management"]],
+          ["06.02.03", "منصات التعاون وإدارة المحتوى ومجالات استخدامها", "استخدام منصات مثل Microsoft SharePoint في بناء بوابات داخلية للشركة ومشاركة الملفات الإدارية والسياسات.", ["Collaboration Platforms", "Microsoft SharePoint", "Document Libraries"]],
+          ["06.02.04", "أمثلة على الأنظمة والمنصات المستخدمة في المشروعات الهندسية", "استعراض أشهر المنصات العالمية: Oracle Aconex (الأشهر في الشرق الأوسط)، Autodesk Construction Cloud (ACC / BIM 360)، Bentley ProjectWise، و Procore.", ["Oracle Aconex", "Autodesk ACC / BIM 360", "Bentley ProjectWise", "Procore"]],
+          ["06.02.05", "العوامل العامة المؤثرة في اختيار نظام إدارة المستندات والمعلومات", "كيف تختار الشركة النظام المناسب؟ (حجم المشروع، متطلبات المالك في العقد، التكلفة، سهولة الاستخدام، ودعم الـ BIM).", ["System Selection Criteria", "Scalability", "Client Mandate"]]
+        ]
+      },
+      {
+        code: "06.03", title: "بيئة البيانات المشتركة (Common Data Environment - CDE) وعلاقتها بالـ BIM",
+        why: "تطوير مستوى المحترفين لفهم أحدث توجه عالمي في المشروعات الكبرى وفق معيار ISO 19650.",
+        how: "رسم توضيحي لحالات المعلومات الأربع داخل الـ CDE وكيف يتكامل دور الـ DC مع فريق الـ BIM.",
+        topics: [
+          ["06.03.01", "مفهوم بيئة البيانات المشتركة (CDE) وفق معيار ISO 19650", "إضافة احترافية: تعريف الـ CDE كمصدر رقمي وحيد للمعلومات يجمع النماذج ثلاثية الأبعاد (BIM Models) والوثائق والمخططات.", ["Common Data Environment (CDE)", "ISO 19650", "BIM Integration"], true],
+          ["06.03.02", "حاويات وحالات المعلومات الأربع في الـ CDE (WIP, Shared, Published, Archive)", "إضافة احترافية: شرح تدفق المعلومات عبر الحالات الأربع: قيد العمل (Work in Progress)، مشارك للتنسيق (Shared)، منشور ومعتمد للتنفيذ (Published)، ومؤرشف (Archive).", ["WIP", "Shared", "Published", "Archive", "Status Suitability Codes"], true],
+          ["06.03.03", "دور مسؤول ضبط الوثائق ومدير المعلومات (Information Manager) في بيئة الـ CDE", "إضافة احترافية: كيف يتطور دور الـ DC لإدارة بوابات الانتقال (Approval Gates) بين حالات الـ CDE والتحقق من تسمية حاويات المعلومات.", ["Information Manager", "Approval Gates", "Information Containers"], true]
+        ]
+      },
+      {
+        code: "06.04", title: "أتمتة مسارات العمل (Workflow Automation) والتحول الرقمي",
+        why: "فهم كيفية عمل المحركات الرقمية داخل الأنظمة الحديثة لتسريع المراجعات والاعتمادات.",
+        how: "أمثلة عملية لكيفية بناء مسار مراجعة آلي واستخدام الأختام والتوقيعات الرقمية.",
+        topics: [
+          ["06.04.01", "بناء وإدارة مسارات المراجعة والاعتماد الإلكترونية (Automated Workflows)", "إضافة احترافية: كيفية برمجة مسار المراجعة داخل النظام (تحديد الخطوات المتوازية أو المتسلسلة، المراجعين، ومدد كل خطوة).", ["Parallel vs Sequential Workflow", "Step Duration", "Auto-routing"], true],
+          ["06.04.02", "التعليقات الإلكترونية (Digital Markups) والأختام والتوقيعات الرقمية", "إضافة احترافية: مراجعة المخططات مباشرة على الشاشة ووضع التعليقات (Redlining / Markups) والاعتماد بالختم الإلكتروني المعتمد.", ["Digital Markups / Redlining", "E-Signatures", "Electronic Stamps"], true],
+          ["06.04.03", "الإشعارات التلقائية وتحديث السجلات ولوحات البيانات اللحظية (Live Dashboards)", "إضافة احترافية: كيف يرسل النظام تنبيهات بريدية تلقائية للمتأخرين، ويحدث سجل الـ MDR ولوحات المؤشرات (Power BI / System Dashboards) لحظياً.", ["Automated Notifications", "Live Dashboards", "Real-time MDR"], true]
+        ]
+      }
+    ]
+  },
+  {
+    code: "07", title: "متابعة أداء منظومة ضبط الوثائق والالتزام بمتطلبات المشروع",
+    overview: "تركز هذه الوحدة على الجانب الرقابي والإداري المتقدم: كيفية إعداد تقارير الأداء للإدارة العليا، وقياس مؤشرات الأداء (KPIs)، والتدقيق على جودة والتزام المنظومة (Auditing)، وحماية أمن وسرية المعلومات.",
+    sections: [
+      {
+        code: "07.01", title: "متابعة أداء منظومة ضبط الوثائق وإعداد التقارير",
+        why: "تعليم المتدرب كيف يحول البيانات الضخمة في السجلات إلى تقارير ذكية تساعد الإدارة في اتخاذ القرار.",
+        how: "نماذج لأنواع التقارير ومكونات التقرير الإداري الناجح (أرقام + رسوم بيانية + تحليل).",
+        topics: [
+          ["07.01.01", "مفهوم متابعة أداء منظومة ضبط الوثائق وأهدافها", "لماذا نراقب أداء المنظومة؟ لاكتشاف الاختناقات مبكراً، تقييم سرعة الاستجابة، وضمان سير المشروع وفق الخطة.", ["Performance Monitoring", "Bottleneck Identification"]],
+          ["07.01.02", "أنواع التقارير المستخدمة في متابعة أعمال ضبط الوثائق", "التقارير التشغيلية اليومية، تقارير المتأخرات الأسبوعية (Overdue Reports)، وتقارير حالة التقديمات الشهرية (Monthly Executive Summary).", ["Operational Reports", "Overdue Reports", "Executive Summary"]],
+          ["07.01.03", "استخدام التقارير في عرض حالة المستندات ودعم اتخاذ القرار", "تحويل أرقام السجلات إلى رسوم بيانية واضحة (Pie Charts لنسب حالات الاعتماد A/B/C/D، و Bar Charts للتخصصات المتأخرة).", ["Data Visualization", "Approval Status Breakdown", "Decision Support"]],
+          ["07.01.04", "إعداد ملخصات دورية عن أداء منظومة ضبط الوثائق", "كيفية كتابة الملخص التنفيذي الذي يُدرج في التقرير الشهري للمشروع (Monthly Progress Report).", ["Monthly Progress Report (MPR)", "Document Control Section"]]
+        ]
+      },
+      {
+        code: "07.02", title: "مؤشرات الأداء الأساسية في ضبط الوثائق (KPIs)",
+        why: "منح المتدرب أدوات قياس كمية احترافية (KPIs) لتقييم كفاءة قسم ضبط الوثائق وسرعة أطراف المشروع.",
+        how: "جدول يحتوي على اسم المؤشر (KPI)، معادلة حسابه، والهدف المستهدف منه (Target).",
+        topics: [
+          ["07.02.01", "مفهوم مؤشرات الأداء الرئيسية (KPIs) ودورها في ضبط الوثائق", "تعريف الـ KPI كمعيار رقمي قابل للقياس يوضح مدى نجاح المنظومة في تحقيق أهدافها.", ["Key Performance Indicators (KPIs)", "Measurable Targets"]],
+          ["07.02.02", "مؤشرات قياس الالتزام بالمواعيد ومعدلات التأخير", "مؤشرات الوقت: نسبة التقديمات المردود عليها في الموعد (On-time Return Rate)، ومتوسط زمن المراجعة (Average Turnaround Time).", ["On-time Review %", "Average Turnaround Time (TAT)", "Overdue Rate"]],
+          ["07.02.03", "مؤشرات قياس حجم العمل والإنتاجية في ضبط الوثائق", "مؤشرات الإنتاجية والجودة: عدد المعاملات المعالجة يومياً، زمن معالجة الـ Transmittal، ونسبة الاعتماد من أول مرة (First-time Approval Rate).", ["Processing Time", "First-time Approval Rate", "Rejection Rate"]],
+          ["07.02.04", "تحليل نتائج مؤشرات الأداء وتحديد جوانب التحسين", "قراءة دلالات الأرقام (مثلاً: ارتفاع نسبة الكود C و D يعني ضعف جودة المكتب الفني قبل التقديم) ووضع خطط التحسين.", ["Trend Analysis", "Continuous Improvement"]]
+        ]
+      },
+      {
+        code: "07.03", title: "التحقق من الالتزام بمتطلبات المشروع وإجراءات ضبط الوثائق (Auditing)",
+        why: "تأهيل المتدرب لاجتياز أو إجراء عمليات التدقيق الداخلي والخارجي (ISO & Quality Audits) بنجاح تام.",
+        how: "قائمة فحص للتدقيق على قسم ضبط الوثائق، وخطوات التعامل مع حالات عدم المطابقة (NCR).",
+        topics: [
+          ["07.03.01", "مفهوم الالتزام بمتطلبات المشروع وإجراءات ضبط الوثائق", "معنى الامتثال (Compliance) لإجراءات المشروع الموثقة ومتطلبات المواصفة القياسية ISO 9001.", ["Compliance", "Quality Assurance", "Procedure Adherence"]],
+          ["07.03.02", "التحقق من تطبيق إجراءات ضبط الوثائق والالتزام بها", "إجراء التدقيق الدوري (Internal Audit): فحص عينات عشوائية من السجلات والمجلدات والموقع للتأكد من تطابقها.", ["Internal Audit", "Spot Checks", "Sample Verification"]],
+          ["07.03.03", "اكتشاف حالات عدم الالتزام وتوثيقها ومتابعتها", "أمثلة لحالات عدم المطابقة: وجود مخطط غير مختوم بالموقع، فقدان Transmittal موقع، أو عدم تحديث الـ MDR، وكيفية توثيقها (Observation / NCR).", ["Non-Conformance Report (NCR)", "Audit Findings", "Observations"]],
+          ["07.03.04", "معالجة حالات عدم الالتزام ومتابعة الإجراءات التصحيحية", "الفرق بين التصحيح الفوري (Correction) والإجراء التصحيحي الذي يمنع تكرار المشكلة مستقبلاً (Corrective Action - CAPA).", ["Correction vs Corrective Action", "Root Cause", "CAPA"]],
+          ["07.03.05", "دور مسؤول ضبط الوثائق في دعم الالتزام بمتطلبات المشروع وإجراءاته", "الاستعداد الدائم للتدقيق، وتوعية وتدريب أعضاء فريق المشروع الجدد على إجراءات الترقيم والتداول.", ["Audit Readiness", "Team Induction & Training"]]
+        ]
+      },
+      {
+        code: "07.04", title: "المبادئ الأساسية لحماية المعلومات وتنظيم صلاحيات الوصول",
+        why: "حماية الوثائق الحساسة والتعاقدية والمالية من التسريب أو التعديل غير المصرح به أو الفقدان.",
+        how: "مصفوفة صلاحيات الوصول (Access Rights Matrix) وقواعد أمن المعلومات والنسخ الاحتياطي.",
+        topics: [
+          ["07.04.01", "مفهوم حماية المعلومات وأهميتها في المشروعات الهندسية", "ركائز أمن المعلومات في المشروعات: السرية (Confidentiality)، السلامة من التلاعب (Integrity)، والإتاحة للمخولين (Availability).", ["Information Security", "CIA Triad", "Data Protection"]],
+          ["07.04.02", "مستويات الوصول إلى المستندات والمعلومات وصلاحيات المستخدمين", "تحديد مستويات الصلاحية على السيرفر أو النظام: قراءة فقط (Read-Only)، إضافة وتعديل (Write/Edit)، أو تحكم كامل (Admin).", ["Access Levels", "Read-Only vs Edit", "Role-based Permissions"]],
+          ["07.04.03", "سرية المعلومات والتعامل مع المستندات الحساسة", "كيفية حفظ وتداول المستندات السرية (العقود، التسعيرات، المطالبات المالية Claims، وتقارير التحقيق) في مجلدات وخزائن معزولة.", ["Confidential Documents", "Commercial & Claims Sensitivity", "Restricted Access"]],
+          ["07.04.04", "التحكم في الوصول إلى المستندات ومشاركتها مع الأطراف المعنية", "ضوابط مشاركة الملفات خارجياً (منع الروابط العامة غير المحمية، واستخدام القنوات الرسمية والنسخ الاحتياطي الدوري Backup).", ["Secure Sharing", "Backup & Disaster Recovery"]],
+          ["07.04.05", "مسؤوليات المستخدمين في حماية المعلومات والالتزام بصلاحيات الوصول", "سياسة المكتب النظيف، عدم مشاركة كلمات المرور، والالتزام باتفاقيات عدم الإفصاح (NDA).", ["User Accountability", "NDA (Non-Disclosure Agreement)", "Security Policy"]]
+        ]
+      }
+    ]
+  },
+  {
+    code: "08", title: "إغلاق المشروع والتسليم النهائي للوثائق والمعلومات (Project Handover)",
+    overview: "تغطي هذه الوحدة المرحلة الحاسمة في نهاية المشروع: تجهيز ومراجعة وتسليم حزمة وثائق الإغلاق النهائي (Handover Dossier) بما يشمل مخططات As-Built وكتيبات التشغيل والصيانة (O&M) والضمانات، وأرشفة المشروع والحصول على إخلاء الطرف.",
+    sections: [
+      {
+        code: "08.01", title: "متطلبات إغلاق منظومة ضبط الوثائق بالمشروع",
+        why: "المشروع لا يُعتبر منتهياً تعاقدياً ومالياً إلا بعد تسليم واعتماد كافة وثائق الإغلاق النهائي.",
+        how: "قائمة شاملة بجميع فئات مستندات التسليم النهائي المطلوبة في المشروعات الهندسية.",
+        topics: [
+          ["08.01.01", "مفهوم إغلاق منظومة ضبط الوثائق وعلاقته بإغلاق المشروع", "لماذا يرتبط إصدار شهادة الاستلام الابتدائي (TOC) وصرف الدفعة الختامية بإغلاق وتسليم ملفات ضبط الوثائق؟", ["Project Close-out", "Taking Over Certificate (TOC)", "Handover Dossier"]],
+          ["08.01.02", "تحديد متطلبات إغلاق الوثائق والمعلومات وفقًا للعقد وإجراءات المشروع", "مراجعة متطلبات العقد والاستشاري وفريق إدارة المرافق (Facility Management) بخصوص شكل وفهرس وعدد نسخ التسليم.", ["Close-out Requirements", "Facility Management (FM) Needs"]],
+          ["08.01.03", "تحديد المستندات والسجلات المطلوبة عند إغلاق المشروع", "الوثائق الذهبية للتسليم: مخططات ما تم تنفيذه (As-Built Drawings)، كتيبات التشغيل والصيانة (O&M Manuals)، شهادات الضمان (Warranties)، شهادات الفحص والاختبار (Testing & Commissioning)، وسجل قطع الغيار.", ["As-Built Drawings", "O&M Manuals", "Warranties & Guarantees", "T&C Certificates"]],
+          ["08.01.04", "التحقق من اكتمال أعمال ضبط الوثائق قبل بدء التسليم النهائي", "التأكد من إغلاق كافة التقديمات المفتوحة، والـ RFIs، وتقارير عدم المطابقة (NCRs) قبل تقديم الحزمة النهائية.", ["Open Items Closure", "NCR & Snag List Clearance"]],
+          ["08.01.05", "مسؤوليات الأطراف المعنية بإغلاق منظومة ضبط الوثائق", "توزيع المهام بين المكتب الفني (إعداد الـ As-Built)، الموردين ومقاولي الباطن (تقديم الضمانات والـ O&M)، والـ DC (الفحص والتجميع والفهرسة).", ["Close-out Team Roles", "Subcontractor Handover"]]
+        ]
+      },
+      {
+        code: "08.02", title: "مراجعة واكتمال سجلات ومستندات التسليم النهائي",
+        why: "ضمان عدم رفض حزمة التسليم النهائي من قبل الاستشاري أو المالك بسبب نقص أو خطأ في المراجعات.",
+        how: "خطوات التدقيق النهائي لسجل الـ MDR ومطابقة حزمة التسليم.",
+        topics: [
+          ["08.02.01", "مفهوم مراجعة واكتمال مستندات التسليم النهائي", "عملية الفحص الشامل (Final Dossier Audit) للتأكد من أن كل معدة ومبنى ونظام في المشروع له وثائقه الكاملة.", ["Dossier Completeness Review", "Asset Documentation"]],
+          ["08.02.02", "التحقق من اكتمال سجلات المستندات النهائية وحالتها", "تنظيف وتحديث سجل المستندات الرئيسي النهائي (Final MDR) بحيث يعكس الحالة النهائية المعتمدة لكل وثيقة.", ["Final MDR Cleanup", "Log Reconciliation"]],
+          ["08.02.03", "التحقق من المراجعات النهائية للمستندات المقدمة للتسليم", "التأكد من أن جميع المخططات والوثائق المسلمة هي أحدث مراجعة معتمدة (Code A / As-Built Status) وخالية من أي مسودات.", ["Final Revision Verification", "As-Built Approval Code"]],
+          ["08.02.04", "تحديد المستندات الناقصة أو غير المستوفية لمتطلبات التسليم ومتابعتها", "إعداد قائمة النواقص الوثائقية (Documentation Punch List / Gap Analysis) ومتابعة استكمالها مع الأقسام والموردين.", ["Documentation Punch List", "Gap Analysis", "Expediting Missing Docs"]],
+          ["08.02.05", "التأكد من مطابقة حزمة التسليم النهائي لمتطلبات المشروع", "فحص جودة الطباعة، الفواصل، الفهارس، والملفات الإلكترونية (PDF القابلة للبحث + ملفات الـ CAD/BIM الأصلية).", ["Searchable PDF", "Native CAD/BIM Files", "Quality Packaging"]]
+        ]
+      },
+      {
+        code: "08.03", title: "تنظيم وحفظ وأرشفة وثائق المشروع النهائية",
+        why: "تحويل جبال الأوراق والملفات المتراكمة طوال سنوات المشروع إلى أرشيف منظم يسهل الرجوع إليه خلال فترة الضمان وما بعدها.",
+        how: "دليل عملي لهيكلة وفهرسة صناديق الأرشيف الورقي ووسائط الحفظ الرقمي النهائية.",
+        topics: [
+          ["08.03.01", "متطلبات تنظيم وثائق المشروع النهائية قبل الأرشفة", "فرز الوثائق، التخلص من المسودات والنسخ المكررة غير الضرورية، وترتيب الملفات النهائية وفق الهيكل القياسي.", ["De-duplication", "Final Sorting", "Archive Preparation"]],
+          ["08.03.02", "تنظيم ملفات وسجلات المشروع لتسهيل الوصول إليها مستقبلًا", "إنشاء فهرس الأرشيف الشامل (Master Archive Index) الذي يربط كل مستند برقم الصندوق والمجلد والرف، وبمساره الرقمي.", ["Master Archive Index", "Box & Folder Numbering", "Hyperlinked Index"]],
+          ["08.03.03", "التحقق من اكتمال البيانات التعريفية للمستندات النهائية", "مراجعة الـ Metadata النهائية لجميع الملفات الإلكترونية لضمان عمل خاصية البحث السريع بكفاءة لدى المالك أو الشركة.", ["Final Metadata Check", "Searchability"]],
+          ["08.03.04", "متطلبات حفظ وأرشفة وثائق المشروع وفقًا للعقد وإجراءات المشروع", "معايير الحفظ الفيزيائي (صناديق أرشيف معيارية، بيئة آمنة ضد الحريق والرطوبة) والحفظ الرقمي السحابي والمحلي.", ["Physical Archive Standards", "Off-site Storage", "Cloud Archive"]],
+          ["08.03.05", "ضمان إمكانية استرجاع وثائق المشروع النهائية بعد الإغلاق", "اختبار استرجاع الملفات (Retrieval Test) لضمان قدرة فريق التشغيل والصيانة أو القسم القانوني على إيجاد أي وثيقة مستقبلاً.", ["Retrieval Testing", "Long-term Accessibility"]]
+        ]
+      },
+      {
+        code: "08.04", title: "التسليم النهائي للوثائق والمعلومات وإغلاق أعمال ضبط الوثائق",
+        why: "إتمام الخطوة الرسمية الأخيرة بتسليم عهدة وثائق المشروع للمالك وإغلاق قسم ضبط الوثائق بنجاح.",
+        how: "إجراءات التسليم الرسمي ونموذج محضر التسليم النهائي للوثائق.",
+        topics: [
+          ["08.04.01", "مفهوم التسليم النهائي للوثائق والمعلومات والجهات المستلمة لها", "تسليم حزمة وثائق المشروع إلى المالك (Client) أو فريق تشغيل وصيانة المرافق (O&M / FM Team) وأرشيف المقر الرئيسي للشركة.", ["Final Handover", "Client / FM Team", "Head Office Archive"]],
+          ["08.04.02", "إجراءات تسليم حزمة وثائق المشروع النهائية إلى الجهة المستلمة", "إرسال المجلدات النهائية والأقراص/الهارد ديسك أو نقل قاعدة بيانات النظام (EDMS Handover) بموجب حوافظ تسليم نهائية.", ["Final Transmittals", "Hard Drives & Binders", "EDMS Data Export"]],
+          ["08.04.03", "توثيق عملية التسليم النهائي وتأكيد الاستلام", "الحصول على محضر استلام نهائي للوثائق موقع ومختوم (Handover Sign-off Certificate) يبرئ ذمة المشروع.", ["Handover Sign-off", "Acceptance Certificate"]],
+          ["08.04.04", "معالجة الملاحظات والمتطلبات المتبقية قبل إتمام التسليم", "إغلاق أي ملاحظات أخيرة يبديها المالك أو الاستشاري على حزمة التسليم وتقديم النسخ المعدلة النهائية.", ["Final Snags Resolution", "Close-out Comments"]],
+          ["08.04.05", "إغلاق أعمال ضبط الوثائق بالمشروع والتأكد من استكمال مسؤوليات التسليم", "تجميد السجلات، إلغاء صلاحيات المستخدمين في النظام، تسليم الأرشيف الداخلي للمقر الرئيسي، وتوثيق الدروس المستفادة (Lessons Learned).", ["System Freeze", "Lessons Learned", "DC Demobilization"]]
+        ]
+      }
+    ]
+  }
+];
+
+// ============================================================================
+// 🧠 حالة النظام الموحدة (Portal State Engine)
+// ============================================================================
+const SESSION_KEY = "DCA_PORTAL_ACTIVE_SESSION_V3";
+let portalState = {
+    lang: localStorage.getItem("DCA_LANG") || "ar",
+    theme: localStorage.getItem("DCA_THEME") || "light",
+    currentUser: null, // { username, displayName, email, sysRole: 'superadmin'|'admin'|'user', jobRole: 'writer'|'proofreader'|'formatter'|'template' }
+    navPath: { level: "HOME", catId: null, courseId: null, toolId: null },
+    selectedModule: "ALL",
+    filterMode: "ALL", // ALL | MY_TURN | IN_PROGRESS | OVERDUE | COMPLETED
+    settings: {
+        logoLight: "",
+        logoDark: "",
+        ejsService: "",
+        ejsTemplate: "",
+        ejsKey: ""
+    },
+    users: {
+        "ahmad":   { username: "ahmad",   pass: "1234", displayName: "م. أحمد (كاتب علمي)",   email: "ahmad@company.com",   sysRole: "user",  jobRole: "writer" },
+        "sara":    { username: "sara",    pass: "1234", displayName: "أ. سارة (مراجع لغوي)",  email: "sara@company.com",    sysRole: "user",  jobRole: "proofreader" },
+        "khaled":  { username: "khaled",  pass: "1234", displayName: "أ. خالد (منسق)",        email: "khaled@company.com",  sysRole: "user",  jobRole: "formatter" },
+        "nour":    { username: "nour",    pass: "1234", displayName: "م. نور (مسؤول تمبلت)",  email: "nour@company.com",    sysRole: "admin", jobRole: "template" }
+    },
+    // هيكل الأزرار متعدد المستويات (قابل للإضافة والتعديل والحذف من السوبر أدمن)
+    portalTree: {
+        categories: [
+            { id: "cat_courses", icon: "📚", titleAr: "الكورسات الخاصة بـ DCA", titleEn: "DCA Training Courses", descAr: "إدارة وتأليف ومراجعة الحقائب التدريبية والكورسات الاحترافية", descEn: "Manage, author, and review professional training courses" }
+        ],
+        courses: {
+            "cat_courses": [
+                {
+                    id: "crs_dc_im",
+                    icon: "📘",
+                    titleAr: "كورس Document Control & Information Management",
+                    titleEn: "Document Control & Information Management Course",
+                    descAr: "البرنامج التدريبي الشامل لضبط الوثائق وإدارة المعلومات في المشروعات الهندسية (8 وحدات)",
+                    descEn: "Comprehensive training program for DC & IM in engineering projects (8 Modules)"
+                }
+            ]
+        },
+        courseTools: {
+            "crs_dc_im": [
+                { id: "tool_structure", type: "STRUCTURE", icon: "🏗️", titleAr: "استركشر وماتريال الكورس (4-Stage Pipeline)", titleEn: "Course Structure & Material Pipeline", descAr: "خريطة الطريق التفصيلية ونظام التسليم والتسلم بين الكتابة والمراجعة والتنسيق والتمبلت", descEn: "Detailed roadmap & 4-stage handover workflow" },
+                { id: "tool_tasks",     type: "BOARD",     icon: "📝", titleAr: "التاسكات والتطبيقات العملية للكورس", titleEn: "Course Practical Tasks & Activities", descAr: "إدارة الأنشطة العملية والتمارين التطبيقية الخاصة بالمتدربين خلال الكورس", descEn: "Manage practical exercises and trainee activities" },
+                { id: "tool_schedule",  type: "BOARD",     icon: "📅", titleAr: "الجدول الزمني للكورس (Course Schedule)", titleEn: "Course Schedule & Timeline", descAr: "توزيع المحاضرات والساعات التدريبية وخطة تنفيذ الكورس", descEn: "Lectures distribution and timeline plan" },
+                { id: "tool_links",     type: "LINKS",     icon: "🔗", titleAr: "أهم اللينكات والقوالب المرجعية (DCA Templates)", titleEn: "Important Links & DCA Templates", descAr: "روابط مجلدات Google Drive الموحدة، قوالب DCA الفارغة، والمراجع المعتمدة", descEn: "Shared Drive folders, blank DCA templates, and references" }
+            ]
+        },
+        customItems: {} // لتخزين عناصر التاسكات والجدول واللينكات لأي زرار
+    },
+    pipeline: {}, // { safeTopicCode: { stage: 1..5, rejected: false, rejectReason: "", writer: "", proofreader: "", formatter: "", templateUser: "", due1: "", due2: "", due3: "", due4: "", link1: "", link2: "", link3: "", link4: "", notes: "" } }
+    notifications: [] // [ { id, toUser, fromUser, topicCode, message, date, read } ]
+};
+
+// ============================================================================
+// 🌐 قاموس اللغات (العربية / الإنجليزية) والـ Theme واللوجو
+// ============================================================================
+const I18N = {
+    ar: {
+        dir: "rtl", headerSub: "منصة إدارة وتأليف الكورسات التدريبية", inboxBtn: "صندوق الرسائل", passBtn: "كلمة المرور",
+        settingsBtn: "إعدادات البوابة واللوجو", usersBtn: "إدارة الفريق", homeCrumb: "🏠 الرئيسية (DCA Portal)",
+        dashTitle: "📊 لوحة مهامي الشخصية (My Personal Workspace)", kpiAction: "🔥 بانتظار إجراءك الآن",
+        kpiProgress: "⏳ مهام قيد العمل لديك", kpiOverdue: "🚨 مهام متأخرة (Overdue)", kpiDone: "✅ مراحل أنجزتها وسلمتها",
+        addBtn: "➕ إضافة عنصر جديد", editBtn: "✏️ تعديل", delBtn: "🗑️ حذف", openBtn: "🚀 فتح القسم"
+    },
+    en: {
+        dir: "ltr", headerSub: "Enterprise Course Authoring & Management Portal", inboxBtn: "Internal Inbox", passBtn: "Password",
+        settingsBtn: "Portal & Logo Settings", usersBtn: "Team Management", homeCrumb: "🏠 Home (DCA Portal)",
+        dashTitle: "📊 My Personal Workspace & Tasks", kpiAction: "🔥 Waiting Your Action Now",
+        kpiProgress: "⏳ In Progress by You", kpiOverdue: "🚨 Overdue Tasks", kpiDone: "✅ Completed & Handed Over",
+        addBtn: "➕ Add New Item", editBtn: "✏️ Edit", delBtn: "🗑️ Delete", openBtn: "🚀 Open Section"
+    }
+};
+
+function tText(arTxt, enTxt) {
+    return portalState.lang === "ar" ? arTxt : (enTxt || arTxt);
+}
+
+function applyThemeAndLogos() {
+    document.documentElement.setAttribute("data-theme", portalState.theme);
+    const themeBtn = document.getElementById("themeBtn");
+    if (themeBtn) themeBtn.textContent = portalState.theme === "light" ? "🌙 Dark" : "☀️ Light";
+
+    const activeLogo = portalState.theme === "light" ? portalState.settings.logoLight : portalState.settings.logoDark;
+    const fallbackLogo = portalState.settings.logoLight || portalState.settings.logoDark;
+    const finalLogo = activeLogo || fallbackLogo;
+
+    ["loginLogoImg", "headerLogoImg"].forEach(id => {
+        const img = document.getElementById(id);
+        if (!img) return;
+        if (finalLogo) {
+            img.src = finalLogo;
+            img.style.display = "inline-block";
+        } else {
+            img.style.display = "none";
+        }
+    });
+}
+
+function toggleTheme() {
+    portalState.theme = portalState.theme === "light" ? "dark" : "light";
+    localStorage.setItem("DCA_THEME", portalState.theme);
+    applyThemeAndLogos();
+}
+
+function applyLanguage() {
+    const dict = I18N[portalState.lang];
+    document.documentElement.lang = portalState.lang;
+    document.documentElement.dir = dict.dir;
+    document.getElementById("langBtn").textContent = portalState.lang === "ar" ? "🌐 EN" : "🌐 عربي";
+    document.getElementById("lblHeaderSub").textContent = dict.headerSub;
+    document.getElementById("lblInboxBtn").textContent = dict.inboxBtn;
+    document.getElementById("lblPassBtn").textContent = dict.passBtn;
+    document.getElementById("lblSettingsBtn").textContent = dict.settingsBtn;
+    document.getElementById("lblUsersBtn").textContent = dict.usersBtn;
+    if (portalState.currentUser) renderAllViews();
+}
+
+function toggleLanguage() {
+    portalState.lang = portalState.lang === "ar" ? "en" : "ar";
+    localStorage.setItem("DCA_LANG", portalState.lang);
+    applyLanguage();
+}
+
+// ============================================================================
+// 📊 الداشبورد الشخصية لكل يوزر (تعمل لكل عضو أو أدمن دون تعارض)
+// ============================================================================
+function getSafeCode(code) { return code.replace(/\./g, "_"); }
+
+function getPipeItem(code) {
+    const k = getSafeCode(code);
+    if (!portalState.pipeline[k]) {
+        portalState.pipeline[k] = {
+            stage: 1, // 1:الكتابة, 2:المراجعة اللغوية, 3:التنسيق, 4:التمبلت, 5:مكتمل نهائياً
+            rejected: false,
+            rejectReason: "",
+            writer: "", proofreader: "", formatter: "", templateUser: "",
+            due1: "", due2: "", due3: "", due4: "",
+            link1: "", link2: "", link3: "", link4: "",
+            notes: ""
+        };
+    }
+    return portalState.pipeline[k];
+}
+
+function isUserActiveInStage(p, uName) {
+    if (!uName) return false;
+    if (p.stage === 1 && p.writer === uName) return true;
+    if (p.stage === 2 && p.proofreader === uName) return true;
+    if (p.stage === 3 && p.formatter === uName) return true;
+    if (p.stage === 4 && p.templateUser === uName) return true;
+    return false;
+}
+
+function getActiveStageDue(p) {
+    if (p.stage === 1) return p.due1;
+    if (p.stage === 2) return p.due2;
+    if (p.stage === 3) return p.due3;
+    if (p.stage === 4) return p.due4;
+    return "";
+}
+
+function isStageOverdue(p) {
+    if (p.stage === 5) return false;
+    const d = getActiveStageDue(p);
+    if (!d) return false;
+    const today = new Date().toISOString().split("T")[0];
+    return d < today;
+}
+
+function renderPersonalDashboard() {
+    const box = document.getElementById("personalDashboard");
+    if (!portalState.currentUser) return;
+    const uName = portalState.currentUser.username;
+    const dict = I18N[portalState.lang];
+
+    let myTurnCount = 0, myAssignedTotal = 0, myOverdueCount = 0, myHandedOverCount = 0;
+    const urgentItems = [];
+
+    COURSE_DATA.forEach(mod => {
+        mod.sections.forEach(sec => {
+            sec.topics.forEach(t => {
+                const code = t[0], title = t[1];
+                const p = getPipeItem(code);
+                const involved = (p.writer === uName || p.proofreader === uName || p.formatter === uName || p.templateUser === uName);
+                if (involved) myAssignedTotal++;
+
+                if (isUserActiveInStage(p, uName)) {
+                    myTurnCount++;
+                    if (isStageOverdue(p)) myOverdueCount++;
+                    urgentItems.push({ code, title, stage: p.stage, rejected: p.rejected, due: getActiveStageDue(p) });
+                }
+
+                // مراحل سلمها هذا المستخدم بالفعل
+                if ((p.writer === uName && p.stage > 1) ||
+                    (p.proofreader === uName && p.stage > 2) ||
+                    (p.formatter === uName && p.stage > 3) ||
+                    (p.templateUser === uName && p.stage === 5)) {
+                    myHandedOverCount++;
+                }
+            });
+        });
+    });
+
+    const jobLabels = {
+        writer: tText("✍️ كاتب علمي", "✍️ Content Writer"),
+        proofreader: tText("🔍 مراجع لغوي", "🔍 Proofreader"),
+        formatter: tText("🎨 مسؤول تنسيق", "🎨 Formatter"),
+        template: tText("📄 مسؤول تمبلت DCA", "📄 DCA Template Specialist")
+    };
+
+    const sysLabels = {
+        superadmin: "👑 Super Admin",
+        admin: "🛡️ Admin",
+        user: "👤 Team Member"
+    };
+
+    box.innerHTML = `
+        <div class="dash-header">
+            <div>
+                <h3 style="font-size:1rem; font-weight:800; color:var(--text-main);">${dict.dashTitle}</h3>
+                <p style="font-size:0.76rem; color:var(--text-muted);">
+                    ${tText("مرحباً", "Welcome")} <strong>${portalState.currentUser.displayName}</strong> |
+                    ${tText("صلاحية النظام:", "System Access:")} <span style="color:var(--orange); font-weight:800;">${sysLabels[portalState.currentUser.sysRole]}</span> |
+                    ${tText("وظيفتك في خط الإنتاج:", "Workflow Job:")} <strong>${jobLabels[portalState.currentUser.jobRole] || '-'}</strong>
+                </p>
+            </div>
+            <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                <button class="btn btn-orange" onclick="openCourseStructureWithFilter('MY_TURN')">🎯 ${tText("عرض المهام الواقفة عندي الآن", "Show Tasks Waiting My Action")} (${myTurnCount})</button>
+                <button class="btn btn-outline" onclick="openCourseStructureWithFilter('ALL')">📋 ${tText("عرض كل نقاط الكورس", "Show All Course Topics")}</button>
+            </div>
+        </div>
+        <div class="dash-kpi-grid">
+            <div class="kpi-card" onclick="openCourseStructureWithFilter('MY_TURN')">
+                <div><div class="kpi-label">${dict.kpiAction}</div></div>
+                <div class="kpi-num">${myTurnCount}</div>
+            </div>
+            <div class="kpi-card" onclick="openCourseStructureWithFilter('MY_ALL')">
+                <div><div class="kpi-label">${tText("📌 إجمالي النقاط المسندة إليك", "📌 Total Assigned to You")}</div></div>
+                <div class="kpi-num" style="color:var(--text-main);">${myAssignedTotal}</div>
+            </div>
+            <div class="kpi-card" onclick="openCourseStructureWithFilter('OVERDUE')">
+                <div><div class="kpi-label">${dict.kpiOverdue}</div></div>
+                <div class="kpi-num" style="color:#ef4444;">${myOverdueCount}</div>
+            </div>
+            <div class="kpi-card" onclick="openCourseStructureWithFilter('COMPLETED')">
+                <div><div class="kpi-label">${dict.kpiDone}</div></div>
+                <div class="kpi-num" style="color:#10b981;">${myHandedOverCount}</div>
+            </div>
+        </div>
+        ${urgentItems.length > 0 ? `
+            <div style="margin-top:0.8rem; padding-top:0.7rem; border-top:1px dashed var(--border-color); font-size:0.78rem;">
+                <strong style="color:var(--orange);">⚡ ${tText("أهم النقاط التي تنتظر استلامك/إجراءك الآن:", "Urgent Topics Waiting Your Action:")}</strong>
+                <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.4rem;">
+                    ${urgentItems.slice(0, 8).map(item => `
+                        <span onclick="jumpToTopic('${item.code}')" style="cursor:pointer; background:var(--card-bg); border:1px solid ${item.rejected?'#ef4444':'var(--orange)'}; padding:0.2rem 0.6rem; border-radius:6px; font-weight:700;">
+                            ${item.code} ${item.rejected ? '⚠️ (مرتجع للتعديل)' : ''} ${item.due ? `[📅 ${item.due}]` : ''}
+                        </span>
+                    `).join("")}
+                </div>
+            </div>
+        ` : ''}
+    `;
+}
+
+// ============================================================================
+// 🗂️ نظام البوابة متعددة المستويات (المستوى 1 ⬅️ المستوى 2 ⬅️ المستوى 3)
+// ============================================================================
+function navigatePortal(level, catId = null, courseId = null, toolId = null) {
+    portalState.navPath = { level, catId, courseId, toolId };
+    renderAllViews();
+}
+
+function renderBreadcrumbs() {
+    const bar = document.getElementById("breadcrumbContainer");
+    const dict = I18N[portalState.lang];
+    const { level, catId, courseId, toolId } = portalState.navPath;
+
+    let html = `<span class="crumb-item ${level==='HOME'?'active':''}" onclick="navigatePortal('HOME')">${dict.homeCrumb}</span>`;
+
+    if (catId) {
+        const cat = portalState.portalTree.categories.find(c => c.id === catId);
+        if (cat) {
+            html += ` <span>/</span> <span class="crumb-item ${level==='CATEGORY'?'active':''}" onclick="navigatePortal('CATEGORY', '${catId}')">${tText(cat.titleAr, cat.titleEn)}</span>`;
+        }
+    }
+    if (courseId && catId) {
+        const crsList = portalState.portalTree.courses[catId] || [];
+        const crs = crsList.find(c => c.id === courseId);
+        if (crs) {
+            html += ` <span>/</span> <span class="crumb-item ${level==='COURSE'?'active':''}" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">${tText(crs.titleAr, crs.titleEn)}</span>`;
+        }
+    }
+    if (toolId && courseId) {
+        const tList = portalState.portalTree.courseTools[courseId] || [];
+        const tl = tList.find(x => x.id === toolId);
+        if (tl) {
+            html += ` <span>/</span> <span class="crumb-item active">${tText(tl.titleAr, tl.titleEn)}</span>`;
+        }
+    }
+    bar.innerHTML = html;
+}
+
+function isSuperAdmin() {
+    return portalState.currentUser && portalState.currentUser.sysRole === "superadmin";
+}
+
+function isAdminOrSuper() {
+    return portalState.currentUser && (portalState.currentUser.sysRole === "superadmin" || portalState.currentUser.sysRole === "admin");
+}
+
+function renderAllViews() {
+    renderBreadcrumbs();
+    renderPersonalDashboard();
+    updateUnreadBadge();
+
+    const viewport = document.getElementById("mainViewPort");
+    const { level, catId, courseId, toolId } = portalState.navPath;
+    const dict = I18N[portalState.lang];
+
+    // المستوى الأول: الصفحة الرئيسية لبوابة DCA Portal
+    if (level === "HOME") {
+        const cats = portalState.portalTree.categories || [];
+        viewport.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <h2 style="font-size:1.25rem; font-weight:800;">🏛️ ${tText("الأقسام الرئيسية لبوابة DCA Portal", "DCA Portal Main Categories")}</h2>
+                ${isSuperAdmin() ? `<button class="btn btn-orange" onclick="addPortalNode('CATEGORY')">${dict.addBtn}</button>` : ''}
+            </div>
+            <div class="portal-grid">
+                ${cats.map(c => `
+                    <div class="portal-card">
+                        <div>
+                            <div class="portal-card-icon">${c.icon || '📁'}</div>
+                            <h3>${tText(c.titleAr, c.titleEn)}</h3>
+                            <p>${tText(c.descAr, c.descEn)}</p>
+                        </div>
+                        <div class="portal-card-footer">
+                            <button class="btn btn-orange" onclick="navigatePortal('CATEGORY', '${c.id}')">${dict.openBtn}</button>
+                            ${isSuperAdmin() ? `
+                                <div style="display:flex; gap:0.3rem;">
+                                    <button class="btn btn-outline" onclick="editPortalNode('CATEGORY', '${c.id}')">${dict.editBtn}</button>
+                                    <button class="btn btn-danger" onclick="deletePortalNode('CATEGORY', '${c.id}')">🗑️</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+        return;
+    }
+
+    // المستوى الثاني: الكورسات داخل القسم
+    if (level === "CATEGORY") {
+        const courses = (portalState.portalTree.courses && portalState.portalTree.courses[catId]) || [];
+        viewport.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <h2 style="font-size:1.25rem; font-weight:800;">📚 ${tText("قائمة الكورسات والبرامج التدريبية", "Training Courses List")}</h2>
+                <div style="display:flex; gap:0.5rem;">
+                    ${isSuperAdmin() ? `<button class="btn btn-orange" onclick="addPortalNode('COURSE', '${catId}')">➕ ${tText("إضافة كورس جديد", "Add New Course")}</button>` : ''}
+                    <button class="btn btn-outline" onclick="navigatePortal('HOME')">⬅️ ${tText("رجوع", "Back")}</button>
+                </div>
+            </div>
+            <div class="portal-grid">
+                ${courses.map(crs => `
+                    <div class="portal-card">
+                        <div>
+                            <div class="portal-card-icon">${crs.icon || '📘'}</div>
+                            <h3>${tText(crs.titleAr, crs.titleEn)}</h3>
+                            <p>${tText(crs.descAr, crs.descEn)}</p>
+                        </div>
+                        <div class="portal-card-footer">
+                            <button class="btn btn-orange" onclick="navigatePortal('COURSE', '${catId}', '${crs.id}')">🚀 ${tText("دخول لإدارة الكورس", "Enter Course Hub")}</button>
+                            ${isSuperAdmin() ? `
+                                <div style="display:flex; gap:0.3rem;">
+                                    <button class="btn btn-outline" onclick="editPortalNode('COURSE', '${catId}', '${crs.id}')">${dict.editBtn}</button>
+                                    <button class="btn btn-danger" onclick="deletePortalNode('COURSE', '${catId}', '${crs.id}')">🗑️</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+        return;
+    }
+
+    // المستوى الثالث: أزرار وأقسام الكورس (الاستركشر، التاسكات، الجدول، اللينكات...)
+    if (level === "COURSE") {
+        const tools = (portalState.portalTree.courseTools && portalState.portalTree.courseTools[courseId]) || [];
+        viewport.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <h2 style="font-size:1.25rem; font-weight:800;">🗂️ ${tText("بوابات وأدوات إدارة الكورس", "Course Management Modules & Tools")}</h2>
+                <div style="display:flex; gap:0.5rem;">
+                    ${isSuperAdmin() ? `<button class="btn btn-orange" onclick="addPortalNode('TOOL', '${catId}', '${courseId}')">➕ ${tText("إضافة زرار/قسم للكورس", "Add Course Section Button")}</button>` : ''}
+                    <button class="btn btn-outline" onclick="navigatePortal('CATEGORY', '${catId}')">⬅️ ${tText("رجوع للكورسات", "Back to Courses")}</button>
+                </div>
+            </div>
+            <div class="portal-grid">
+                ${tools.map(tl => `
+                    <div class="portal-card">
+                        <div>
+                            <div class="portal-card-icon">${tl.icon || '🛠️'}</div>
+                            <h3>${tText(tl.titleAr, tl.titleEn)}</h3>
+                            <p>${tText(tl.descAr, tl.descEn)}</p>
+                        </div>
+                        <div class="portal-card-footer">
+                            <button class="btn btn-orange" onclick="navigatePortal('TOOL', '${catId}', '${courseId}', '${tl.id}')">${dict.openBtn}</button>
+                            ${isSuperAdmin() ? `
+                                <div style="display:flex; gap:0.3rem;">
+                                    <button class="btn btn-outline" onclick="editPortalNode('TOOL', '${catId}', '${courseId}', '${tl.id}')">${dict.editBtn}</button>
+                                    <button class="btn btn-danger" onclick="deletePortalNode('TOOL', '${catId}', '${courseId}', '${tl.id}')">🗑️</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+        return;
+    }
+
+    // المستوى الرابع: فتح الأداة نفسها (إما الاستركشر ذو الـ 4 مراحل أو لوحة التاسكات/الجدول/اللينكات)
+    if (level === "TOOL") {
+        const tools = (portalState.portalTree.courseTools && portalState.portalTree.courseTools[courseId]) || [];
+        const tl = tools.find(x => x.id === toolId);
+        if (!tl || tl.type === "STRUCTURE") {
+            renderStructurePipelineView(viewport, catId, courseId);
+        } else {
+            renderCustomToolBoard(viewport, catId, courseId, tl);
+        }
+    }
+}
+// ============================================================================
+// 🏗️ محرك عرض استركشر الكورس ونظام الـ 4 مراحل للتسليم والتسلم (4-Stage Pipeline)
+// ============================================================================
+function openCourseStructureWithFilter(fMode) {
+    portalState.filterMode = fMode;
+    portalState.navPath = { level: "TOOL", catId: "cat_courses", courseId: "crs_dc_im", toolId: "tool_structure" };
+    renderAllViews();
+}
+
+function jumpToTopic(code) {
+    const modCode = code.split(".")[0];
+    portalState.selectedModule = modCode;
+    portalState.filterMode = "ALL";
+    portalState.navPath = { level: "TOOL", catId: "cat_courses", courseId: "crs_dc_im", toolId: "tool_structure" };
+    renderAllViews();
+    setTimeout(() => {
+        const el = document.getElementById(`topic-card-${code}`);
+        const pane = document.getElementById(`topic-pane-${code}`);
+        if (pane) pane.classList.add("open");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 150);
+}
+
+function getUserSelectOptions(selectedUser, roleFilter = null) {
+    const keys = Object.keys(portalState.users);
+    let html = `<option value="">-- غير معين --</option>`;
+    keys.forEach(k => {
+        const u = portalState.users[k];
+        const tag = u.jobRole ? `[${u.jobRole}]` : "";
+        html += `<option value="${k}" ${selectedUser === k ? 'selected' : ''}>${u.displayName} ${tag}</option>`;
+    });
+    return html;
+}
+
+function getUserNameDisplay(uKey) {
+    if (!uKey) return tText("غير معين", "Unassigned");
+    return portalState.users[uKey] ? portalState.users[uKey].displayName : uKey;
+}
+
+function renderStructurePipelineView(viewport, catId, courseId) {
+    const uName = portalState.currentUser.username;
+    const canAdmin = isAdminOrSuper();
+
+    let unitsNavHtml = COURSE_DATA.map(m => {
+        let cnt = 0;
+        m.sections.forEach(s => cnt += s.topics.length);
+        return `
+            <li class="unit-item ${portalState.selectedModule === m.code ? 'active' : ''}" onclick="selectStructureUnit('${m.code}')">
+                <span><strong>${m.code}</strong> - ${m.title}</span>
+                <span class="notif-badge" style="background:var(--navy-light);">${cnt}</span>
+            </li>
+        `;
+    }).join("");
+
+    let modulesHtml = "";
+    const searchVal = (document.getElementById("structSearchInput")?.value || "").trim().toLowerCase();
+
+    COURSE_DATA.forEach(mod => {
+        if (portalState.selectedModule !== "ALL" && portalState.selectedModule !== mod.code) return;
+        let secsHtml = "";
+
+        mod.sections.forEach(sec => {
+            let topicsHtml = "";
+            sec.topics.forEach(t => {
+                const [tCode, tTitle, tContent, tTerms, isNew] = t;
+                const p = getPipeItem(tCode);
+                const myTurn = isUserActiveInStage(p, uName);
+                const overdue = isStageOverdue(p);
+                const involved = (p.writer === uName || p.proofreader === uName || p.formatter === uName || p.templateUser === uName);
+
+                // تطبيق الفلتر النشط
+                if (portalState.filterMode === "MY_TURN" && !myTurn) return;
+                if (portalState.filterMode === "MY_ALL" && !involved) return;
+                if (portalState.filterMode === "OVERDUE" && !overdue) return;
+                if (portalState.filterMode === "COMPLETED" && p.stage !== 5) return;
+
+                if (searchVal) {
+                    const hay = `${tCode} ${tTitle} ${tContent} ${(tTerms||[]).join(" ")}`.toLowerCase();
+                    if (!hay.includes(searchVal)) return;
+                }
+
+                const stageNames = {
+                    1: tText("1️⃣ مرحلة الكتابة العلمية", "1️⃣ Content Writing"),
+                    2: tText("2️⃣ مرحلة المراجعة اللغوية", "2️⃣ Proofreading"),
+                    3: tText("3️⃣ مرحلة التنسيق الفني", "3️⃣ Formatting"),
+                    4: tText("4️⃣ مرحلة تمبلت DCA", "4️⃣ DCA Template"),
+                    5: tText("🏆 مكتمل ومعتمد في التمبلت", "🏆 Completed in DCA Template")
+                };
+
+                topicsHtml += `
+                <div class="topic-item ${myTurn ? 'my-turn' : ''}" id="topic-card-${tCode}">
+                    <div class="topic-top-bar">
+                        <div class="topic-title-box" onclick="toggleStructTopic('${tCode}')">
+                            <span class="t-code">${tCode}</span>
+                            <span class="t-title">${tTitle}</span>
+                            ${isNew ? `<span class="badge-role" style="background:#10b981;">✨ محدث</span>` : ''}
+                            ${p.rejected ? `<span class="badge-role" style="background:#ef4444;">⚠️ مرفوض ومرتجع للتعديل</span>` : ''}
+                            ${overdue ? `<span class="badge-role" style="background:#dc2626;">🚨 متأخر (Overdue)</span>` : ''}
+                            ${myTurn ? `<span class="badge-role">🔥 دورك الآن للاستلام/التسليم</span>` : ''}
+                        </div>
+                        <div style="display:flex; align-items:center; gap:0.4rem;">
+                            <span style="font-size:0.76rem; font-weight:800; color:var(--orange);">${stageNames[p.stage]}</span>
+                            <button class="btn btn-outline" onclick="toggleStructTopic('${tCode}')">📖 ${tText("التفاصيل والتسليم", "Details & Handover")}</button>
+                        </div>
+                    </div>
+
+                    <!-- شريط المراحل الأربع (Pipeline Stepper) -->
+                    <div class="pipeline-stepper">
+                        <!-- المرحلة 1: الكاتب -->
+                        <div class="step-box ${p.stage===1 ? (p.rejected?'rejected-stage':'active-stage') : (p.stage>1?'done-stage':'')}">
+                            <div class="step-head"><span>1. ✍️ الكتابة العلمية</span> ${p.stage>1?'✅':(p.stage===1?'⏳':'')}</div>
+                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'writer', this.value)">${getUserSelectOptions(p.writer)}</select>` : `<strong>${getUserNameDisplay(p.writer)}</strong>`}</div>
+                            <div>📅 ${canAdmin ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due1||''}" onchange="updateStageDate('${tCode}', 'due1', this.value)">` : (p.due1 || '-')}</div>
+                        </div>
+
+                        <!-- المرحلة 2: المراجع اللغوي -->
+                        <div class="step-box ${p.stage===2 ? 'active-stage' : (p.stage>2?'done-stage':'')}">
+                            <div class="step-head"><span>2. 🔍 المراجعة اللغوية</span> ${p.stage>2?'✅':(p.stage===2?'⏳':'')}</div>
+                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'proofreader', this.value)">${getUserSelectOptions(p.proofreader)}</select>` : `<strong>${getUserNameDisplay(p.proofreader)}</strong>`}</div>
+                            <div>📅 ${canAdmin ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due2||''}" onchange="updateStageDate('${tCode}', 'due2', this.value)">` : (p.due2 || '-')}</div>
+                        </div>
+
+                        <!-- المرحلة 3: التنسيق -->
+                        <div class="step-box ${p.stage===3 ? (p.rejected?'rejected-stage':'active-stage') : (p.stage>3?'done-stage':'')}">
+                            <div class="step-head"><span>3. 🎨 التنسيق الفني</span> ${p.stage>3?'✅':(p.stage===3?'⏳':'')}</div>
+                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'formatter', this.value)">${getUserSelectOptions(p.formatter)}</select>` : `<strong>${getUserNameDisplay(p.formatter)}</strong>`}</div>
+                            <div>📅 ${(canAdmin || (p.stage===3 && p.formatter===uName)) ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due3||''}" onchange="updateStageDate('${tCode}', 'due3', this.value)">` : (p.due3 || '-')}</div>
+                        </div>
+
+                        <!-- المرحلة 4: مسؤول تمبلت DCA -->
+                        <div class="step-box ${p.stage===4 ? 'active-stage' : (p.stage===5?'done-stage':'')}">
+                            <div class="step-head"><span>4. 📄 تمبلت DCA</span> ${p.stage===5?'🏆':(p.stage===4?'⏳':'')}</div>
+                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'templateUser', this.value)">${getUserSelectOptions(p.templateUser)}</select>` : `<strong>${getUserNameDisplay(p.templateUser)}</strong>`}</div>
+                            <div>📅 ${canAdmin ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due4||''}" onchange="updateStageDate('${tCode}', 'due4', this.value)">` : (p.due4 || '-')}</div>
+                        </div>
+                    </div>
+
+                    <!-- لوحة التفاصيل وإجراءات التسليم والاستلام والرفض -->
+                    <div class="topic-body-pane" id="topic-pane-${tCode}">
+                        <div class="guide-grid">
+                            <div class="guide-card">
+                                <h5>📝 المحتوى المطلوب كتابته بالتفصيل</h5>
+                                <p style="line-height:1.5;">${tContent}</p>
+                            </div>
+                            <div class="guide-card">
+                                <h5>📐 إرشادات التقسيم والمصطلحات</h5>
+                                <p style="line-height:1.45; margin-bottom:0.4rem;">1. تمهيد مبسط للمبتدئ.<br>2. خطوات وجداول تطبيقية.<br>3. ربط عملي للمحترفين.</p>
+                                <div style="display:flex; flex-wrap:wrap; gap:0.25rem;">
+                                    ${(tTerms||[]).map(tm => `<span style="background:var(--navy-soft); color:var(--text-main); padding:0.1rem 0.45rem; border-radius:4px; font-size:0.7rem; font-weight:700; direction:ltr;">${tm}</span>`).join("")}
+                                </div>
+                            </div>
+                            <div class="guide-card">
+                                <h5>🔗 روابط ملفات المراحل الأربع</h5>
+                                <div style="font-size:0.73rem; display:flex; flex-direction:column; gap:0.3rem;">
+                                    <div>1. ملف الكاتب: ${p.link1 ? `<a href="${p.link1}" target="_blank" style="color:var(--orange); font-weight:800;">فتح الملف ↗</a>` : 'لم يُرفق بعد'}</div>
+                                    <div>2. ملف المراجع اللغوي: ${p.link2 ? `<a href="${p.link2}" target="_blank" style="color:var(--orange); font-weight:800;">فتح الملف ↗</a>` : 'لم يُرفق بعد'}</div>
+                                    <div>3. ملف التنسيق: ${p.link3 ? `<a href="${p.link3}" target="_blank" style="color:var(--orange); font-weight:800;">فتح الملف ↗</a>` : 'لم يُرفق بعد'}</div>
+                                    <div>4. ملف تمبلت DCA النهائي: ${p.link4 ? `<a href="${p.link4}" target="_blank" style="color:#10b981; font-weight:800;">فتح التمبلت النهائي 🏆↗</a>` : 'لم يُرفق بعد'}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${p.rejected && p.rejectReason ? `
+                            <div style="background:rgba(239,68,68,0.12); border:1px solid #ef4444; padding:0.7rem; border-radius:8px; margin-bottom:0.7rem; font-size:0.8rem; color:#ef4444; font-weight:700;">
+                                ⚠️ سبب الرفض والإرجاع من المرحلة التالية: "${p.rejectReason}"
+                            </div>
+                        ` : ''}
+
+                        ${renderStageActionControls(tCode, tTitle, p)}
+                    </div>
+                </div>`;
+            });
+
+            if (topicsHtml !== "") {
+                secsHtml += `
+                <div class="sec-container">
+                    <div class="sec-head">
+                        <h3 style="font-size:0.98rem; font-weight:800; display:flex; align-items:center; gap:0.5rem;">
+                            <span class="sec-code-pill">${sec.code}</span> ${sec.title}
+                        </h3>
+                        ${canAdmin ? `
+                            <div style="display:flex; gap:0.35rem; align-items:center; flex-wrap:wrap; font-size:0.72rem; background:var(--bg-sec); padding:0.3rem 0.6rem; border-radius:6px;">
+                                <strong>تعيين جماعي للقسم:</strong>
+                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'writer', this.value)"><option value="">✍️ كاتب القسم...</option>${getUserSelectOptions("")}</select>
+                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'proofreader', this.value)"><option value="">🔍 مراجع القسم...</option>${getUserSelectOptions("")}</select>
+                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'formatter', this.value)"><option value="">🎨 منسق القسم...</option>${getUserSelectOptions("")}</select>
+                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'templateUser', this.value)"><option value="">📄 تمبلت القسم...</option>${getUserSelectOptions("")}</select>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div style="background:var(--orange-soft); border-right:4px solid var(--orange); padding:0.65rem 0.9rem; border-radius:6px; margin-bottom:0.8rem; font-size:0.78rem;">
+                        <strong>🎯 هدف القسم:</strong> ${sec.why} | <strong>🗺️ طريقة العرض:</strong> ${sec.how}
+                    </div>
+                    <div>${topicsHtml}</div>
+                </div>`;
+            }
+        });
+
+        if (secsHtml !== "") {
+            modulesHtml += `
+            <div class="module-container">
+                <div class="module-head">
+                    <h2><span>الوحدة ${mod.code}:</span> ${mod.title}</h2>
+                </div>
+                <div style="padding:0.7rem 1.3rem; background:var(--bg-sec); font-size:0.8rem; color:var(--text-muted); border-bottom:1px solid var(--border-color);">
+                    <strong>📌 نظرة عامة:</strong> ${mod.overview}
+                </div>
+                ${secsHtml}
+            </div>`;
+        }
+    });
+
+    viewport.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; margin-bottom:1rem;">
+            <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                <button class="btn btn-outline" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">⬅️ ${tText("رجوع لبوابات الكورس", "Back to Course Hub")}</button>
+                <input type="text" id="structSearchInput" class="form-input" style="width:240px;" placeholder="🔍 ابحث برقم النقطة أو الاسم..." oninput="renderStructurePipelineView(document.getElementById('mainViewPort'), '${catId}', '${courseId}')">
+                <select class="form-input" style="width:auto;" onchange="portalState.filterMode=this.value; renderAllViews();">
+                    <option value="ALL" ${portalState.filterMode==='ALL'?'selected':''}>📌 كل النقاط</option>
+                    <option value="MY_TURN" ${portalState.filterMode==='MY_TURN'?'selected':''}>🔥 واقفة عند مرحلتي الآن</option>
+                    <option value="MY_ALL" ${portalState.filterMode==='MY_ALL'?'selected':''}>👤 كل النقاط المسندة لي</option>
+                    <option value="OVERDUE" ${portalState.filterMode==='OVERDUE'?'selected':''}>🚨 المتأخرات (Overdue)</option>
+                    <option value="COMPLETED" ${portalState.filterMode==='COMPLETED'?'selected':''}>🏆 المكتملة نهائياً</option>
+                </select>
+            </div>
+            <div style="display:flex; gap:0.4rem;">
+                <button class="btn btn-success" onclick="exportFullPipelineCSV()">📊 تصدير تقرير المراحل Excel</button>
+            </div>
+        </div>
+        <div class="course-layout">
+            <aside class="course-sidebar">
+                <div class="box-card">
+                    <h3>
+                        <span>📑 وحدات الكورس</span>
+                        <button class="btn btn-outline" style="padding:0.15rem 0.45rem; font-size:0.7rem;" onclick="selectStructureUnit('ALL')">الكل</button>
+                    </h3>
+                    <ul class="unit-list">${unitsNavHtml}</ul>
+                </div>
+            </aside>
+            <div class="course-main">
+                ${modulesHtml || `<div class="box-card" style="text-align:center; padding:2.5rem;">لا توجد نقاط مطابقة للفلتر المحدد.</div>`}
+            </div>
+        </div>
+    `;
+}
+
+// توليد أزرار التسليم والاستلام والموافقة والرفض حسب المرحلة الحالية وصلاحية اليوزر
+function renderStageActionControls(tCode, tTitle, p) {
+    const uName = portalState.currentUser.username;
+    const canAdmin = isAdminOrSuper();
+    const myTurn = isUserActiveInStage(p, uName);
+
+    if (!myTurn && !canAdmin) {
+        return `<div class="action-panel" style="font-size:0.78rem; color:var(--text-muted);">
+            🔒 <strong>وضع العرض فقط:</strong> هذه النقطة حالياً في المرحلة (${p.stage}) وليست مسندة لحسابك في هذه المرحلة.
+        </div>`;
+    }
+
+    // المرحلة 1: الكاتب العلمي يكتب ويسلم للمراجع اللغوي
+    if (p.stage === 1) {
+        return `
+        <div class="action-panel">
+            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">✍️ إجراء المرحلة (1): الكتابة العلمية والتسليم للمراجع اللغوي (${getUserNameDisplay(p.proofreader)})</h4>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+                <input type="url" id="lnk1-${tCode}" class="form-input" style="flex:1; min-width:220px; direction:ltr;" placeholder="ضع رابط ملف المادة العلمية (Google Doc / Drive Link)..." value="${p.link1||''}">
+                <input type="text" id="nt1-${tCode}" class="form-input" style="flex:1; min-width:180px;" placeholder="ملاحظات للكاتب/المراجع..." value="${p.notes||''}">
+                <button class="btn btn-orange" onclick="submitStage1ToProofreader('${tCode}', '${tTitle}')">📤 تسليم للمراجع اللغوي + إشعار وإيميل</button>
+            </div>
+        </div>`;
+    }
+
+    // المرحلة 2: المراجع اللغوي (إما يوافق ويحدد موعد التنسيق، أو يرفض ويرجع للكاتب)
+    if (p.stage === 2) {
+        return `
+        <div class="action-panel">
+            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">🔍 إجراء المرحلة (2): قرار المراجع اللغوي (موافقة وتحويل للتنسيق أو رفض وإرجاع للكاتب)</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:0.6rem;">
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">رابط الملف بعد المراجعة اللغوية:</label>
+                    <input type="url" id="lnk2-${tCode}" class="form-input" style="direction:ltr;" placeholder="https://..." value="${p.link2||p.link1||''}">
+                </div>
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">📅 تحديد موعد تسليم مرحلة التنسيق التالية:</label>
+                    <input type="date" id="due3-set-${tCode}" class="form-input" value="${p.due3||''}">
+                </div>
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">ملاحظات المراجعة / سبب الرفض (إن وجد):</label>
+                    <input type="text" id="rev2-comment-${tCode}" class="form-input" placeholder="اكتب ملاحظاتك أو أسباب الإرجاع للكاتب...">
+                </div>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="approveStage2ToFormatter('${tCode}', '${tTitle}')">✅ موافقة لغوية وتسليم لمسؤول التنسيق (${getUserNameDisplay(p.formatter)})</button>
+                <button class="btn btn-danger" onclick="rejectStage2BackToWriter('${tCode}', '${tTitle}')">❌ رفض الاستلام وإرجاع للكاتب لتعديل المشاكل</button>
+            </div>
+        </div>`;
+    }
+
+    // المرحلة 3: مسؤول التنسيق ينسق ويحدد التوقيت ويسلم لمسؤول التمبلت
+    if (p.stage === 3) {
+        return `
+        <div class="action-panel">
+            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">🎨 إجراء المرحلة (3): التنسيق الفني والتسليم لمسؤول تمبلت DCA (${getUserNameDisplay(p.templateUser)})</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:0.6rem;">
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">رابط الملف المنسق:</label>
+                    <input type="url" id="lnk3-${tCode}" class="form-input" style="direction:ltr;" placeholder="https://..." value="${p.link3||p.link2||''}">
+                </div>
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">📅 توقيت مرحلة التنسيق / تسليم التمبلت:</label>
+                    <input type="date" id="due4-set-${tCode}" class="form-input" value="${p.due4||''}">
+                </div>
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">ملاحظات المنسق:</label>
+                    <input type="text" id="nt3-${tCode}" class="form-input" value="${p.notes||''}">
+                </div>
+            </div>
+            <button class="btn btn-orange" onclick="submitStage3ToTemplate('${tCode}', '${tTitle}')">📤 تسليم المحتوى المنسق لمسؤول تمبلت DCA</button>
+        </div>`;
+    }
+
+    // المرحلة 4: مسؤول تمبلت DCA (إما يوافق ويعتمد نهائياً، أو يرفض ويرجع للمنسق)
+    if (p.stage === 4) {
+        return `
+        <div class="action-panel">
+            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">📄 إجراء المرحلة (4): وضع المحتوى في تمبلت DCA الفورم (اعتماد نهائي أو إرجاع للتنسيق)</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:0.6rem;">
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">رابط ملف التمبلت النهائي (DCA Template Link):</label>
+                    <input type="url" id="lnk4-${tCode}" class="form-input" style="direction:ltr;" placeholder="https://..." value="${p.link4||''}">
+                </div>
+                <div>
+                    <label style="font-size:0.72rem; font-weight:700;">كومنتات التمبلت / سبب الإرجاع للتنسيق:</label>
+                    <input type="text" id="rev4-comment-${tCode}" class="form-input" placeholder="ملاحظاتك...">
+                </div>
+            </div>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="approveStage4Final('${tCode}', '${tTitle}')">🏆 موافقة واعتماد نهائي داخل تمبلت DCA</button>
+                <button class="btn btn-danger" onclick="rejectStage4BackToFormatter('${tCode}', '${tTitle}')">❌ رفض وإرجاع لمسؤول التنسيق لتعديل الكومنتات</button>
+            </div>
+        </div>`;
+    }
+
+    // المرحلة 5: مكتمل
+    return `
+    <div class="action-panel" style="border-color:#10b981;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+            <strong style="color:#10b981;">🏆 هذه النقطة مكتملة ومعتمدة بالكامل داخل تمبلت DCA!</strong>
+            ${canAdmin ? `<button class="btn btn-outline" onclick="patchPipelineItem('${tCode}', {stage: 4, rejected: false})">🔄 إعادة فتح للمرحلة 4 (Admin)</button>` : ''}
+        </div>
+    </div>`;
+}
+
+// ============================================================================
+// ⚡ دوال تنفيذ انتقالات المراحل + الإشعارات + الإيميل التلقائي واليدوي
+// ============================================================================
+function selectStructureUnit(uCode) {
+    portalState.selectedModule = uCode;
+    renderAllViews();
+}
+
+function toggleStructTopic(tCode) {
+    const pane = document.getElementById(`topic-pane-${tCode}`);
+    if (pane) pane.classList.toggle("open");
+}
+
+async function patchPipelineItem(tCode, partial) {
+    const k = getSafeCode(tCode);
+    const item = getPipeItem(tCode);
+    Object.assign(item, partial);
+    renderAllViews();
+    try {
+        await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/pipeline/${k}.json`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(partial)
+        });
+    } catch (e) { console.error(e); }
+}
+
+async function assignStageUser(tCode, roleField, val) {
+    if (!isAdminOrSuper()) return;
+    await patchPipelineItem(tCode, { [roleField]: val });
+}
+
+async function updateStageDate(tCode, dateField, val) {
+    await patchPipelineItem(tCode, { [dateField]: val });
+}
+
+async function bulkAssignSecRole(secCode, roleField, username) {
+    if (!isAdminOrSuper() || !username) return;
+    const bulkPatch = {};
+    COURSE_DATA.forEach(mod => {
+        mod.sections.forEach(sec => {
+            if (sec.code === secCode) {
+                sec.topics.forEach(t => {
+                    const item = getPipeItem(t[0]);
+                    item[roleField] = username;
+                    bulkPatch[getSafeCode(t[0])] = item;
+                });
+            }
+        });
+    });
+    renderAllViews();
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/pipeline.json`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bulkPatch)
+    });
+}
+
+// 1 -> 2: تسليم من الكاتب إلى المراجع اللغوي
+async function submitStage1ToProofreader(tCode, tTitle) {
+    const lnk = document.getElementById(`lnk1-${tCode}`).value.trim();
+    const nt = document.getElementById(`nt1-${tCode}`).value.trim();
+    if (!lnk) { alert("⚠️ يرجى وضع رابط ملف المادة العلمية أولاً قبل التسليم للمراجع اللغوي!"); return; }
+    const p = getPipeItem(tCode);
+    await patchPipelineItem(tCode, { stage: 2, rejected: false, rejectReason: "", link1: lnk, notes: nt });
+    await sendWorkflowNotification(p.proofreader, tCode, `قام الكاتب بتسليم النقطة (${tCode} - ${tTitle}) إليك للمراجعة اللغوية.`, lnk);
+}
+
+// 2 -> 3: موافقة المراجع اللغوي وتحويل للتنسيق مع تحديد التوقيت
+async function approveStage2ToFormatter(tCode, tTitle) {
+    const lnk2 = document.getElementById(`lnk2-${tCode}`).value.trim();
+    const due3 = document.getElementById(`due3-set-${tCode}`).value;
+    const cm = document.getElementById(`rev2-comment-${tCode}`).value.trim();
+    if (!due3) { alert("⚠️ يرجى تحديد موعد تسليم مرحلة التنسيق التالية أولاً!"); return; }
+    const p = getPipeItem(tCode);
+    await patchPipelineItem(tCode, { stage: 3, rejected: false, rejectReason: "", link2: lnk2, due3: due3, notes: cm || p.notes });
+    await sendWorkflowNotification(p.formatter, tCode, `وافق المراجع اللغوي على النقطة (${tCode} - ${tTitle}) وحدد موعد تسليم التنسيق: ${due3}.`, lnk2);
+}
+
+// 2 -> 1: رفض المراجع اللغوي وإرجاع للكاتب
+async function rejectStage2BackToWriter(tCode, tTitle) {
+    const reason = document.getElementById(`rev2-comment-${tCode}`).value.trim();
+    if (!reason) { alert("⚠️ يرجى كتابة سبب الرفض والملاحظات اللغوية لإرجاعها للكاتب!"); return; }
+    const p = getPipeItem(tCode);
+    await patchPipelineItem(tCode, { stage: 1, rejected: true, rejectReason: reason });
+    await sendWorkflowNotification(p.writer, tCode, `⚠️ تم رفض وإرجاع النقطة (${tCode} - ${tTitle}) من المراجع اللغوي. السبب: ${reason}`, p.link1);
+}
+
+// 3 -> 4: تسليم المنسق إلى مسؤول تمبلت DCA
+async function submitStage3ToTemplate(tCode, tTitle) {
+    const lnk3 = document.getElementById(`lnk3-${tCode}`).value.trim();
+    const due4 = document.getElementById(`due4-set-${tCode}`).value;
+    const nt3 = document.getElementById(`nt3-${tCode}`).value.trim();
+    if (!lnk3) { alert("⚠️ يرجى وضع رابط الملف المنسق أولاً!"); return; }
+    const p = getPipeItem(tCode);
+    await patchPipelineItem(tCode, { stage: 4, rejected: false, rejectReason: "", link3: lnk3, due4: due4 || p.due4, notes: nt3 });
+    await sendWorkflowNotification(p.templateUser, tCode, `تم الانتهاء من تنسيق النقطة (${tCode} - ${tTitle}) وهي جاهزة لوضعها في تمبلت DCA.`, lnk3);
+}
+
+// 4 -> 5: موافقة مسؤول التمبلت واعتماد نهائي
+async function approveStage4Final(tCode, tTitle) {
+    const lnk4 = document.getElementById(`lnk4-${tCode}`).value.trim();
+    if (!lnk4) { alert("⚠️ يرجى وضع رابط ملف تمبلت DCA النهائي!"); return; }
+    await patchPipelineItem(tCode, { stage: 5, rejected: false, rejectReason: "", link4: lnk4 });
+    await sendWorkflowNotification("admin", tCode, `🏆 اكتملت النقطة (${tCode} - ${tTitle}) وتم وضعها واعتمادها داخل تمبلت DCA!`, lnk4);
+}
+
+// 4 -> 3: رفض مسؤول التمبلت وإرجاع لمسؤول التنسيق
+async function rejectStage4BackToFormatter(tCode, tTitle) {
+    const reason = document.getElementById(`rev4-comment-${tCode}`).value.trim();
+    if (!reason) { alert("⚠️ يرجى كتابة الكومنتات وسبب الإرجاع لمسؤول التنسيق!"); return; }
+    const p = getPipeItem(tCode);
+    await patchPipelineItem(tCode, { stage: 3, rejected: true, rejectReason: reason });
+    await sendWorkflowNotification(p.formatter, tCode, `⚠️ تم إرجاع النقطة (${tCode} - ${tTitle}) من مسؤول التمبلت لتعديل التنسيق. الملاحظات: ${reason}`, p.link3);
+}
+
+// ============================================================================
+// 🔔 نظام الإشعارات الداخلي + إرسال الإيميلات في الخلفية (EmailJS) + فتح الإيميل الرسمي
+// ============================================================================
+async function sendWorkflowNotification(toUsername, topicCode, msgText, fileLink = "") {
+    const fromUser = portalState.currentUser ? portalState.currentUser.displayName : "System";
+    const newNotif = {
+        id: "ntf_" + Date.now(),
+        toUser: toUsername || "admin",
+        fromUser: fromUser,
+        topicCode: topicCode,
+        message: msgText,
+        fileLink: fileLink,
+        date: new Date().toLocaleString("ar-EG"),
+        read: false
+    };
+    portalState.notifications.unshift(newNotif);
+    updateUnreadBadge();
+
+    try {
+        await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/notifications.json`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(portalState.notifications.slice(0, 150))
+        });
+    } catch (e) { console.error(e); }
+
+    // إرسال إيميل أوتوماتيك في الخلفية إذا تم تفعيل EmailJS
+    const targetUserObj = portalState.users[toUsername];
+    const targetEmail = targetUserObj ? targetUserObj.email : "";
+    if (portalState.settings.ejsService && portalState.settings.ejsTemplate && portalState.settings.ejsKey && targetEmail) {
+        try {
+            await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    service_id: portalState.settings.ejsService,
+                    template_id: portalState.settings.ejsTemplate,
+                    user_id: portalState.settings.ejsKey,
+                    template_params: {
+                        to_email: targetEmail,
+                        to_name: targetUserObj.displayName,
+                        from_name: fromUser,
+                        topic_code: topicCode,
+                        message: msgText,
+                        file_link: fileLink
+                    }
+                })
+            });
+        } catch (err) { console.warn("EmailJS background send skipped:", err); }
+    }
+
+    // سؤال المستخدم إذا كان يرغب أيضاً بفتح الإيميل الرسمي مباشرة
+    if (targetEmail && confirm(`✅ تم التسليم وإرسال إشعار داخلي إلى (${targetUserObj.displayName}).\nهل ترغب أيضاً في فتح برنامج الإيميل الرسمي لإرسال نسخة بريدية مرفق بها رابط الملف؟`)) {
+        const subject = encodeURIComponent(`[DCA Portal] إشعار تسليم النقطة ${topicCode}`);
+        const body = encodeURIComponent(`مرحباً ${targetUserObj.displayName}،\n\n${msgText}\n\nرابط الملف المرفق:\n${fileLink}\n\nمع تحيات،\n${fromUser} - DCA Portal`);
+        window.open(`mailto:${targetEmail}?subject=${subject}&body=${body}`, "_blank");
+    }
+}
+
+function updateUnreadBadge() {
+    if (!portalState.currentUser) return;
+    const uName = portalState.currentUser.username;
+    const unread = portalState.notifications.filter(n => (n.toUser === uName || (isSuperAdmin() && n.toUser === "admin")) && !n.read).length;
+    document.getElementById("unreadNotifCount").textContent = unread;
+}
+
+function openInboxModal() {
+    const container = document.getElementById("inboxListContainer");
+    const uName = portalState.currentUser.username;
+    const myNotifs = portalState.notifications.filter(n => isAdminOrSuper() || n.toUser === uName);
+
+    if (myNotifs.length === 0) {
+        container.innerHTML = `<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">لا توجد رسائل أو إشعارات حالياً.</p>`;
+    } else {
+        container.innerHTML = myNotifs.map(n => `
+            <div style="background:var(--bg-sec); border:1px solid var(--border-color); border-right:4px solid var(--orange); padding:0.75rem; border-radius:8px; font-size:0.8rem;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.3rem;">
+                    <strong>من: ${n.fromUser} ⬅️ إلى: ${getUserNameDisplay(n.toUser)}</strong>
+                    <span style="font-size:0.7rem; color:var(--text-muted);">${n.date}</span>
+                </div>
+                <p style="margin-bottom:0.4rem;">${n.message}</p>
+                <div style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-orange" style="padding:0.2rem 0.6rem; font-size:0.72rem;" onclick="closeModal('inboxModal'); jumpToTopic('${n.topicCode}')">الذهاب للنقطة ${n.topicCode}</button>
+                    ${n.fileLink ? `<a href="${n.fileLink}" target="_blank" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.72rem;">🔗 فتح المرفق</a>` : ''}
+                </div>
+            </div>
+        `).join("");
+    }
+
+    // تعليم كمقروء
+    portalState.notifications.forEach(n => { if (n.toUser === uName) n.read = true; });
+    updateUnreadBadge();
+    document.getElementById("inboxModal").style.display = "flex";
+}
+
+// ============================================================================
+// 🛠️ إدارة الأزرار الديناميكية وأدوات الكورس (التاسكات، الجدول، اللينكات)
+// ============================================================================
+function renderCustomToolBoard(viewport, catId, courseId, toolObj) {
+    const items = (portalState.portalTree.customItems && portalState.portalTree.customItems[toolObj.id]) || [];
+    viewport.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
+            <div>
+                <h2 style="font-size:1.2rem; font-weight:800;">${toolObj.icon} ${tText(toolObj.titleAr, toolObj.titleEn)}</h2>
+                <p style="font-size:0.8rem; color:var(--text-muted);">${tText(toolObj.descAr, toolObj.descEn)}</p>
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+                ${isAdminOrSuper() ? `<button class="btn btn-orange" onclick="addCustomBoardItem('${toolObj.id}')">➕ ${tText("إضافة بند/لينك جديد", "Add New Entry")}</button>` : ''}
+                <button class="btn btn-outline" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">⬅️ ${tText("رجوع لبوابات الكورس", "Back to Course Hub")}</button>
+            </div>
+        </div>
+        <div class="portal-grid">
+            ${items.length === 0 ? `<div class="box-card" style="grid-column:1/-1; text-align:center; padding:2.5rem;">لا توجد عناصر مضافة بعد. اضغط على (إضافة بند/لينك جديد) لإضافة محتوى هنا.</div>` :
+            items.map((it, idx) => `
+                <div class="portal-card">
+                    <div>
+                        <h3>${it.title}</h3>
+                        <p>${it.details}</p>
+                        ${it.dueDate ? `<div style="font-size:0.75rem; font-weight:700; color:var(--orange); margin-bottom:0.5rem;">📅 الموعد/التاريخ: ${it.dueDate}</div>` : ''}
+                    </div>
+                    <div class="portal-card-footer">
+                        ${it.link ? `<a href="${it.link}" target="_blank" class="btn btn-orange">🔗 فتح الرابط / الملف ↗</a>` : '<span></span>'}
+                        ${isAdminOrSuper() ? `<button class="btn btn-danger" onclick="deleteCustomBoardItem('${toolObj.id}', ${idx})">🗑️ حذف</button>` : ''}
+                    </div>
+                </div>
+            `).join("")}
+        </div>
+    `;
+}
+
+async function addCustomBoardItem(toolId) {
+    const title = prompt("أدخل العنوان (مثال: تاسك الوحدة الأولى / أو رابط فولدر التمبلت):");
+    if (!title) return;
+    const details = prompt("أدخل الوصف أو التفاصيل:") || "";
+    const link = prompt("أدخل الرابط (URL) إن وجد (اختياري):") || "";
+    const dueDate = prompt("أدخل التاريخ أو الموعد (اختياري):") || "";
+
+    if (!portalState.portalTree.customItems) portalState.portalTree.customItems = {};
+    if (!portalState.portalTree.customItems[toolId]) portalState.portalTree.customItems[toolId] = [];
+    portalState.portalTree.customItems[toolId].push({ title, details, link, dueDate });
+    await savePortalTreeToCloud();
+    renderAllViews();
+}
+
+async function deleteCustomBoardItem(toolId, idx) {
+    if (!confirm("هل أنت متأكد من الحذف؟")) return;
+    portalState.portalTree.customItems[toolId].splice(idx, 1);
+    await savePortalTreeToCloud();
+    renderAllViews();
+}
+
+// إضافة / تعديل / حذف أزرار البوابة في أي مستوى (للسوبر أدمن)
+async function addPortalNode(type, catId = null, courseId = null) {
+    if (!isSuperAdmin()) return;
+    const titleAr = prompt("أدخل اسم الزرار/القسم بالعربية:");
+    if (!titleAr) return;
+    const titleEn = prompt("أدخل اسم الزرار/القسم بالإنجليزية (اختياري):") || titleAr;
+    const descAr = prompt("أدخل وصفاً مختصراً للقسم:") || "";
+    const icon = prompt("أدخل أيقونة (Emoji) للقسم (مثال: 📚 أو 🛠️):", "📁") || "📁";
+    const newId = "node_" + Date.now();
+
+    if (type === "CATEGORY") {
+        portalState.portalTree.categories.push({ id: newId, icon, titleAr, titleEn, descAr, descEn: descAr });
+        portalState.portalTree.courses[newId] = [];
+    } else if (type === "COURSE") {
+        if (!portalState.portalTree.courses[catId]) portalState.portalTree.courses[catId] = [];
+        portalState.portalTree.courses[catId].push({ id: newId, icon, titleAr, titleEn, descAr, descEn: descAr });
+        portalState.portalTree.courseTools[newId] = [
+            { id: "tool_struct_" + newId, type: "STRUCTURE", icon: "🏗️", titleAr: "استركشر وماتريال الكورس", titleEn: "Course Structure", descAr: "إدارة محتوى الكورس", descEn: "Course structure" },
+            { id: "tool_links_" + newId,  type: "LINKS",     icon: "🔗", titleAr: "أهم اللينكات والمراجع", titleEn: "Important Links", descAr: "روابط وقوالب الكورس", descEn: "Links & Templates" }
+        ];
+    } else if (type === "TOOL") {
+        if (!portalState.portalTree.courseTools[courseId]) portalState.portalTree.courseTools[courseId] = [];
+        portalState.portalTree.courseTools[courseId].push({ id: newId, type: "BOARD", icon, titleAr, titleEn, descAr, descEn: descAr });
+    }
+    await savePortalTreeToCloud();
+    renderAllViews();
+}
+
+async function editPortalNode(type, id1, id2 = null, id3 = null) {
+    if (!isSuperAdmin()) return;
+    let target = null;
+    if (type === "CATEGORY") target = portalState.portalTree.categories.find(x => x.id === id1);
+    if (type === "COURSE") target = (portalState.portalTree.courses[id1] || []).find(x => x.id === id2);
+    if (type === "TOOL") target = (portalState.portalTree.courseTools[id2] || []).find(x => x.id === id3);
+    if (!target) return;
+
+    const newTitleAr = prompt("تعديل العنوان بالعربية:", target.titleAr);
+    if (!newTitleAr) return;
+    target.titleAr = newTitleAr;
+    target.titleEn = prompt("تعديل العنوان بالإنجليزية:", target.titleEn) || newTitleAr;
+    target.descAr = prompt("تعديل الوصف:", target.descAr) || "";
+    target.icon = prompt("تعديل الأيقونة:", target.icon) || target.icon;
+
+    await savePortalTreeToCloud();
+    renderAllViews();
+}
+
+async function deletePortalNode(type, id1, id2 = null, id3 = null) {
+    if (!isSuperAdmin() || !confirm("⚠️ هل أنت متأكد من حذف هذا القسم/الزرار؟")) return;
+    if (type === "CATEGORY") portalState.portalTree.categories = portalState.portalTree.categories.filter(x => x.id !== id1);
+    if (type === "COURSE") portalState.portalTree.courses[id1] = (portalState.portalTree.courses[id1] || []).filter(x => x.id !== id2);
+    if (type === "TOOL") portalState.portalTree.courseTools[id2] = (portalState.portalTree.courseTools[id2] || []).filter(x => x.id !== id3);
+    await savePortalTreeToCloud();
+    renderAllViews();
+}
+
+async function savePortalTreeToCloud() {
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/portalTree.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.portalTree)
+    });
+}
+
+// ============================================================================
+// 👥 إدارة الحسابات، تغيير الباسورد، Reset Password، ورفع اللوجو (Light/Dark)
+// ============================================================================
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+function openPasswordModal() { document.getElementById("passwordModal").style.display = "flex"; }
+
+function openSuperSettingsModal() {
+    if (!isSuperAdmin()) return;
+    document.getElementById("ejsService").value = portalState.settings.ejsService || "";
+    document.getElementById("ejsTemplate").value = portalState.settings.ejsTemplate || "";
+    document.getElementById("ejsKey").value = portalState.settings.ejsKey || "";
+    document.getElementById("superSettingsModal").style.display = "flex";
+}
+
+function uploadLogoFile(ev, mode) {
+    const file = ev.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        if (mode === "light") portalState.settings.logoLight = e.target.result;
+        else portalState.settings.logoDark = e.target.result;
+        applyThemeAndLogos();
+    };
+    reader.readAsDataURL(file);
+}
+
+async function savePortalSettings() {
+    portalState.settings.ejsService = document.getElementById("ejsService").value.trim();
+    portalState.settings.ejsTemplate = document.getElementById("ejsTemplate").value.trim();
+    portalState.settings.ejsKey = document.getElementById("ejsKey").value.trim();
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/settings.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.settings)
+    });
+    applyThemeAndLogos();
+    closeModal("superSettingsModal");
+    alert("✅ تم حفظ اللوجوهات وإعدادات البوابة في السحابة بنجاح!");
+}
+
+async function changeMyPassword() {
+    const oldP = document.getElementById("oldPassInput").value.trim();
+    const newP = document.getElementById("newPassInput").value.trim();
+    if (!oldP || !newP) { alert("⚠️ يرجى ملء الحقلين!"); return; }
+    const uName = portalState.currentUser.username;
+    if (uName === "admin") { alert("حساب السوبر أدمن الرئيسي محمي بكود النظام."); return; }
+
+    const uObj = portalState.users[uName];
+    if (!uObj || uObj.pass !== oldP) { alert("❌ كلمة المرور الحالية غير صحيحة!"); return; }
+    uObj.pass = newP;
+    await saveUsersListToCloud();
+    closeModal("passwordModal");
+    alert("✅ تم تغيير كلمة المرور الخاصة بك بنجاح!");
+}
+
+function openUsersModal() {
+    if (!isAdminOrSuper()) return;
+    renderUsersModalList();
+    document.getElementById("usersModal").style.display = "flex";
+}
+
+function renderUsersModalList() {
+    const box = document.getElementById("usersTableContainer");
+    const keys = Object.keys(portalState.users);
+    box.innerHTML = keys.map(k => {
+        const u = portalState.users[k];
+        return `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; padding:0.6rem; border-bottom:1px solid var(--border-color); font-size:0.78rem;">
+            <div>
+                <strong>${u.displayName}</strong> (<code>${u.username}</code>) | 📧 ${u.email || '-'}<br>
+                <span style="color:var(--orange); font-weight:700;">صلاحية الموقع: ${u.sysRole}</span> | <span>الوظيفة: ${u.jobRole}</span>
+                ${isSuperAdmin() ? ` | 🔑 Pass: <code>${u.pass}</code>` : ''}
+            </div>
+            <div style="display:flex; gap:0.35rem;">
+                ${isSuperAdmin() ? `
+                    <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.72rem;" onclick="resetUserPassword('${u.username}')">🔄 Reset Password</button>
+                    <button class="btn btn-danger" style="padding:0.2rem 0.5rem; font-size:0.72rem;" onclick="removeUserAccount('${u.username}')">🗑️ حذف</button>
+                ` : ''}
+            </div>
+        </div>`;
+    }).join("");
+}
+
+async function createOrUpdateUser() {
+    if (!isAdminOrSuper()) return;
+    const name = document.getElementById("uNewName").value.trim();
+    const user = document.getElementById("uNewUser").value.trim().toLowerCase().replace(/\s+/g, "");
+    const pass = document.getElementById("uNewPass").value.trim();
+    const email = document.getElementById("uNewEmail").value.trim();
+    const sysRole = document.getElementById("uNewSysRole").value;
+    const jobRole = document.getElementById("uNewJobRole").value;
+
+    if (!name || !user || !pass) { alert("⚠️ يرجى إدخال الاسم واسم المستخدم وكلمة المرور!"); return; }
+    if (sysRole === "superadmin" && !isSuperAdmin()) { alert("⚠️ السوبر أدمن فقط يمكنه منح صلاحية Super Admin!"); return; }
+
+    portalState.users[user] = { username: user, pass, displayName: name, email, sysRole, jobRole };
+    await saveUsersListToCloud();
+    renderUsersModalList();
+    renderAllViews();
+    alert("✅ تم حفظ حساب العضو بنجاح!");
+}
+
+async function resetUserPassword(uName) {
+    if (!isSuperAdmin()) return;
+    const newP = prompt(`🔑 أدخل كلمة المرور الجديدة للمستخدم (${portalState.users[uName].displayName}):`, "123456");
+    if (!newP) return;
+    portalState.users[uName].pass = newP.trim();
+    await saveUsersListToCloud();
+    renderUsersModalList();
+    alert("✅ تم عمل Reset لكلمة المرور بنجاح!");
+}
+
+async function removeUserAccount(uName) {
+    if (!isSuperAdmin() || !confirm("هل أنت متأكد من حذف هذا الحساب؟")) return;
+    delete portalState.users[uName];
+    await saveUsersListToCloud();
+    renderUsersModalList();
+    renderAllViews();
+}
+
+async function saveUsersListToCloud() {
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/users.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.users)
+    });
+}
+
+// ============================================================================
+// ☁️ المزامنة السحابية، تسجيل الدخول، وتصدير Excel
+// ============================================================================
+async function syncFromCloud(manual = false) {
+    try {
+        document.getElementById("cloudSyncIndicator").textContent = "⏳ جاري المزامنة...";
+        const res = await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3.json`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data) {
+                if (data.users) portalState.users = data.users;
+                if (data.settings) portalState.settings = Object.assign(portalState.settings, data.settings);
+                if (data.portalTree) portalState.portalTree = data.portalTree;
+                if (data.pipeline) portalState.pipeline = data.pipeline;
+                if (data.notifications) portalState.notifications = data.notifications;
+            } else {
+                await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3.json`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        users: portalState.users,
+                        settings: portalState.settings,
+                        portalTree: portalState.portalTree,
+                        pipeline: portalState.pipeline,
+                        notifications: portalState.notifications
+                    })
+                });
+            }
+            applyThemeAndLogos();
+            if (portalState.currentUser) renderAllViews();
+            document.getElementById("cloudSyncIndicator").textContent = "☁️ متصل بالسحابة لحظياً ✓";
+            if (manual) alert("✅ تم تحديث كافة البيانات من السحابة!");
+        }
+    } catch (e) {
+        document.getElementById("cloudSyncIndicator").textContent = "⚠️ تعذر الاتصال بالسحابة";
+    }
+}
+
+async function handleAuthLogin(ev) {
+    ev.preventDefault();
+    const u = document.getElementById("authUser").value.trim().toLowerCase();
+    const p = document.getElementById("authPass").value.trim();
+    const err = document.getElementById("loginErr");
+    err.style.display = "none";
+
+    await syncFromCloud(false);
+
+    if (u === MASTER_SUPER_USER && p === MASTER_SUPER_PASS) {
+        portalState.currentUser = { username: "admin", displayName: "Super Admin (المدير العام)", email: "", sysRole: "superadmin", jobRole: "template" };
+    } else if (portalState.users[u] && portalState.users[u].pass === p) {
+        portalState.currentUser = portalState.users[u];
+    } else {
+        err.style.display = "block";
+        return;
+    }
+
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(portalState.currentUser));
+    enterPortalSession();
+}
+
+function enterPortalSession() {
+    document.getElementById("loginOverlay").style.display = "none";
+    document.getElementById("activeUserBadge").textContent = `👤 ${portalState.currentUser.displayName}`;
+    document.getElementById("btnSuperSettings").style.display = isSuperAdmin() ? "inline-flex" : "none";
+    document.getElementById("btnUsersMgr").style.display = isAdminOrSuper() ? "inline-flex" : "none";
+    applyLanguage();
+    renderAllViews();
+}
+
+function handleLogout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    portalState.currentUser = null;
+    document.getElementById("loginOverlay").style.display = "flex";
+    document.getElementById("authPass").value = "";
+}
+
+function exportFullPipelineCSV() {
+    let rows = [["كود الوحدة", "كود القسم", "كود النقطة", "عنوان النقطة", "المرحلة الحالية", "مرتجع؟", "الكاتب (1)", "موعد (1)", "المراجع اللغوي (2)", "موعد (2)", "المنسق (3)", "موعد (3)", "مسؤول التمبلت (4)", "موعد (4)", "رابط التمبلت النهائي"]];
+    COURSE_DATA.forEach(mod => {
+        mod.sections.forEach(sec => {
+            sec.topics.forEach(t => {
+                const p = getPipeItem(t[0]);
+                rows.push([
+                    mod.code, sec.code, t[0], t[1], `المرحلة ${p.stage}`, p.rejected ? "نعم" : "لا",
+                    getUserNameDisplay(p.writer), p.due1||"",
+                    getUserNameDisplay(p.proofreader), p.due2||"",
+                    getUserNameDisplay(p.formatter), p.due3||"",
+                    getUserNameDisplay(p.templateUser), p.due4||"",
+                    p.link4 || p.link3 || p.link2 || p.link1 || ""
+                ]);
+            });
+        });
+    });
+    let csv = "\uFEFF" + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "DCA_Portal_Pipeline_Report.csv";
+    a.click();
+}
+
+window.onload = async function() {
+    applyThemeAndLogos();
+    await syncFromCloud(false);
+    const saved = sessionStorage.getItem(SESSION_KEY);
+    if (saved) {
+        try {
+            portalState.currentUser = JSON.parse(saved);
+            enterPortalSession();
+        } catch (e) { console.error(e); }
+    }
+    setInterval(() => { if (portalState.currentUser) syncFromCloud(false); }, 18000);
+};
+</script>
+</body>
+</html>
