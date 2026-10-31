@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DCA Portal | Enterprise Content & Course Management</title>
+    <title>DCA Portal | المنصة الرقمية المتكاملة لإدارة منظومة وأعمال DCA</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* ==================== الهوية البصرية: الكحلي #050b55 والأورنج #f47403 والأبيض ==================== */
@@ -35,11 +35,20 @@
             --navy-soft: #121c7a;
             --orange-soft: #3b2008;
             --header-bg: #02041a;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg-main); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; transition: background 0.25s, color 0.25s; }
+
+        /* ==================== إشعارات فورية منبثقة (Toast Notifications) ==================== */
+        #toastContainer { position: fixed; bottom: 20px; left: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 0.5rem; max-width: 380px; }
+        .toast-item {
+            background: var(--navy); color: #fff; border-right: 5px solid var(--orange); padding: 0.85rem 1.1rem;
+            border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.35); font-size: 0.82rem; font-weight: 700;
+            display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* ==================== شاشة تسجيل الدخول ==================== */
         #loginOverlay {
@@ -50,14 +59,14 @@
             background: var(--card-bg); color: var(--text-main); border-radius: 16px; max-width: 440px; width: 100%;
             padding: 2.2rem; box-shadow: 0 25px 50px rgba(0,0,0,0.5); border-top: 5px solid var(--orange); text-align: center;
         }
-        .login-logo { max-height: 65px; margin-bottom: 0.8rem; object-fit: contain; }
+        .login-logo { max-height: 68px; margin-bottom: 0.8rem; object-fit: contain; }
         .login-card h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.2rem; }
         .login-card p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.4rem; }
-        .form-group { text-align: start; margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.3rem; }
+        .form-group { text-align: start; margin-bottom: 0.9rem; }
+        .form-group label { display: block; font-size: 0.78rem; font-weight: 700; margin-bottom: 0.3rem; }
         .form-input {
-            width: 100%; padding: 0.6rem 0.85rem; border: 1px solid var(--border-color); border-radius: 8px;
-            background: var(--bg-sec); color: var(--text-main); font-size: 0.88rem; outline: none;
+            width: 100%; padding: 0.55rem 0.8rem; border: 1px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-sec); color: var(--text-main); font-size: 0.84rem; outline: none;
         }
         .form-input:focus { border-color: var(--orange); }
 
@@ -77,20 +86,29 @@
         .btn-success { background: #10b981; color: #fff; }
         .btn-danger { background: #ef4444; color: #fff; }
 
-        /* ==================== الهيدر الرئيسي ==================== */
+        /* ==================== الهيدر العلوي ==================== */
         header {
-            background: var(--header-bg); color: var(--header-text); padding: 0.8rem 1.5rem;
+            background: var(--header-bg); color: var(--header-text); padding: 0.75rem 1.5rem;
             border-bottom: 3px solid var(--orange); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow);
         }
-        .header-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; max-width: 1700px; margin: 0 auto; }
+        .header-wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; max-width: 1750px; margin: 0 auto; }
         .brand-box { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; }
-        .brand-logo { height: 44px; max-width: 150px; object-fit: contain; }
-        .brand-title h1 { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem; }
+        .brand-logo { height: 45px; max-width: 155px; object-fit: contain; }
+        .brand-title h1 { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 0.4rem; }
         .brand-title span.orange-dot { color: var(--orange); }
-        .brand-title p { font-size: 0.72rem; color: #cbd5e1; }
-        .header-tools { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
-        .badge-role { background: var(--orange); color: #fff; padding: 0.18rem 0.6rem; border-radius: 20px; font-size: 0.72rem; font-weight: 800; }
-        .notif-badge { background: var(--orange); color: #fff; padding: 0.05rem 0.4rem; border-radius: 10px; font-size: 0.7rem; font-weight: 800; }
+        .brand-title p { font-size: 0.74rem; color: #cbd5e1; }
+        .header-tools { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+
+        .user-chip {
+            background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: #fff;
+            padding: 0.2rem 0.65rem 0.2rem 0.35rem; border-radius: 25px; display: inline-flex; align-items: center;
+            gap: 0.45rem; cursor: pointer; font-size: 0.78rem; font-weight: 700; transition: 0.2s;
+        }
+        .user-chip:hover { border-color: var(--orange); background: rgba(244,116,3,0.2); }
+        .user-avatar-sm { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 2px solid var(--orange); background: #fff; }
+        .notif-badge { background: var(--orange); color: #fff; padding: 0.05rem 0.42rem; border-radius: 10px; font-size: 0.7rem; font-weight: 800; }
+        .bell-shake { animation: shake 0.6s infinite; background: var(--orange) !important; }
+        @keyframes shake { 0%,100%{transform:rotate(0);} 25%{transform:rotate(12deg);} 75%{transform:rotate(-12deg);} }
 
         /* ==================== شريط المسار (Breadcrumbs) ==================== */
         .breadcrumb-bar {
@@ -99,254 +117,339 @@
         }
         .breadcrumb-links { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 700; flex-wrap: wrap; }
         .crumb-item { cursor: pointer; color: var(--text-muted); transition: 0.2s; }
-        .crumb-item:hover { color: var(--orange); }
-        .crumb-item.active { color: var(--orange); font-weight: 800; }
+        .crumb-item:hover, .crumb-item.active { color: var(--orange); font-weight: 800; }
 
         /* ==================== الحاوية الرئيسية والداشبورد الشخصية ==================== */
-        .page-container { max-width: 1700px; width: 100%; margin: 0 auto; padding: 1.2rem 1.5rem; flex: 1; }
-
+        .page-container { max-width: 1750px; width: 100%; margin: 0 auto; padding: 1.2rem 1.5rem; flex: 1; }
         .user-dashboard {
             background: var(--bg-sec); border: 1px solid var(--border-color); border-right: 5px solid var(--orange);
-            border-radius: 12px; padding: 1.1rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);
+            border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 1.4rem; box-shadow: var(--shadow);
         }
-        .dash-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.9rem; }
-        .dash-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 0.8rem; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.8rem; }
+        .dash-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 0.75rem; }
         .kpi-card {
-            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.85rem 1rem;
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.8rem 1rem;
             display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s;
         }
         .kpi-card:hover { border-color: var(--orange); transform: translateY(-2px); }
-        .kpi-num { font-size: 1.5rem; font-weight: 800; color: var(--orange); }
-        .kpi-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
+        .kpi-num { font-size: 1.45rem; font-weight: 800; color: var(--orange); }
+        .kpi-label { font-size: 0.76rem; font-weight: 700; color: var(--text-muted); }
 
-        /* ==================== بطاقات البوابة متعددة المستويات (Portal Cards) ==================== */
-        .portal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.2rem; margin-top: 1rem; }
+        /* ==================== بطاقات البوابة متعددة المستويات ==================== */
+        .portal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.1rem; margin-top: 1rem; }
         .portal-card {
             background: var(--card-bg); border: 1px solid var(--border-color); border-top: 4px solid var(--navy);
-            border-radius: 12px; padding: 1.4rem; box-shadow: var(--shadow); transition: 0.25s; display: flex; flex-direction: column; justify-content: space-between;
+            border-radius: 12px; padding: 1.3rem; box-shadow: var(--shadow); transition: 0.25s; display: flex; flex-direction: column; justify-content: space-between;
         }
         .portal-card:hover { border-top-color: var(--orange); transform: translateY(-3px); }
-        .portal-card-icon { font-size: 2rem; margin-bottom: 0.6rem; }
-        .portal-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.4rem; }
-        .portal-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.2rem; }
-        .portal-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding-top: 0.8rem; border-top: 1px dashed var(--border-color); }
+        .portal-card-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+        .portal-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.35rem; }
+        .portal-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem; }
+        .portal-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-color); }
 
-        /* ==================== تخطيط صفحة استركشر الكورس ==================== */
+        /* ==================== تخطيط صفحة استركشر الكورس والمراحل الديناميكية ==================== */
         .course-layout { display: flex; gap: 1.2rem; align-items: flex-start; }
-        .course-sidebar { width: 310px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .course-sidebar { width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 1rem; }
         .course-main { flex: 1; display: flex; flex-direction: column; gap: 1.2rem; min-width: 0; }
-
         .box-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; box-shadow: var(--shadow); }
-        .box-card h3 { font-size: 0.92rem; font-weight: 800; margin-bottom: 0.7rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
-
-        .unit-list { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
-        .unit-item { padding: 0.5rem 0.7rem; border-radius: 7px; cursor: pointer; font-size: 0.8rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .box-card h3 { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.65rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
+        .unit-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+        .unit-item { padding: 0.48rem 0.65rem; border-radius: 7px; cursor: pointer; font-size: 0.78rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
         .unit-item:hover { background: var(--navy-soft); }
         .unit-item.active { background: var(--navy); color: #fff; border-right: 4px solid var(--orange); }
 
-        /* ==================== تصميم الوحدات والنقاط ونظام الـ 4 مراحل (4-Stage Pipeline) ==================== */
         .module-container { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
-        .module-head { background: var(--navy); color: #fff; padding: 1rem 1.3rem; border-bottom: 3px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
-        .module-head h2 { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem; }
-        .sec-container { padding: 1.1rem 1.3rem; border-bottom: 2px solid var(--border-color); }
+        .module-head { background: var(--navy); color: #fff; padding: 0.9rem 1.2rem; border-bottom: 3px solid var(--orange); display: flex; justify-content: space-between; align-items: center; }
+        .module-head h2 { font-size: 1rem; font-weight: 800; }
+        .sec-container { padding: 1rem 1.2rem; border-bottom: 2px solid var(--border-color); }
         .sec-container:last-child { border-bottom: none; }
-        .sec-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px dashed var(--border-color); }
-        .sec-code-pill { background: var(--orange); color: #fff; padding: 0.12rem 0.55rem; border-radius: 5px; font-size: 0.82rem; font-weight: 800; }
+        .sec-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.7rem; padding-bottom: 0.5rem; border-bottom: 1px dashed var(--border-color); }
+        .sec-code-pill { background: var(--orange); color: #fff; padding: 0.1rem 0.5rem; border-radius: 5px; font-size: 0.8rem; font-weight: 800; }
 
-        .topic-item { border: 1px solid var(--border-color); border-radius: 9px; background: var(--card-bg); margin-bottom: 0.7rem; overflow: hidden; transition: 0.2s; }
+        .topic-item { border: 1px solid var(--border-color); border-radius: 9px; background: var(--card-bg); margin-bottom: 0.65rem; overflow: hidden; }
         .topic-item.my-turn { border: 2px solid var(--orange); box-shadow: 0 0 0 3px rgba(244, 116, 3, 0.12); }
-        .topic-top-bar { padding: 0.7rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem; background: var(--bg-sec); }
-        .topic-title-box { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 240px; cursor: pointer; flex-wrap: wrap; }
-        .t-code { background: var(--navy); color: #fff; padding: 0.15rem 0.5rem; border-radius: 5px; font-size: 0.76rem; font-weight: 800; }
-        .t-title { font-weight: 700; font-size: 0.9rem; }
+        .topic-top-bar { padding: 0.65rem 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.6rem; background: var(--bg-sec); }
+        .topic-title-box { display: flex; align-items: center; gap: 0.45rem; flex: 1; min-width: 230px; cursor: pointer; flex-wrap: wrap; }
+        .t-code { background: var(--navy); color: #fff; padding: 0.12rem 0.45rem; border-radius: 5px; font-size: 0.75rem; font-weight: 800; }
+        .t-title { font-weight: 700; font-size: 0.88rem; }
 
-        /* شريط المراحل الأربع (Pipeline Stepper) */
-        .pipeline-stepper { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; padding: 0.65rem 1rem; border-top: 1px solid var(--border-color); background: var(--card-bg); }
-        .step-box {
-            border: 1px solid var(--border-color); border-radius: 7px; padding: 0.45rem 0.6rem; font-size: 0.73rem;
-            display: flex; flex-direction: column; gap: 0.2rem; position: relative; background: var(--bg-sec);
-        }
-        .step-box.active-stage { border-color: var(--orange); background: var(--orange-soft); }
+        /* شريط المراحل الديناميكي */
+        .pipeline-stepper { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 0.4rem; padding: 0.6rem 0.9rem; border-top: 1px solid var(--border-color); background: var(--card-bg); }
+        .step-box { border: 1px solid var(--border-color); border-radius: 7px; padding: 0.45rem 0.55rem; font-size: 0.71rem; display: flex; flex-direction: column; gap: 0.22rem; background: var(--bg-sec); }
+        .step-box.active-stage { border: 2px solid var(--orange); background: var(--orange-soft); }
         .step-box.done-stage { border-color: #10b981; background: rgba(16, 185, 129, 0.08); }
-        .step-box.rejected-stage { border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-        .step-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
+        .step-box.rejected-stage { border: 2px solid #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .step-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 0.74rem; }
 
-        .topic-body-pane { padding: 1rem; border-top: 1px solid var(--border-color); background: var(--bg-sec); display: none; }
+        .topic-body-pane { padding: 0.95rem; border-top: 1px solid var(--border-color); background: var(--bg-sec); display: none; }
         .topic-body-pane.open { display: block; }
-        .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.8rem; margin-bottom: 0.9rem; }
-        .guide-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; font-size: 0.78rem; }
-        .guide-card h5 { color: var(--orange); font-size: 0.8rem; margin-bottom: 0.35rem; }
-        .action-panel { background: var(--card-bg); border: 2px solid var(--navy); border-radius: 9px; padding: 0.9rem; margin-top: 0.6rem; }
+        .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem; margin-bottom: 0.8rem; }
+        .guide-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.7rem; font-size: 0.77rem; }
+        .guide-card h5 { color: var(--orange); font-size: 0.78rem; margin-bottom: 0.3rem; }
+        .action-panel { background: var(--card-bg); border: 2px solid var(--navy); border-radius: 9px; padding: 0.9rem; margin-top: 0.5rem; }
+        .admin-override-bar { background: var(--navy-soft); border: 1px dashed var(--navy); border-radius: 8px; padding: 0.6rem 0.8rem; margin-top: 0.6rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.75rem; }
 
         /* ==================== النوافذ المنبثقة (Modals) ==================== */
         .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 5, 46, 0.75); display: none; justify-content: center; align-items: center; z-index: 2000; padding: 1rem; }
-        .modal-box { background: var(--card-bg); color: var(--text-main); border-radius: 14px; max-width: 650px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 1.5rem; border-top: 5px solid var(--orange); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .modal-box { background: var(--card-bg); color: var(--text-main); border-radius: 14px; max-width: 760px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 1.4rem; border-top: 5px solid var(--orange); box-shadow: 0 20px 40px rgba(0,0,0,0.45); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); }
+        .perm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.45rem; margin: 0.6rem 0; }
+        .perm-item { background: var(--bg-sec); border: 1px solid var(--border-color); padding: 0.4rem 0.6rem; border-radius: 6px; font-size: 0.75rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; }
 
-        @media (max-width: 1050px) {
-            .course-layout { flex-direction: column; }
-            .course-sidebar { width: 100%; }
-            .pipeline-stepper { grid-template-columns: repeat(2, 1fr); }
-        }
+        @media (max-width: 1050px) { .course-layout { flex-direction: column; } .course-sidebar { width: 100%; } }
     </style>
 </head>
 <body>
+
+<!-- حاوية الإشعارات الفورية المنبثقة -->
+<div id="toastContainer"></div>
 
 <!-- ==================== 1. شاشة تسجيل الدخول ==================== -->
 <div id="loginOverlay">
     <div class="login-card">
         <img id="loginLogoImg" class="login-logo" src="" alt="DCA Logo" style="display:none;">
-        <h2 id="loginPortalTitle">DCA <span style="color:var(--orange)">Portal</span></h2>
-        <p id="lblLoginSub">بوابة إدارة المحتوى والمشروعات التدريبية المتكاملة</p>
+        <h2>DCA <span style="color:var(--orange)">Portal</span></h2>
+        <p id="lblLoginSub">المنصة الرقمية المتكاملة لإدارة منظومة وأعمال DCA</p>
         <form onsubmit="handleAuthLogin(event)">
             <div class="form-group">
-                <label id="lblUser">اسم المستخدم (Username):</label>
+                <label>اسم المستخدم (Username):</label>
                 <input type="text" id="authUser" class="form-input" placeholder="admin / username" required>
             </div>
             <div class="form-group">
-                <label id="lblPass">كلمة المرور (Password):</label>
+                <label>كلمة المرور (Password):</label>
                 <input type="password" id="authPass" class="form-input" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn btn-orange" style="width:100%; justify-content:center; padding:0.7rem; font-size:0.92rem;" id="btnLoginSubmit">تسجيل الدخول إلى البوابة</button>
-            <div id="loginErr" style="color:#ef4444; font-size:0.78rem; font-weight:700; margin-top:0.6rem; display:none;">❌ بيانات الدخول غير صحيحة!</div>
+            <button type="submit" class="btn btn-orange" style="width:100%; justify-content:center; padding:0.7rem; font-size:0.9rem;">🔐 تسجيل الدخول إلى البوابة</button>
+            <div id="loginErr" style="color:#ef4444; font-size:0.78rem; font-weight:700; margin-top:0.6rem; display:none;">❌ اسم المستخدم أو كلمة المرور غير صحيحة!</div>
         </form>
     </div>
 </div>
 
-<!-- ==================== 2. الهيدر العلوي ==================== -->
+<!-- ==================== 2. الهيدر الرئيسي ==================== -->
 <header>
     <div class="header-wrap">
         <div class="brand-box" onclick="navigatePortal('HOME')">
             <img id="headerLogoImg" class="brand-logo" src="" alt="DCA Logo" style="display:none;">
             <div class="brand-title">
-                <h1>DCA <span class="orange-dot">Portal</span></h1>
-                <p id="lblHeaderSub">منصة دي سي إيه</p>
+                <h1 id="portalMainTitle">DCA <span class="orange-dot">Portal</span></h1>
+                <p id="lblHeaderSub">المنصة الرقمية المتكاملة لإدارة منظومة وأعمال DCA</p>
             </div>
         </div>
         <div class="header-tools">
-            <span id="activeUserBadge" class="badge-role">👤 ...</span>
-            <button class="btn btn-header" onclick="openInboxModal()">
-                🔔 <span id="lblInboxBtn">صندوق الرسائل</span>
+            <!-- شريحة البروفايل الشخصي بالصورة -->
+            <div class="user-chip" onclick="openProfileModal()" title="افتح صفحتك الشخصية (تعديل الصورة والباسورد والبيانات)">
+                <img id="headerUserAvatar" class="user-avatar-sm" src="https://ui-avatars.com/api/?name=User&background=f47403&color=fff" alt="Avatar">
+                <span id="activeUserBadge">...</span>
+                <span style="font-size:0.68rem; color:#fde047;">⚙️ بروفايلي</span>
+            </div>
+
+            <button class="btn btn-header" id="bellBtn" onclick="openInboxModal()">
+                🔔 <span id="lblInboxBtn">الإشعارات</span>
                 <span id="unreadNotifCount" class="notif-badge">0</span>
             </button>
-            <button class="btn btn-header" onclick="openPasswordModal()">🔑 <span id="lblPassBtn">كلمة المرور</span></button>
-            <button class="btn btn-header" id="btnSuperSettings" style="display:none;" onclick="openSuperSettingsModal()">⚙️ <span id="lblSettingsBtn">إعدادات البوابة واللوجو</span></button>
-            <button class="btn btn-header" id="btnUsersMgr" style="display:none;" onclick="openUsersModal()">👥 <span id="lblUsersBtn">إدارة الفريق</span></button>
-            <button class="btn btn-header" onclick="toggleTheme()" id="themeBtn" title="Light / Dark Mode">🌙 Dark</button>
+
+            <button class="btn btn-header" id="btnUsersMgr" style="display:none;" onclick="openUsersModal()">👥 <span id="lblUsersBtn">إدارة الفريق والوظائف</span></button>
+            <button class="btn btn-header" id="btnRolesMgr" style="display:none;" onclick="openRolesModal()">🛡️ <span id="lblRolesBtn">مستويات الصلاحيات</span></button>
+            <button class="btn btn-header" id="btnStagesMgr" style="display:none;" onclick="openStagesModal()">🔄 <span id="lblStagesBtn">إدارة المراحل</span></button>
+            <button class="btn btn-header" id="btnSuperSettings" style="display:none;" onclick="openSuperSettingsModal()">⚙️ <span id="lblSettingsBtn">إعدادات البوابة</span></button>
+
+            <button class="btn btn-header" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
             <button class="btn btn-header" onclick="toggleLanguage()" id="langBtn">🌐 EN</button>
-            <button class="btn btn-header" onclick="syncFromCloud(true)" title="تحديث من السحابة">🔄</button>
-            <button class="btn btn-danger" onclick="handleLogout()">🚪</button>
+            <button class="btn btn-danger" onclick="handleLogout()">🚪 <span id="lblSignOut">تسجيل خروج (Sign Out)</span></button>
         </div>
     </div>
 </header>
 
-<!-- ==================== 3. شريط المسار (Breadcrumbs) ==================== -->
+<!-- ==================== 3. شريط المسار وحالة الاتصال ==================== -->
 <div class="breadcrumb-bar">
     <div class="breadcrumb-links" id="breadcrumbContainer"></div>
-    <div style="font-size:0.75rem; font-weight:700;" id="cloudSyncIndicator">☁️ متصل بالسحابة</div>
+    <div style="display:flex; align-items:center; gap:0.6rem;">
+        <span style="font-size:0.74rem; font-weight:700;" id="cloudSyncIndicator">☁️ متصل بالسحابة لحظياً</span>
+        <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.7rem;" onclick="syncFromCloud(true)">🔄 مزامنة يدوية</button>
+    </div>
 </div>
 
-<!-- ==================== 4. منطقة العرض الديناميكية ==================== -->
+<!-- ==================== 4. منطقة العرض الرئيسية ==================== -->
 <div class="page-container">
-    <!-- الداشبورد الشخصية لليوزر -->
     <div class="user-dashboard" id="personalDashboard"></div>
-    <!-- محتوى المستوى الحالي (المستوى 1 أو 2 أو 3 أو الاستركشر) -->
     <div id="mainViewPort"></div>
 </div>
 
 <!-- ==================== 5. النوافذ المنبثقة (Modals) ==================== -->
-<!-- نافذة صندوق الإشعارات والرسائل الداخلي -->
+
+<!-- (أ) نافذة الملف الشخصي الكامل لليوزر (User Profile Page) -->
+<div class="modal-backdrop" id="profileModal">
+    <div class="modal-box" style="max-width:600px;">
+        <div class="modal-header">
+            <h3>👤 صفحتي الشخصية وإعدادات حسابي (My Profile)</h3>
+            <button class="btn btn-danger" onclick="closeModal('profileModal')">إغلاق ×</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap; margin-bottom:1.2rem; padding:1rem; background:var(--bg-sec); border-radius:10px; border:1px solid var(--border-color);">
+            <img id="profModalAvatar" src="" style="width:85px; height:85px; border-radius:50%; object-fit:cover; border:3px solid var(--orange);">
+            <div style="flex:1;">
+                <h4 id="profModalName" style="font-size:1.1rem; font-weight:800;"></h4>
+                <p id="profModalRoleInfo" style="font-size:0.78rem; color:var(--orange); font-weight:700; margin:0.2rem 0;"></p>
+                <label class="btn btn-outline" style="margin-top:0.4rem; display:inline-flex;">
+                    📸 رفع صورة شخصية جديدة
+                    <input type="file" accept="image/*" style="display:none;" onchange="uploadMyAvatar(event)">
+                </label>
+            </div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.8rem;">
+            <div class="form-group">
+                <label>الاسم المعروض:</label>
+                <input type="text" id="profNameInput" class="form-input">
+            </div>
+            <div class="form-group">
+                <label>البريد الإلكتروني:</label>
+                <input type="email" id="profEmailInput" class="form-input" style="direction:ltr;">
+            </div>
+            <div class="form-group">
+                <label>رقم الهاتف / واتساب:</label>
+                <input type="text" id="profPhoneInput" class="form-input" style="direction:ltr;">
+            </div>
+            <div class="form-group">
+                <label>نبذة / مسمى إضافي:</label>
+                <input type="text" id="profBioInput" class="form-input">
+            </div>
+        </div>
+        <button class="btn btn-orange" onclick="saveMyProfileInfo()">💾 حفظ بياناتي الشخصية</button>
+
+        <hr style="margin:1.2rem 0; border-color:var(--border-color);">
+        <h4 style="color:var(--orange); margin-bottom:0.6rem; font-size:0.9rem;">🔑 تغيير كلمة المرور الخاصة بحسابي:</h4>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.6rem;">
+            <input type="password" id="oldPassInput" class="form-input" placeholder="كلمة المرور الحالية">
+            <input type="password" id="newPassInput" class="form-input" placeholder="كلمة المرور الجديدة">
+            <button class="btn btn-navy" onclick="changeMyPassword()">تحديث كلمة المرور</button>
+        </div>
+    </div>
+</div>
+
+<!-- (ب) نافذة صندوق الإشعارات والرسائل الداخلية -->
 <div class="modal-backdrop" id="inboxModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>🔔 صندوق الإشعارات والرسائل الداخلية (Internal Mail)</h3>
+            <h3>🔔 مركز الإشعارات والرسائل الداخلية (Activity & Handover Inbox)</h3>
             <button class="btn btn-danger" onclick="closeModal('inboxModal')">إغلاق ×</button>
         </div>
         <div id="inboxListContainer" style="display:flex; flex-direction:column; gap:0.6rem;"></div>
     </div>
 </div>
 
-<!-- نافذة تغيير كلمة المرور الخاصة باليوزر -->
-<div class="modal-backdrop" id="passwordModal">
-    <div class="modal-box" style="max-width:420px;">
+<!-- (ج) نافذة إدارة مستويات الصلاحيات المخصصة (Custom Roles & Permissions Matrix) -->
+<div class="modal-backdrop" id="rolesModal">
+    <div class="modal-box" style="max-width:820px;">
         <div class="modal-header">
-            <h3>🔑 تغيير كلمة المرور الخاصة بحسابك</h3>
-            <button class="btn btn-danger" onclick="closeModal('passwordModal')">×</button>
+            <h3>🛡️ إدارة مستويات الصلاحيات وتحديد صلاحيات كل مستوى</h3>
+            <button class="btn btn-danger" onclick="closeModal('rolesModal')">إغلاق ×</button>
         </div>
-        <div class="form-group">
-            <label>كلمة المرور الحالية:</label>
-            <input type="password" id="oldPassInput" class="form-input">
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.8rem;">يمكنك تعديل الصلاحيات الخاصة بالمستويات الحالية أو إضافة مستوى صلاحيات جديد وتحديد ما يحق له فعله بدقة:</p>
+        <div id="rolesListBox" style="margin-bottom:1rem; max-height:280px; overflow-y:auto;"></div>
+        <div style="background:var(--bg-sec); padding:1rem; border-radius:10px; border:1px solid var(--border-color);">
+            <h4 style="color:var(--orange); font-size:0.9rem; margin-bottom:0.5rem;">➕ إضافة / تعديل مستوى صلاحية:</h4>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.6rem;">
+                <input type="text" id="roleIdInput" class="form-input" placeholder="كود المستوى بالانجليزية (مثال: supervisor)" style="direction:ltr;">
+                <input type="text" id="roleTitleInput" class="form-input" placeholder="اسم المستوى المعروض (مثال: مشرف محتوى)">
+            </div>
+            <div class="perm-grid" id="rolePermsCheckboxes"></div>
+            <button class="btn btn-orange" onclick="saveCustomRole()">💾 حفظ مستوى الصلاحية</button>
         </div>
-        <div class="form-group">
-            <label>كلمة المرور الجديدة:</label>
-            <input type="password" id="newPassInput" class="form-input">
-        </div>
-        <button class="btn btn-orange" style="width:100%; justify-content:center;" onclick="changeMyPassword()">حفظ كلمة المرور الجديدة</button>
     </div>
 </div>
 
-<!-- نافذة إعدادات السوبر أدمن (رفع لوجو Light & Dark + إعدادات الإيميل الخلفي EmailJS) -->
+<!-- (د) نافذة إدارة المراحل الديناميكية (Dynamic Workflow Stages Manager) -->
+<div class="modal-backdrop" id="stagesModal">
+    <div class="modal-box" style="max-width:820px;">
+        <div class="modal-header">
+            <h3>🔄 إدارة مراحل خط الإنتاج والتسليم داخل النقاط (Workflow Stages)</h3>
+            <button class="btn btn-danger" onclick="closeModal('stagesModal')">إغلاق ×</button>
+        </div>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.8rem;">تحكم كامل في مراحل مرور النقطة (تعديل المراحل الحالية، عدد الأيام المسموحة لكل مرحلة SLA، أو إضافة مرحلة جديدة):</p>
+        <div id="stagesListBox" style="margin-bottom:1rem;"></div>
+        <div style="background:var(--bg-sec); padding:1rem; border-radius:10px; border:1px solid var(--border-color);">
+            <h4 style="color:var(--orange); font-size:0.9rem; margin-bottom:0.5rem;">➕ إضافة / تعديل مرحلة في خط الإنتاج:</h4>
+            <input type="hidden" id="editStageIdx" value="-1">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:0.6rem; margin-bottom:0.6rem;">
+                <input type="text" id="stgNameAr" class="form-input" placeholder="اسم المرحلة (مثال: المراجعة العلمية)">
+                <input type="text" id="stgIcon" class="form-input" placeholder="الأيقونة (مثال: 🔍)" value="⚡">
+                <select id="stgJobKey" class="form-input"></select>
+                <input type="number" id="stgSlaDays" class="form-input" placeholder="عدد الأيام (SLA Days)" value="2" min="1">
+            </div>
+            <label class="perm-item" style="margin-bottom:0.6rem;">
+                <input type="checkbox" id="stgCanReject" checked>
+                <span>يحق لمسؤول هذه المرحلة رفض الاستلام وإرجاع النقطة للمرحلة السابقة مع كتابة الأسباب</span>
+            </label>
+            <button class="btn btn-orange" onclick="saveWorkflowStage()">💾 حفظ المرحلة في خط الإنتاج</button>
+        </div>
+    </div>
+</div>
+
+<!-- (هـ) نافذة إدارة الفريق وتعدد الوظائف وتعديل الصلاحيات -->
+<div class="modal-backdrop" id="usersModal">
+    <div class="modal-box" style="max-width:860px;">
+        <div class="modal-header">
+            <h3>👥 إدارة حسابات الفريق والوظائف وتعديل الصلاحيات</h3>
+            <button class="btn btn-danger" onclick="closeModal('usersModal')">إغلاق ×</button>
+        </div>
+
+        <!-- إدارة مسميات الوظائف في DCA -->
+        <div style="background:var(--bg-sec); padding:0.7rem 0.9rem; border-radius:8px; margin-bottom:0.9rem; border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <div style="font-size:0.78rem;"><strong>🛠️ الوظائف المتاحة للفريق:</strong> <span id="jobTitlesBadges"></span></div>
+            <button class="btn btn-outline" style="padding:0.25rem 0.6rem; font-size:0.73rem;" onclick="addNewJobTitle()">➕ إضافة مسمى وظيفي جديد</button>
+        </div>
+
+        <div id="usersTableContainer" style="margin-bottom:1rem; max-height:260px; overflow-y:auto;"></div>
+
+        <div style="background:var(--bg-sec); padding:1rem; border-radius:10px; border:1px solid var(--border-color);">
+            <h4 style="color:var(--orange); margin-bottom:0.6rem; font-size:0.9rem;" id="userFormHeading">➕ إضافة عضو جديد أو تعديل عضو حالي:</h4>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.6rem; margin-bottom:0.6rem;">
+                <input type="text" id="uNewName" class="form-input" placeholder="الاسم الكامل">
+                <input type="text" id="uNewUser" class="form-input" placeholder="Username (انجليزي)" style="direction:ltr;">
+                <input type="text" id="uNewPass" class="form-input" placeholder="Password" style="direction:ltr;">
+                <input type="email" id="uNewEmail" class="form-input" placeholder="البريد الإلكتروني" style="direction:ltr;">
+                <select id="uNewSysRole" class="form-input"></select>
+            </div>
+            <div style="font-size:0.78rem; font-weight:700; margin-bottom:0.3rem;">اختر وظيفة أو أكثر لهذا العضو (Multi-Job Selection):</div>
+            <div class="perm-grid" id="userJobsCheckboxes"></div>
+            <div style="display:flex; gap:0.5rem; margin-top:0.6rem;">
+                <button class="btn btn-orange" onclick="createOrUpdateUser()">💾 حفظ بيانات وصلاحيات العضو</button>
+                <button class="btn btn-outline" onclick="clearUserForm()">تنظيف الخانات</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- (و) نافذة إعدادات البوابة واللوجو وتصفير الحالات التجريبية -->
 <div class="modal-backdrop" id="superSettingsModal">
     <div class="modal-box">
         <div class="modal-header">
-            <h3>⚙️ إعدادات السوبر أدمن (اللوجو والربط البريدي)</h3>
-            <button class="btn btn-danger" onclick="closeModal('superSettingsModal')">×</button>
+            <h3>⚙️ إعدادات منظومة DCA Portal واللوجوهات</h3>
+            <button class="btn btn-danger" onclick="closeModal('superSettingsModal')">إغلاق ×</button>
         </div>
         <div class="form-group">
-            <label>☀️ رفع صورة لوجو الوضع الفاتح (Light Mode Logo):</label>
-            <input type="file" accept="image/*" class="form-input" onchange="uploadLogoFile(event, 'light')">
+            <label>العنوان الفرعي الشامل في الهيدر (تحت اسم DCA Portal):</label>
+            <input type="text" id="portalSubtitleInput" class="form-input" placeholder="المنصة الرقمية المتكاملة لإدارة منظومة وأعمال DCA">
         </div>
-        <div class="form-group">
-            <label>🌙 رفع صورة لوجو الوضع الليلي (Dark Mode Logo):</label>
-            <input type="file" accept="image/*" class="form-input" onchange="uploadLogoFile(event, 'dark')">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem;">
+            <div class="form-group">
+                <label>☀️ لوجو الوضع الفاتح (Light Mode Logo):</label>
+                <input type="file" accept="image/*" class="form-input" onchange="uploadLogoFile(event, 'light')">
+            </div>
+            <div class="form-group">
+                <label>🌙 لوجو الوضع الليلي (Dark Mode Logo):</label>
+                <input type="file" accept="image/*" class="form-input" onchange="uploadLogoFile(event, 'dark')">
+            </div>
         </div>
-        <hr style="margin:1rem 0; border-color:var(--border-color);">
-        <h4 style="margin-bottom:0.5rem; color:var(--orange);">📧 إعدادات إرسال الإيميلات التلقائية في الخلفية (EmailJS - اختياري)</h4>
-        <p style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.6rem;">لإرسال إيميل تلقائي في الخلفية عند كل تسليم، ضع بيانات حساب EmailJS المجاني الخاص بالشركة:</p>
-        <div class="form-group">
-            <label>Service ID:</label>
-            <input type="text" id="ejsService" class="form-input" placeholder="service_xxxxx">
-        </div>
-        <div class="form-group">
-            <label>Template ID:</label>
-            <input type="text" id="ejsTemplate" class="form-input" placeholder="template_xxxxx">
-        </div>
-        <div class="form-group">
-            <label>Public Key:</label>
+        <hr style="margin:0.9rem 0; border-color:var(--border-color);">
+        <h4 style="margin-bottom:0.4rem; color:var(--orange); font-size:0.86rem;">📧 إعدادات الإيميل التلقائي الخلفي (EmailJS - اختياري)</h4>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.5rem; margin-bottom:0.8rem;">
+            <input type="text" id="ejsService" class="form-input" placeholder="Service ID">
+            <input type="text" id="ejsTemplate" class="form-input" placeholder="Template ID">
             <input type="text" id="ejsKey" class="form-input" placeholder="Public Key">
         </div>
-        <button class="btn btn-orange" onclick="savePortalSettings()">💾 حفظ إعدادات البوابة في السحابة</button>
-    </div>
-</div>
-
-<!-- نافذة إدارة حسابات الفريق والصلاحيات (Super Admin / Admin) -->
-<div class="modal-backdrop" id="usersModal">
-    <div class="modal-box" style="max-width:780px;">
-        <div class="modal-header">
-            <h3>👥 إدارة حسابات الفريق والصلاحيات والوظائف</h3>
-            <button class="btn btn-danger" onclick="closeModal('usersModal')">×</button>
-        </div>
-        <div id="usersTableContainer" style="margin-bottom:1rem; max-height:280px; overflow-y:auto;"></div>
-        <div style="background:var(--bg-sec); padding:1rem; border-radius:10px; border:1px solid var(--border-color);">
-            <h4 style="color:var(--orange); margin-bottom:0.6rem; font-size:0.9rem;">➕ إنشاء حساب عضو جديد (فصل الصلاحية الإدارية عن الوظيفة):</h4>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:0.6rem;">
-                <input type="text" id="uNewName" class="form-input" placeholder="الاسم الكامل (مثال: أ. محمد)">
-                <input type="text" id="uNewUser" class="form-input" placeholder="Username (مثال: mohamed)" style="direction:ltr;">
-                <input type="text" id="uNewPass" class="form-input" placeholder="Password (مثال: Mo@123)" style="direction:ltr;">
-                <input type="email" id="uNewEmail" class="form-input" placeholder="البريد الإلكتروني للشركة" style="direction:ltr;">
-                <select id="uNewSysRole" class="form-input">
-                    <option value="user">صلاحية الموقع: User (عضو فريق)</option>
-                    <option value="admin">صلاحية الموقع: Admin (مدير محتوى)</option>
-                    <option value="superadmin">صلاحية الموقع: Super Admin</option>
-                </select>
-                <select id="uNewJobRole" class="form-input">
-                    <option value="writer">الوظيفة: ✍️ كاتب علمي (Writer)</option>
-                    <option value="proofreader">الوظيفة: 🔍 مراجع لغوي (Proofreader)</option>
-                    <option value="formatter">الوظيفة: 🎨 منسق (Formatter)</option>
-                    <option value="template">الوظيفة: 📄 مسؤول تمبلت (Template)</option>
-                </select>
-            </div>
-            <button class="btn btn-orange" style="margin-top:0.8rem;" onclick="createOrUpdateUser()">➕ حفظ الحساب في السحابة</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+            <button class="btn btn-orange" onclick="savePortalSettings()">💾 حفظ إعدادات البوابة</button>
+            <button class="btn btn-danger" onclick="resetAllTopicsPipeline()">🔄 تصفير وإعادة ضبط حالات كل النقاط للمرحلة 1</button>
         </div>
     </div>
 </div>
@@ -854,79 +957,137 @@ const COURSE_DATA = [
 ];
 
 // ============================================================================
-// 🧠 حالة النظام الموحدة (Portal State Engine)
+// 🧠 محرك البيانات الديناميكي الشامل (Enterprise Dynamic State V4)
 // ============================================================================
-const SESSION_KEY = "DCA_PORTAL_ACTIVE_SESSION_V3";
+const SESSION_KEY = "DCA_ENTERPRISE_SESSION_V4";
+
+// قائمة كل الصلاحيات الممكنة في النظام (لبناء مصفوفة الصلاحيات المخصصة)
+const ALL_PERMISSIONS_LIST = [
+    { key: "manage_portal_nodes", label: "إضافة/تعديل/حذف أقسام وأزرار البوابة والكورسات" },
+    { key: "manage_users",        label: "إدارة حسابات الفريق وإضافة/تعديل الأعضاء والوظائف" },
+    { key: "reset_passwords",     label: "عمل Reset Password لأي عضو في الفريق" },
+    { key: "manage_roles",        label: "إنشاء وتعديل مستويات الصلاحيات (Roles Builder)" },
+    { key: "manage_stages",       label: "إضافة وتعديل مراحل خط الإنتاج (Workflow Stages)" },
+    { key: "assign_tasks",        label: "تعيين وتوزيع النقاط والأقسام على الأعضاء (Assign)" },
+    { key: "edit_dates_sla",      label: "تعديل تواريخ التسليم وعدد الأيام المسموحة (SLA)" },
+    { key: "override_stage",      label: "التحكم الكامل في مراحل النقاط (نقل/إرجاع/فتح أي مرحلة)" },
+    { key: "manage_settings",     label: "تعديل إعدادات البوابة واللوجو والإيميل" }
+];
+
+// حفظ النقاط المفتوحة في الذاكرة حتى لا تُغلق أبداً أثناء التحديث السحابي!
+const openTopicPanesSet = new Set();
+let lastKnownNotifCount = 0;
+
 let portalState = {
     lang: localStorage.getItem("DCA_LANG") || "ar",
     theme: localStorage.getItem("DCA_THEME") || "light",
-    currentUser: null, // { username, displayName, email, sysRole: 'superadmin'|'admin'|'user', jobRole: 'writer'|'proofreader'|'formatter'|'template' }
+    currentUser: null,
     navPath: { level: "HOME", catId: null, courseId: null, toolId: null },
     selectedModule: "ALL",
-    filterMode: "ALL", // ALL | MY_TURN | IN_PROGRESS | OVERDUE | COMPLETED
+    filterMode: "ALL",
     settings: {
+        subtitleAr: "المنصة الرقمية المتكاملة لإدارة منظومة وأعمال DCA",
+        subtitleEn: "Integrated Digital Enterprise Portal for DCA Management",
         logoLight: "",
         logoDark: "",
         ejsService: "",
         ejsTemplate: "",
         ejsKey: ""
     },
-    users: {
-        "ahmad":   { username: "ahmad",   pass: "1234", displayName: "م. أحمد (كاتب علمي)",   email: "ahmad@company.com",   sysRole: "user",  jobRole: "writer" },
-        "sara":    { username: "sara",    pass: "1234", displayName: "أ. سارة (مراجع لغوي)",  email: "sara@company.com",    sysRole: "user",  jobRole: "proofreader" },
-        "khaled":  { username: "khaled",  pass: "1234", displayName: "أ. خالد (منسق)",        email: "khaled@company.com",  sysRole: "user",  jobRole: "formatter" },
-        "nour":    { username: "nour",    pass: "1234", displayName: "م. نور (مسؤول تمبلت)",  email: "nour@company.com",    sysRole: "admin", jobRole: "template" }
+    // مستويات الصلاحيات القابلة للتخصيص والإضافة
+    rolesConfig: {
+        "superadmin": {
+            id: "superadmin", title: "👑 Super Admin (المدير العام)",
+            perms: ["manage_portal_nodes","manage_users","reset_passwords","manage_roles","manage_stages","assign_tasks","edit_dates_sla","override_stage","manage_settings"]
+        },
+        "admin": {
+            id: "admin", title: "🛡️ Admin (مدير محتوى)",
+            perms: ["manage_users","assign_tasks","edit_dates_sla","override_stage"]
+        },
+        "user": {
+            id: "user", title: "👤 Team Member (عضو فريق)",
+            perms: []
+        }
     },
-    // هيكل الأزرار متعدد المستويات (قابل للإضافة والتعديل والحذف من السوبر أدمن)
+    // قائمة الوظائف القابلة للإضافة
+    jobCatalog: [
+        { key: "writer",      title: "✍️ كاتب علمي (Writer)" },
+        { key: "proofreader", title: "🔍 مراجع لغوي (Proofreader)" },
+        { key: "formatter",   title: "🎨 مسؤول تنسيق (Formatter)" },
+        { key: "template",    title: "📄 مسؤول تمبلت DCA (Template)" }
+    ],
+    // مراحل خط الإنتاج الديناميكية القابلة للإضافة والتعديل
+    workflowStages: [
+        { id: "st_1", name: "الكتابة العلمية",   icon: "✍️", jobKey: "writer",      slaDays: 3, canReject: false },
+        { id: "st_2", name: "المراجعة اللغوية",  icon: "🔍", jobKey: "proofreader", slaDays: 2, canReject: true },
+        { id: "st_3", name: "التنسيق الفني",     icon: "🎨", jobKey: "formatter",   slaDays: 2, canReject: false },
+        { id: "st_4", name: "وضع في تمبلت DCA",  icon: "📄", jobKey: "template",    slaDays: 1, canReject: true }
+    ],
+    // المستخدمون (يدعم تعدد الوظائف jobs[] والصورة الشخصية avatar)
+    users: {
+        "ahmad":  { username: "ahmad",  pass: "1234", displayName: "م. أحمد (كاتب)",   email: "ahmad@dca.com",  phone: "", bio: "", avatar: "", sysRole: "user",  jobs: ["writer"] },
+        "sara":   { username: "sara",   pass: "1234", displayName: "أ. سارة (مراجع)",  email: "sara@dca.com",   phone: "", bio: "", avatar: "", sysRole: "user",  jobs: ["proofreader"] },
+        "khaled": { username: "khaled", pass: "1234", displayName: "أ. خالد (منسق)",   email: "khaled@dca.com", phone: "", bio: "", avatar: "", sysRole: "user",  jobs: ["formatter"] },
+        "nour":   { username: "nour",   pass: "1234", displayName: "م. نور (تمبلت)",   email: "nour@dca.com",   phone: "", bio: "", avatar: "", sysRole: "admin", jobs: ["template", "proofreader"] }
+    },
     portalTree: {
         categories: [
             { id: "cat_courses", icon: "📚", titleAr: "الكورسات الخاصة بـ DCA", titleEn: "DCA Training Courses", descAr: "إدارة وتأليف ومراجعة الحقائب التدريبية والكورسات الاحترافية", descEn: "Manage, author, and review professional training courses" }
         ],
         courses: {
             "cat_courses": [
-                {
-                    id: "crs_dc_im",
-                    icon: "📘",
-                    titleAr: "كورس Document Control & Information Management",
-                    titleEn: "Document Control & Information Management Course",
-                    descAr: "البرنامج التدريبي الشامل لضبط الوثائق وإدارة المعلومات في المشروعات الهندسية (8 وحدات)",
-                    descEn: "Comprehensive training program for DC & IM in engineering projects (8 Modules)"
-                }
+                { id: "crs_dc_im", icon: "📘", titleAr: "كورس Document Control & Information Management", titleEn: "Document Control & Information Management Course", descAr: "البرنامج التدريبي الشامل لضبط الوثائق وإدارة المعلومات في المشروعات الهندسية (8 وحدات)", descEn: "Comprehensive training program for DC & IM (8 Modules)" }
             ]
         },
         courseTools: {
             "crs_dc_im": [
-                { id: "tool_structure", type: "STRUCTURE", icon: "🏗️", titleAr: "استركشر وماتريال الكورس (4-Stage Pipeline)", titleEn: "Course Structure & Material Pipeline", descAr: "خريطة الطريق التفصيلية ونظام التسليم والتسلم بين الكتابة والمراجعة والتنسيق والتمبلت", descEn: "Detailed roadmap & 4-stage handover workflow" },
+                { id: "tool_structure", type: "STRUCTURE", icon: "🏗️", titleAr: "استركشر وماتريال الكورس (Dynamic Pipeline)", titleEn: "Course Structure & Material Pipeline", descAr: "خريطة الطريق التفصيلية ونظام التسليم والتسلم الديناميكي وحساب مدد التنفيذ", descEn: "Detailed roadmap & dynamic handover workflow" },
                 { id: "tool_tasks",     type: "BOARD",     icon: "📝", titleAr: "التاسكات والتطبيقات العملية للكورس", titleEn: "Course Practical Tasks & Activities", descAr: "إدارة الأنشطة العملية والتمارين التطبيقية الخاصة بالمتدربين خلال الكورس", descEn: "Manage practical exercises and trainee activities" },
                 { id: "tool_schedule",  type: "BOARD",     icon: "📅", titleAr: "الجدول الزمني للكورس (Course Schedule)", titleEn: "Course Schedule & Timeline", descAr: "توزيع المحاضرات والساعات التدريبية وخطة تنفيذ الكورس", descEn: "Lectures distribution and timeline plan" },
                 { id: "tool_links",     type: "LINKS",     icon: "🔗", titleAr: "أهم اللينكات والقوالب المرجعية (DCA Templates)", titleEn: "Important Links & DCA Templates", descAr: "روابط مجلدات Google Drive الموحدة، قوالب DCA الفارغة، والمراجع المعتمدة", descEn: "Shared Drive folders, blank DCA templates, and references" }
             ]
         },
-        customItems: {} // لتخزين عناصر التاسكات والجدول واللينكات لأي زرار
+        customItems: {}
     },
-    pipeline: {}, // { safeTopicCode: { stage: 1..5, rejected: false, rejectReason: "", writer: "", proofreader: "", formatter: "", templateUser: "", due1: "", due2: "", due3: "", due4: "", link1: "", link2: "", link3: "", link4: "", notes: "" } }
-    notifications: [] // [ { id, toUser, fromUser, topicCode, message, date, read } ]
+    pipeline: {},
+    notifications: []
 };
 
 // ============================================================================
-// 🌐 قاموس اللغات (العربية / الإنجليزية) والـ Theme واللوجو
+// 🛡️ دوال فحص الصلاحيات الديناميكية والتنبيهات الفورية (Toast & Sound)
 // ============================================================================
-const I18N = {
-    ar: {
-        dir: "rtl", headerSub: "منصة إدارة وتأليف الكورسات التدريبية", inboxBtn: "صندوق الرسائل", passBtn: "كلمة المرور",
-        settingsBtn: "إعدادات البوابة واللوجو", usersBtn: "إدارة الفريق", homeCrumb: "🏠 الرئيسية (DCA Portal)",
-        dashTitle: "📊 لوحة مهامي الشخصية (My Personal Workspace)", kpiAction: "🔥 بانتظار إجراءك الآن",
-        kpiProgress: "⏳ مهام قيد العمل لديك", kpiOverdue: "🚨 مهام متأخرة (Overdue)", kpiDone: "✅ مراحل أنجزتها وسلمتها",
-        addBtn: "➕ إضافة عنصر جديد", editBtn: "✏️ تعديل", delBtn: "🗑️ حذف", openBtn: "🚀 فتح القسم"
-    },
-    en: {
-        dir: "ltr", headerSub: "Enterprise Course Authoring & Management Portal", inboxBtn: "Internal Inbox", passBtn: "Password",
-        settingsBtn: "Portal & Logo Settings", usersBtn: "Team Management", homeCrumb: "🏠 Home (DCA Portal)",
-        dashTitle: "📊 My Personal Workspace & Tasks", kpiAction: "🔥 Waiting Your Action Now",
-        kpiProgress: "⏳ In Progress by You", kpiOverdue: "🚨 Overdue Tasks", kpiDone: "✅ Completed & Handed Over",
-        addBtn: "➕ Add New Item", editBtn: "✏️ Edit", delBtn: "🗑️ Delete", openBtn: "🚀 Open Section"
+function hasPerm(permKey) {
+    if (!portalState.currentUser) return false;
+    const rId = portalState.currentUser.sysRole;
+    if (rId === "superadmin" || portalState.currentUser.username === "admin") return true;
+    const roleObj = portalState.rolesConfig[rId];
+    return roleObj && Array.isArray(roleObj.perms) && roleObj.perms.includes(permKey);
+}
+
+function showToast(msg, playSound = true) {
+    const box = document.getElementById("toastContainer");
+    if (!box) return;
+    const el = document.createElement("div");
+    el.className = "toast-item";
+    el.innerHTML = `<span>🔔 ${msg}</span><span style="cursor:pointer; font-weight:800;" onclick="this.parentElement.remove()">×</span>`;
+    box.appendChild(el);
+    setTimeout(() => { if (el.parentElement) el.remove(); }, 5000);
+
+    if (playSound) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(660, ctx.currentTime);
+            gain.gain.setValueAtTime(0.08, ctx.currentTime);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.14);
+        } catch (e) {}
     }
-};
+}
 
 function tText(arTxt, enTxt) {
     return portalState.lang === "ar" ? arTxt : (enTxt || arTxt);
@@ -937,19 +1098,18 @@ function applyThemeAndLogos() {
     const themeBtn = document.getElementById("themeBtn");
     if (themeBtn) themeBtn.textContent = portalState.theme === "light" ? "🌙 Dark" : "☀️ Light";
 
+    const subText = portalState.lang === "ar" ? portalState.settings.subtitleAr : portalState.settings.subtitleEn;
+    document.getElementById("lblHeaderSub").textContent = subText || "المنصة الرقمية المتكاملة لإدارة منظومة وأعمال DCA";
+    document.getElementById("lblLoginSub").textContent = subText || "المنصة الرقمية المتكاملة لإدارة منظومة وأعمال DCA";
+
     const activeLogo = portalState.theme === "light" ? portalState.settings.logoLight : portalState.settings.logoDark;
-    const fallbackLogo = portalState.settings.logoLight || portalState.settings.logoDark;
-    const finalLogo = activeLogo || fallbackLogo;
+    const finalLogo = activeLogo || portalState.settings.logoLight || portalState.settings.logoDark;
 
     ["loginLogoImg", "headerLogoImg"].forEach(id => {
         const img = document.getElementById(id);
         if (!img) return;
-        if (finalLogo) {
-            img.src = finalLogo;
-            img.style.display = "inline-block";
-        } else {
-            img.style.display = "none";
-        }
+        if (finalLogo) { img.src = finalLogo; img.style.display = "inline-block"; }
+        else { img.style.display = "none"; }
     });
 }
 
@@ -959,158 +1119,187 @@ function toggleTheme() {
     applyThemeAndLogos();
 }
 
-function applyLanguage() {
-    const dict = I18N[portalState.lang];
-    document.documentElement.lang = portalState.lang;
-    document.documentElement.dir = dict.dir;
-    document.getElementById("langBtn").textContent = portalState.lang === "ar" ? "🌐 EN" : "🌐 عربي";
-    document.getElementById("lblHeaderSub").textContent = dict.headerSub;
-    document.getElementById("lblInboxBtn").textContent = dict.inboxBtn;
-    document.getElementById("lblPassBtn").textContent = dict.passBtn;
-    document.getElementById("lblSettingsBtn").textContent = dict.settingsBtn;
-    document.getElementById("lblUsersBtn").textContent = dict.usersBtn;
-    if (portalState.currentUser) renderAllViews();
-}
-
 function toggleLanguage() {
     portalState.lang = portalState.lang === "ar" ? "en" : "ar";
     localStorage.setItem("DCA_LANG", portalState.lang);
-    applyLanguage();
+    document.documentElement.lang = portalState.lang;
+    document.documentElement.dir = portalState.lang === "ar" ? "rtl" : "ltr";
+    document.getElementById("langBtn").textContent = portalState.lang === "ar" ? "🌐 EN" : "🌐 عربي";
+    applyThemeAndLogos();
+    if (portalState.currentUser) renderAllViews();
 }
 
 // ============================================================================
-// 📊 الداشبورد الشخصية لكل يوزر (تعمل لكل عضو أو أدمن دون تعارض)
+// ⏱️ محرك المراحل والتواريخ الديناميكية وحساب الـ Overdue الحقيقي وسجل الحركات
 // ============================================================================
 function getSafeCode(code) { return code.replace(/\./g, "_"); }
 
+function addDaysToDateStr(dateStr, daysCount) {
+    const d = dateStr ? new Date(dateStr) : new Date();
+    if (isNaN(d.getTime())) return "";
+    d.setDate(d.getDate() + Number(daysCount || 1));
+    return d.toISOString().split("T")[0];
+}
+
+function todayDateStr() {
+    return new Date().toISOString().split("T")[0];
+}
+
 function getPipeItem(code) {
     const k = getSafeCode(code);
+    const totalStages = portalState.workflowStages.length;
     if (!portalState.pipeline[k]) {
         portalState.pipeline[k] = {
-            stage: 1, // 1:الكتابة, 2:المراجعة اللغوية, 3:التنسيق, 4:التمبلت, 5:مكتمل نهائياً
+            stageIdx: 0, // 0 هي المرحلة الأولى، وعندما يساوي totalStages تكون مكتملة نهائياً
+            subStatus: "not-started", // not-started | in-progress
             rejected: false,
             rejectReason: "",
-            writer: "", proofreader: "", formatter: "", templateUser: "",
-            due1: "", due2: "", due3: "", due4: "",
-            link1: "", link2: "", link3: "", link4: "",
-            notes: ""
+            stageData: {}, // { [idx]: { assignee:"", slaDays:3, startDate:"", dueDate:"", completedAt:"", link:"", notes:"" } }
+            history: [] // [ { time, user, action } ]
         };
     }
-    return portalState.pipeline[k];
+    const p = portalState.pipeline[k];
+    if (typeof p.stageIdx !== "number") p.stageIdx = 0;
+    if (!p.stageData) p.stageData = {};
+    if (!Array.isArray(p.history)) p.history = [];
+
+    // ضمان تهيئة بيانات كل مرحلة ديناميكياً
+    portalState.workflowStages.forEach((stg, idx) => {
+        if (!p.stageData[idx]) {
+            p.stageData[idx] = {
+                assignee: "",
+                slaDays: stg.slaDays || 2,
+                startDate: "",
+                dueDate: "",
+                completedAt: "",
+                link: "",
+                notes: ""
+            };
+        }
+    });
+    return p;
 }
 
-function isUserActiveInStage(p, uName) {
-    if (!uName) return false;
-    if (p.stage === 1 && p.writer === uName) return true;
-    if (p.stage === 2 && p.proofreader === uName) return true;
-    if (p.stage === 3 && p.formatter === uName) return true;
-    if (p.stage === 4 && p.templateUser === uName) return true;
-    return false;
+function isCompletedTopic(p) {
+    return p.stageIdx >= portalState.workflowStages.length;
 }
 
-function getActiveStageDue(p) {
-    if (p.stage === 1) return p.due1;
-    if (p.stage === 2) return p.due2;
-    if (p.stage === 3) return p.due3;
-    if (p.stage === 4) return p.due4;
-    return "";
+function isUserActiveInTopic(p, username) {
+    if (!username || isCompletedTopic(p)) return false;
+    const curStg = p.stageData[p.stageIdx];
+    return curStg && curStg.assignee === username;
 }
 
-function isStageOverdue(p) {
-    if (p.stage === 5) return false;
-    const d = getActiveStageDue(p);
-    if (!d) return false;
-    const today = new Date().toISOString().split("T")[0];
-    return d < today;
+function isTopicOverdueNow(p) {
+    if (isCompletedTopic(p)) return false;
+    const curStg = p.stageData[p.stageIdx];
+    if (!curStg || !curStg.dueDate) return false;
+    return curStg.dueDate < todayDateStr();
 }
 
+function getUserAvatarUrl(uKey) {
+    if (uKey === "admin") return "https://ui-avatars.com/api/?name=Admin&background=f47403&color=fff";
+    const u = portalState.users[uKey];
+    if (u && u.avatar) return u.avatar;
+    const name = u ? u.displayName : (uKey || "U");
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=050b55&color=fff`;
+}
+
+function getUserNameDisplay(uKey) {
+    if (!uKey) return tText("غير معين", "Unassigned");
+    if (uKey === "admin") return "Super Admin";
+    return portalState.users[uKey] ? portalState.users[uKey].displayName : uKey;
+}
+
+function getUserJobsText(uObj) {
+    if (!uObj) return "-";
+    const jobsArr = Array.isArray(uObj.jobs) ? uObj.jobs : (uObj.jobRole ? [uObj.jobRole] : []);
+    if (jobsArr.length === 0) return "بدون تخصص محدد";
+    return jobsArr.map(jKey => {
+        const found = portalState.jobCatalog.find(x => x.key === jKey);
+        return found ? found.title : jKey;
+    }).join(" + ");
+}
+
+// ============================================================================
+// 📊 الداشبورد الشخصية لكل يوزر
+// ============================================================================
 function renderPersonalDashboard() {
     const box = document.getElementById("personalDashboard");
     if (!portalState.currentUser) return;
     const uName = portalState.currentUser.username;
-    const dict = I18N[portalState.lang];
 
-    let myTurnCount = 0, myAssignedTotal = 0, myOverdueCount = 0, myHandedOverCount = 0;
-    const urgentItems = [];
+    let myTurnCount = 0, myInProgressCount = 0, myOverdueCount = 0, myDoneStagesCount = 0;
+    const urgentList = [];
 
     COURSE_DATA.forEach(mod => {
         mod.sections.forEach(sec => {
             sec.topics.forEach(t => {
                 const code = t[0], title = t[1];
                 const p = getPipeItem(code);
-                const involved = (p.writer === uName || p.proofreader === uName || p.formatter === uName || p.templateUser === uName);
-                if (involved) myAssignedTotal++;
-
-                if (isUserActiveInStage(p, uName)) {
+                if (isUserActiveInTopic(p, uName)) {
                     myTurnCount++;
-                    if (isStageOverdue(p)) myOverdueCount++;
-                    urgentItems.push({ code, title, stage: p.stage, rejected: p.rejected, due: getActiveStageDue(p) });
+                    if (p.subStatus === "in-progress") myInProgressCount++;
+                    if (isTopicOverdueNow(p)) myOverdueCount++;
+                    const curStg = p.stageData[p.stageIdx] || {};
+                    urgentList.push({ code, title, stgName: portalState.workflowStages[p.stageIdx]?.name || "", rejected: p.rejected, due: curStg.dueDate });
                 }
-
-                // مراحل سلمها هذا المستخدم بالفعل
-                if ((p.writer === uName && p.stage > 1) ||
-                    (p.proofreader === uName && p.stage > 2) ||
-                    (p.formatter === uName && p.stage > 3) ||
-                    (p.templateUser === uName && p.stage === 5)) {
-                    myHandedOverCount++;
-                }
+                // حساب المراحل التي أنجزها وسلمها هذا المستخدم
+                portalState.workflowStages.forEach((stg, idx) => {
+                    if (p.stageData[idx]?.assignee === uName && p.stageIdx > idx) {
+                        myDoneStagesCount++;
+                    }
+                });
             });
         });
     });
 
-    const jobLabels = {
-        writer: tText("✍️ كاتب علمي", "✍️ Content Writer"),
-        proofreader: tText("🔍 مراجع لغوي", "🔍 Proofreader"),
-        formatter: tText("🎨 مسؤول تنسيق", "🎨 Formatter"),
-        template: tText("📄 مسؤول تمبلت DCA", "📄 DCA Template Specialist")
-    };
-
-    const sysLabels = {
-        superadmin: "👑 Super Admin",
-        admin: "🛡️ Admin",
-        user: "👤 Team Member"
-    };
+    const roleObj = portalState.rolesConfig[portalState.currentUser.sysRole];
+    const roleTitle = roleObj ? roleObj.title : portalState.currentUser.sysRole;
+    const uObj = portalState.users[uName] || portalState.currentUser;
 
     box.innerHTML = `
         <div class="dash-header">
-            <div>
-                <h3 style="font-size:1rem; font-weight:800; color:var(--text-main);">${dict.dashTitle}</h3>
-                <p style="font-size:0.76rem; color:var(--text-muted);">
-                    ${tText("مرحباً", "Welcome")} <strong>${portalState.currentUser.displayName}</strong> |
-                    ${tText("صلاحية النظام:", "System Access:")} <span style="color:var(--orange); font-weight:800;">${sysLabels[portalState.currentUser.sysRole]}</span> |
-                    ${tText("وظيفتك في خط الإنتاج:", "Workflow Job:")} <strong>${jobLabels[portalState.currentUser.jobRole] || '-'}</strong>
-                </p>
+            <div style="display:flex; align-items:center; gap:0.8rem;">
+                <img src="${getUserAvatarUrl(uName)}" style="width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid var(--orange);">
+                <div>
+                    <h3 style="font-size:1rem; font-weight:800;">📊 لوحة متابعة مهامي الشخصية (${portalState.currentUser.displayName})</h3>
+                    <p style="font-size:0.75rem; color:var(--text-muted);">
+                        مستوى الصلاحية: <strong style="color:var(--orange);">${roleTitle}</strong> |
+                        الوظائف المسندة: <strong>${getUserJobsText(uObj)}</strong>
+                    </p>
+                </div>
             </div>
             <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-                <button class="btn btn-orange" onclick="openCourseStructureWithFilter('MY_TURN')">🎯 ${tText("عرض المهام الواقفة عندي الآن", "Show Tasks Waiting My Action")} (${myTurnCount})</button>
-                <button class="btn btn-outline" onclick="openCourseStructureWithFilter('ALL')">📋 ${tText("عرض كل نقاط الكورس", "Show All Course Topics")}</button>
+                <button class="btn btn-orange" onclick="openCourseStructureWithFilter('MY_TURN')">🔥 مهام تنتظر استلامي/تسليمي الآن (${myTurnCount})</button>
+                <button class="btn btn-outline" onclick="openCourseStructureWithFilter('ALL')">📋 عرض كل النقاط</button>
             </div>
         </div>
         <div class="dash-kpi-grid">
             <div class="kpi-card" onclick="openCourseStructureWithFilter('MY_TURN')">
-                <div><div class="kpi-label">${dict.kpiAction}</div></div>
+                <div class="kpi-label">🔥 واقفة عند مرحلتي الآن</div>
                 <div class="kpi-num">${myTurnCount}</div>
             </div>
-            <div class="kpi-card" onclick="openCourseStructureWithFilter('MY_ALL')">
-                <div><div class="kpi-label">${tText("📌 إجمالي النقاط المسندة إليك", "📌 Total Assigned to You")}</div></div>
-                <div class="kpi-num" style="color:var(--text-main);">${myAssignedTotal}</div>
+            <div class="kpi-card" onclick="openCourseStructureWithFilter('IN_PROGRESS')">
+                <div class="kpi-label">⏳ جاري العمل عليها حالياً (In Progress)</div>
+                <div class="kpi-num" style="color:#0284c7;">${myInProgressCount}</div>
             </div>
             <div class="kpi-card" onclick="openCourseStructureWithFilter('OVERDUE')">
-                <div><div class="kpi-label">${dict.kpiOverdue}</div></div>
+                <div class="kpi-label">🚨 متأخرة عن الموعد (Overdue)</div>
                 <div class="kpi-num" style="color:#ef4444;">${myOverdueCount}</div>
             </div>
             <div class="kpi-card" onclick="openCourseStructureWithFilter('COMPLETED')">
-                <div><div class="kpi-label">${dict.kpiDone}</div></div>
-                <div class="kpi-num" style="color:#10b981;">${myHandedOverCount}</div>
+                <div class="kpi-label">✅ مراحل أنجزتها وسلمتها</div>
+                <div class="kpi-num" style="color:#10b981;">${myDoneStagesCount}</div>
             </div>
         </div>
-        ${urgentItems.length > 0 ? `
-            <div style="margin-top:0.8rem; padding-top:0.7rem; border-top:1px dashed var(--border-color); font-size:0.78rem;">
-                <strong style="color:var(--orange);">⚡ ${tText("أهم النقاط التي تنتظر استلامك/إجراءك الآن:", "Urgent Topics Waiting Your Action:")}</strong>
-                <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.4rem;">
-                    ${urgentItems.slice(0, 8).map(item => `
-                        <span onclick="jumpToTopic('${item.code}')" style="cursor:pointer; background:var(--card-bg); border:1px solid ${item.rejected?'#ef4444':'var(--orange)'}; padding:0.2rem 0.6rem; border-radius:6px; font-weight:700;">
-                            ${item.code} ${item.rejected ? '⚠️ (مرتجع للتعديل)' : ''} ${item.due ? `[📅 ${item.due}]` : ''}
+        ${urgentList.length > 0 ? `
+            <div style="margin-top:0.75rem; padding-top:0.65rem; border-top:1px dashed var(--border-color); font-size:0.76rem;">
+                <strong style="color:var(--orange);">⚡ مهام عاجلة تنتظر إجراءك الآن (اضغط لفتح النقطة مباشرة):</strong>
+                <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.35rem;">
+                    ${urgentList.slice(0, 10).map(it => `
+                        <span onclick="jumpToTopic('${it.code}')" style="cursor:pointer; background:var(--card-bg); border:1px solid ${it.rejected?'#ef4444':'var(--orange)'}; padding:0.2rem 0.6rem; border-radius:6px; font-weight:700;">
+                            ${it.code} (${it.stgName}) ${it.rejected ? '⚠️ مرتجع للتعديل' : ''} ${it.due ? `[📅 استحقاق: ${it.due}]` : ''}
                         </span>
                     `).join("")}
                 </div>
@@ -1118,9 +1307,8 @@ function renderPersonalDashboard() {
         ` : ''}
     `;
 }
-
 // ============================================================================
-// 🗂️ نظام البوابة متعددة المستويات (المستوى 1 ⬅️ المستوى 2 ⬅️ المستوى 3)
+// 🗂️ نظام التنقل متعدد المستويات في البوابة (Multi-Level Portal Navigation)
 // ============================================================================
 function navigatePortal(level, catId = null, courseId = null, toolId = null) {
     portalState.navPath = { level, catId, courseId, toolId };
@@ -1129,58 +1317,40 @@ function navigatePortal(level, catId = null, courseId = null, toolId = null) {
 
 function renderBreadcrumbs() {
     const bar = document.getElementById("breadcrumbContainer");
-    const dict = I18N[portalState.lang];
     const { level, catId, courseId, toolId } = portalState.navPath;
-
-    let html = `<span class="crumb-item ${level==='HOME'?'active':''}" onclick="navigatePortal('HOME')">${dict.homeCrumb}</span>`;
+    let html = `<span class="crumb-item ${level==='HOME'?'active':''}" onclick="navigatePortal('HOME')">🏠 الرئيسية (DCA Portal)</span>`;
 
     if (catId) {
         const cat = portalState.portalTree.categories.find(c => c.id === catId);
-        if (cat) {
-            html += ` <span>/</span> <span class="crumb-item ${level==='CATEGORY'?'active':''}" onclick="navigatePortal('CATEGORY', '${catId}')">${tText(cat.titleAr, cat.titleEn)}</span>`;
-        }
+        if (cat) html += ` <span>/</span> <span class="crumb-item ${level==='CATEGORY'?'active':''}" onclick="navigatePortal('CATEGORY', '${catId}')">${tText(cat.titleAr, cat.titleEn)}</span>`;
     }
     if (courseId && catId) {
-        const crsList = portalState.portalTree.courses[catId] || [];
-        const crs = crsList.find(c => c.id === courseId);
-        if (crs) {
-            html += ` <span>/</span> <span class="crumb-item ${level==='COURSE'?'active':''}" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">${tText(crs.titleAr, crs.titleEn)}</span>`;
-        }
+        const crs = (portalState.portalTree.courses[catId] || []).find(c => c.id === courseId);
+        if (crs) html += ` <span>/</span> <span class="crumb-item ${level==='COURSE'?'active':''}" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">${tText(crs.titleAr, crs.titleEn)}</span>`;
     }
     if (toolId && courseId) {
-        const tList = portalState.portalTree.courseTools[courseId] || [];
-        const tl = tList.find(x => x.id === toolId);
-        if (tl) {
-            html += ` <span>/</span> <span class="crumb-item active">${tText(tl.titleAr, tl.titleEn)}</span>`;
-        }
+        const tl = (portalState.portalTree.courseTools[courseId] || []).find(x => x.id === toolId);
+        if (tl) html += ` <span>/</span> <span class="crumb-item active">${tText(tl.titleAr, tl.titleEn)}</span>`;
     }
     bar.innerHTML = html;
 }
 
-function isSuperAdmin() {
-    return portalState.currentUser && portalState.currentUser.sysRole === "superadmin";
-}
-
-function isAdminOrSuper() {
-    return portalState.currentUser && (portalState.currentUser.sysRole === "superadmin" || portalState.currentUser.sysRole === "admin");
-}
-
 function renderAllViews() {
+    if (!portalState.currentUser) return;
     renderBreadcrumbs();
     renderPersonalDashboard();
-    updateUnreadBadge();
+    updateHeaderButtonsAndAvatar();
 
     const viewport = document.getElementById("mainViewPort");
     const { level, catId, courseId, toolId } = portalState.navPath;
-    const dict = I18N[portalState.lang];
+    const canManageNodes = hasPerm("manage_portal_nodes");
 
-    // المستوى الأول: الصفحة الرئيسية لبوابة DCA Portal
     if (level === "HOME") {
         const cats = portalState.portalTree.categories || [];
         viewport.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <h2 style="font-size:1.25rem; font-weight:800;">🏛️ ${tText("الأقسام الرئيسية لبوابة DCA Portal", "DCA Portal Main Categories")}</h2>
-                ${isSuperAdmin() ? `<button class="btn btn-orange" onclick="addPortalNode('CATEGORY')">${dict.addBtn}</button>` : ''}
+                <h2 style="font-size:1.2rem; font-weight:800;">🏛️ القطاعات والأقسام الرئيسية لمنظومة DCA</h2>
+                ${canManageNodes ? `<button class="btn btn-orange" onclick="addPortalNode('CATEGORY')">➕ إضافة قطاع/قسم رئيسي</button>` : ''}
             </div>
             <div class="portal-grid">
                 ${cats.map(c => `
@@ -1191,30 +1361,28 @@ function renderAllViews() {
                             <p>${tText(c.descAr, c.descEn)}</p>
                         </div>
                         <div class="portal-card-footer">
-                            <button class="btn btn-orange" onclick="navigatePortal('CATEGORY', '${c.id}')">${dict.openBtn}</button>
-                            ${isSuperAdmin() ? `
+                            <button class="btn btn-orange" onclick="navigatePortal('CATEGORY', '${c.id}')">🚀 فتح القطاع</button>
+                            ${canManageNodes ? `
                                 <div style="display:flex; gap:0.3rem;">
-                                    <button class="btn btn-outline" onclick="editPortalNode('CATEGORY', '${c.id}')">${dict.editBtn}</button>
+                                    <button class="btn btn-outline" onclick="editPortalNode('CATEGORY', '${c.id}')">✏️</button>
                                     <button class="btn btn-danger" onclick="deletePortalNode('CATEGORY', '${c.id}')">🗑️</button>
                                 </div>
                             ` : ''}
                         </div>
                     </div>
                 `).join("")}
-            </div>
-        `;
+            </div>`;
         return;
     }
 
-    // المستوى الثاني: الكورسات داخل القسم
     if (level === "CATEGORY") {
         const courses = (portalState.portalTree.courses && portalState.portalTree.courses[catId]) || [];
         viewport.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <h2 style="font-size:1.25rem; font-weight:800;">📚 ${tText("قائمة الكورسات والبرامج التدريبية", "Training Courses List")}</h2>
+                <h2 style="font-size:1.2rem; font-weight:800;">📚 الكورسات والبرامج التدريبية في هذا القطاع</h2>
                 <div style="display:flex; gap:0.5rem;">
-                    ${isSuperAdmin() ? `<button class="btn btn-orange" onclick="addPortalNode('COURSE', '${catId}')">➕ ${tText("إضافة كورس جديد", "Add New Course")}</button>` : ''}
-                    <button class="btn btn-outline" onclick="navigatePortal('HOME')">⬅️ ${tText("رجوع", "Back")}</button>
+                    ${canManageNodes ? `<button class="btn btn-orange" onclick="addPortalNode('COURSE', '${catId}')">➕ إضافة كورس جديد</button>` : ''}
+                    <button class="btn btn-outline" onclick="navigatePortal('HOME')">⬅️ رجوع للرئيسية</button>
                 </div>
             </div>
             <div class="portal-grid">
@@ -1226,30 +1394,28 @@ function renderAllViews() {
                             <p>${tText(crs.descAr, crs.descEn)}</p>
                         </div>
                         <div class="portal-card-footer">
-                            <button class="btn btn-orange" onclick="navigatePortal('COURSE', '${catId}', '${crs.id}')">🚀 ${tText("دخول لإدارة الكورس", "Enter Course Hub")}</button>
-                            ${isSuperAdmin() ? `
+                            <button class="btn btn-orange" onclick="navigatePortal('COURSE', '${catId}', '${crs.id}')">🚀 دخول لإدارة الكورس</button>
+                            ${canManageNodes ? `
                                 <div style="display:flex; gap:0.3rem;">
-                                    <button class="btn btn-outline" onclick="editPortalNode('COURSE', '${catId}', '${crs.id}')">${dict.editBtn}</button>
+                                    <button class="btn btn-outline" onclick="editPortalNode('COURSE', '${catId}', '${crs.id}')">✏️</button>
                                     <button class="btn btn-danger" onclick="deletePortalNode('COURSE', '${catId}', '${crs.id}')">🗑️</button>
                                 </div>
                             ` : ''}
                         </div>
                     </div>
                 `).join("")}
-            </div>
-        `;
+            </div>`;
         return;
     }
 
-    // المستوى الثالث: أزرار وأقسام الكورس (الاستركشر، التاسكات، الجدول، اللينكات...)
     if (level === "COURSE") {
         const tools = (portalState.portalTree.courseTools && portalState.portalTree.courseTools[courseId]) || [];
         viewport.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <h2 style="font-size:1.25rem; font-weight:800;">🗂️ ${tText("بوابات وأدوات إدارة الكورس", "Course Management Modules & Tools")}</h2>
+                <h2 style="font-size:1.2rem; font-weight:800;">🗂️ بوابات وأدوات إدارة الكورس</h2>
                 <div style="display:flex; gap:0.5rem;">
-                    ${isSuperAdmin() ? `<button class="btn btn-orange" onclick="addPortalNode('TOOL', '${catId}', '${courseId}')">➕ ${tText("إضافة زرار/قسم للكورس", "Add Course Section Button")}</button>` : ''}
-                    <button class="btn btn-outline" onclick="navigatePortal('CATEGORY', '${catId}')">⬅️ ${tText("رجوع للكورسات", "Back to Courses")}</button>
+                    ${canManageNodes ? `<button class="btn btn-orange" onclick="addPortalNode('TOOL', '${catId}', '${courseId}')">➕ إضافة زرار/أداة للكورس</button>` : ''}
+                    <button class="btn btn-outline" onclick="navigatePortal('CATEGORY', '${catId}')">⬅️ رجوع للكورسات</button>
                 </div>
             </div>
             <div class="portal-grid">
@@ -1261,34 +1427,30 @@ function renderAllViews() {
                             <p>${tText(tl.descAr, tl.descEn)}</p>
                         </div>
                         <div class="portal-card-footer">
-                            <button class="btn btn-orange" onclick="navigatePortal('TOOL', '${catId}', '${courseId}', '${tl.id}')">${dict.openBtn}</button>
-                            ${isSuperAdmin() ? `
+                            <button class="btn btn-orange" onclick="navigatePortal('TOOL', '${catId}', '${courseId}', '${tl.id}')">🚀 فتح الأداة</button>
+                            ${canManageNodes ? `
                                 <div style="display:flex; gap:0.3rem;">
-                                    <button class="btn btn-outline" onclick="editPortalNode('TOOL', '${catId}', '${courseId}', '${tl.id}')">${dict.editBtn}</button>
+                                    <button class="btn btn-outline" onclick="editPortalNode('TOOL', '${catId}', '${courseId}', '${tl.id}')">✏️</button>
                                     <button class="btn btn-danger" onclick="deletePortalNode('TOOL', '${catId}', '${courseId}', '${tl.id}')">🗑️</button>
                                 </div>
                             ` : ''}
                         </div>
                     </div>
                 `).join("")}
-            </div>
-        `;
+            </div>`;
         return;
     }
 
-    // المستوى الرابع: فتح الأداة نفسها (إما الاستركشر ذو الـ 4 مراحل أو لوحة التاسكات/الجدول/اللينكات)
     if (level === "TOOL") {
         const tools = (portalState.portalTree.courseTools && portalState.portalTree.courseTools[courseId]) || [];
         const tl = tools.find(x => x.id === toolId);
-        if (!tl || tl.type === "STRUCTURE") {
-            renderStructurePipelineView(viewport, catId, courseId);
-        } else {
-            renderCustomToolBoard(viewport, catId, courseId, tl);
-        }
+        if (!tl || tl.type === "STRUCTURE") renderStructurePipelineView(viewport, catId, courseId);
+        else renderCustomToolBoard(viewport, catId, courseId, tl);
     }
 }
+
 // ============================================================================
-// 🏗️ محرك عرض استركشر الكورس ونظام الـ 4 مراحل للتسليم والتسلم (4-Stage Pipeline)
+// 🏗️ عرض استركشر الكورس والمراحل الديناميكية دون إغلاق النقاط المفتوحة
 // ============================================================================
 function openCourseStructureWithFilter(fMode) {
     portalState.filterMode = fMode;
@@ -1297,52 +1459,62 @@ function openCourseStructureWithFilter(fMode) {
 }
 
 function jumpToTopic(code) {
-    const modCode = code.split(".")[0];
-    portalState.selectedModule = modCode;
+    portalState.selectedModule = code.split(".")[0];
     portalState.filterMode = "ALL";
+    openTopicPanesSet.add(code);
     portalState.navPath = { level: "TOOL", catId: "cat_courses", courseId: "crs_dc_im", toolId: "tool_structure" };
     renderAllViews();
     setTimeout(() => {
         const el = document.getElementById(`topic-card-${code}`);
-        const pane = document.getElementById(`topic-pane-${code}`);
-        if (pane) pane.classList.add("open");
         if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 150);
+    }, 120);
 }
 
-function getUserSelectOptions(selectedUser, roleFilter = null) {
+function toggleStructTopic(tCode) {
+    const pane = document.getElementById(`topic-pane-${tCode}`);
+    if (!pane) return;
+    if (openTopicPanesSet.has(tCode)) {
+        openTopicPanesSet.delete(tCode);
+        pane.classList.remove("open");
+    } else {
+        openTopicPanesSet.add(tCode);
+        pane.classList.add("open");
+    }
+}
+
+function getUserOptionsForJob(selectedUser, jobKey) {
     const keys = Object.keys(portalState.users);
     let html = `<option value="">-- غير معين --</option>`;
     keys.forEach(k => {
         const u = portalState.users[k];
-        const tag = u.jobRole ? `[${u.jobRole}]` : "";
-        html += `<option value="${k}" ${selectedUser === k ? 'selected' : ''}>${u.displayName} ${tag}</option>`;
+        const uJobs = Array.isArray(u.jobs) ? u.jobs : (u.jobRole ? [u.jobRole] : []);
+        const mark = uJobs.includes(jobKey) ? "⭐" : "";
+        html += `<option value="${k}" ${selectedUser === k ? 'selected' : ''}>${mark} ${u.displayName}</option>`;
     });
     return html;
 }
 
-function getUserNameDisplay(uKey) {
-    if (!uKey) return tText("غير معين", "Unassigned");
-    return portalState.users[uKey] ? portalState.users[uKey].displayName : uKey;
-}
-
 function renderStructurePipelineView(viewport, catId, courseId) {
     const uName = portalState.currentUser.username;
-    const canAdmin = isAdminOrSuper();
+    const canAssign = hasPerm("assign_tasks");
+    const canEditDates = hasPerm("edit_dates_sla");
+    const canOverride = hasPerm("override_stage");
+    const stages = portalState.workflowStages;
+
+    const prevSearch = document.getElementById("structSearchInput")?.value || "";
+    const searchVal = prevSearch.trim().toLowerCase();
 
     let unitsNavHtml = COURSE_DATA.map(m => {
         let cnt = 0;
         m.sections.forEach(s => cnt += s.topics.length);
         return `
-            <li class="unit-item ${portalState.selectedModule === m.code ? 'active' : ''}" onclick="selectStructureUnit('${m.code}')">
+            <li class="unit-item ${portalState.selectedModule === m.code ? 'active' : ''}" onclick="portalState.selectedModule='${m.code}'; renderAllViews();">
                 <span><strong>${m.code}</strong> - ${m.title}</span>
                 <span class="notif-badge" style="background:var(--navy-light);">${cnt}</span>
-            </li>
-        `;
+            </li>`;
     }).join("");
 
     let modulesHtml = "";
-    const searchVal = (document.getElementById("structSearchInput")?.value || "").trim().toLowerCase();
 
     COURSE_DATA.forEach(mod => {
         if (portalState.selectedModule !== "ALL" && portalState.selectedModule !== mod.code) return;
@@ -1353,28 +1525,56 @@ function renderStructurePipelineView(viewport, catId, courseId) {
             sec.topics.forEach(t => {
                 const [tCode, tTitle, tContent, tTerms, isNew] = t;
                 const p = getPipeItem(tCode);
-                const myTurn = isUserActiveInStage(p, uName);
-                const overdue = isStageOverdue(p);
-                const involved = (p.writer === uName || p.proofreader === uName || p.formatter === uName || p.templateUser === uName);
+                const completed = isCompletedTopic(p);
+                const myTurn = isUserActiveInTopic(p, uName);
+                const overdue = isTopicOverdueNow(p);
 
-                // تطبيق الفلتر النشط
                 if (portalState.filterMode === "MY_TURN" && !myTurn) return;
-                if (portalState.filterMode === "MY_ALL" && !involved) return;
+                if (portalState.filterMode === "IN_PROGRESS" && !(myTurn && p.subStatus === "in-progress")) return;
                 if (portalState.filterMode === "OVERDUE" && !overdue) return;
-                if (portalState.filterMode === "COMPLETED" && p.stage !== 5) return;
+                if (portalState.filterMode === "COMPLETED" && !completed) return;
 
                 if (searchVal) {
                     const hay = `${tCode} ${tTitle} ${tContent} ${(tTerms||[]).join(" ")}`.toLowerCase();
                     if (!hay.includes(searchVal)) return;
                 }
 
-                const stageNames = {
-                    1: tText("1️⃣ مرحلة الكتابة العلمية", "1️⃣ Content Writing"),
-                    2: tText("2️⃣ مرحلة المراجعة اللغوية", "2️⃣ Proofreading"),
-                    3: tText("3️⃣ مرحلة التنسيق الفني", "3️⃣ Formatting"),
-                    4: tText("4️⃣ مرحلة تمبلت DCA", "4️⃣ DCA Template"),
-                    5: tText("🏆 مكتمل ومعتمد في التمبلت", "🏆 Completed in DCA Template")
-                };
+                const curStageObj = stages[p.stageIdx];
+                const curStageTitle = completed
+                    ? "🏆 مكتمل ومعتمد بالكامل في كل المراحل"
+                    : `${curStageObj.icon} المرحلة (${p.stageIdx + 1}/${stages.length}): ${curStageObj.name}`;
+
+                const isOpen = openTopicPanesSet.has(tCode);
+
+                // رسم بطاقات المراحل الديناميكية
+                const stepperHtml = stages.map((stg, idx) => {
+                    const sd = p.stageData[idx] || {};
+                    const isCur = (!completed && p.stageIdx === idx);
+                    const isDone = (p.stageIdx > idx);
+                    let boxCls = "step-box";
+                    if (isCur) boxCls += p.rejected ? " rejected-stage" : " active-stage";
+                    else if (isDone) boxCls += " done-stage";
+
+                    return `
+                    <div class="${boxCls}">
+                        <div class="step-head">
+                            <span>${idx + 1}. ${stg.icon} ${stg.name}</span>
+                            <span>${isDone ? '✅' : (isCur ? (p.subStatus==='in-progress'?'⚙️ جاري':'⏳') : '')}</span>
+                        </div>
+                        <div>
+                            👤 ${canAssign ? `<select class="form-input" style="padding:0.12rem; font-size:0.7rem;" onchange="assignTopicStageUser('${tCode}', ${idx}, this.value)">${getUserOptionsForJob(sd.assignee, stg.jobKey)}</select>` : `<strong>${getUserNameDisplay(sd.assignee)}</strong>`}
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.25rem;">
+                            <span>⏱️ المدة (أيام):</span>
+                            ${canEditDates ? `<input type="number" min="1" class="form-input" style="width:55px; padding:0.1rem; font-size:0.7rem;" value="${sd.slaDays || stg.slaDays}" onchange="updateTopicStageSla('${tCode}', ${idx}, this.value)">` : `<strong>${sd.slaDays || stg.slaDays} يوم</strong>`}
+                        </div>
+                        <div>🟢 بدء: <strong>${sd.startDate || '-'}</strong></div>
+                        <div>
+                            📅 استحقاق: ${(canEditDates || (isCur && sd.assignee === uName && idx > 0)) ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.68rem;" value="${sd.dueDate||''}" onchange="updateTopicStageDue('${tCode}', ${idx}, this.value)">` : `<strong>${sd.dueDate || 'يُحسب عند الاستلام'}</strong>`}
+                        </div>
+                        ${sd.completedAt ? `<div style="color:#10b981; font-weight:700;">✔ سُلّم: ${sd.completedAt}</div>` : ''}
+                    </div>`;
+                }).join("");
 
                 topicsHtml += `
                 <div class="topic-item ${myTurn ? 'my-turn' : ''}" id="topic-card-${tCode}">
@@ -1382,50 +1582,20 @@ function renderStructurePipelineView(viewport, catId, courseId) {
                         <div class="topic-title-box" onclick="toggleStructTopic('${tCode}')">
                             <span class="t-code">${tCode}</span>
                             <span class="t-title">${tTitle}</span>
-                            ${isNew ? `<span class="badge-role" style="background:#10b981;">✨ محدث</span>` : ''}
-                            ${p.rejected ? `<span class="badge-role" style="background:#ef4444;">⚠️ مرفوض ومرتجع للتعديل</span>` : ''}
-                            ${overdue ? `<span class="badge-role" style="background:#dc2626;">🚨 متأخر (Overdue)</span>` : ''}
-                            ${myTurn ? `<span class="badge-role">🔥 دورك الآن للاستلام/التسليم</span>` : ''}
+                            ${isNew ? `<span class="notif-badge" style="background:#10b981;">✨ محدث</span>` : ''}
+                            ${p.rejected ? `<span class="notif-badge" style="background:#ef4444;">⚠️ مرفوض ومرتجع للتعديل</span>` : ''}
+                            ${overdue ? `<span class="notif-badge" style="background:#dc2626;">🚨 متأخر (Overdue)</span>` : ''}
+                            ${myTurn ? `<span class="notif-badge">🔥 دورك الآن</span>` : ''}
                         </div>
                         <div style="display:flex; align-items:center; gap:0.4rem;">
-                            <span style="font-size:0.76rem; font-weight:800; color:var(--orange);">${stageNames[p.stage]}</span>
-                            <button class="btn btn-outline" onclick="toggleStructTopic('${tCode}')">📖 ${tText("التفاصيل والتسليم", "Details & Handover")}</button>
+                            <span style="font-size:0.75rem; font-weight:800; color:${completed?'#10b981':'var(--orange)'};">${curStageTitle}</span>
+                            <button class="btn btn-outline" onclick="toggleStructTopic('${tCode}')">📖 ${isOpen ? 'طي التفاصيل ▲' : 'التفاصيل والتسليم ▼'}</button>
                         </div>
                     </div>
 
-                    <!-- شريط المراحل الأربع (Pipeline Stepper) -->
-                    <div class="pipeline-stepper">
-                        <!-- المرحلة 1: الكاتب -->
-                        <div class="step-box ${p.stage===1 ? (p.rejected?'rejected-stage':'active-stage') : (p.stage>1?'done-stage':'')}">
-                            <div class="step-head"><span>1. ✍️ الكتابة العلمية</span> ${p.stage>1?'✅':(p.stage===1?'⏳':'')}</div>
-                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'writer', this.value)">${getUserSelectOptions(p.writer)}</select>` : `<strong>${getUserNameDisplay(p.writer)}</strong>`}</div>
-                            <div>📅 ${canAdmin ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due1||''}" onchange="updateStageDate('${tCode}', 'due1', this.value)">` : (p.due1 || '-')}</div>
-                        </div>
+                    <div class="pipeline-stepper">${stepperHtml}</div>
 
-                        <!-- المرحلة 2: المراجع اللغوي -->
-                        <div class="step-box ${p.stage===2 ? 'active-stage' : (p.stage>2?'done-stage':'')}">
-                            <div class="step-head"><span>2. 🔍 المراجعة اللغوية</span> ${p.stage>2?'✅':(p.stage===2?'⏳':'')}</div>
-                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'proofreader', this.value)">${getUserSelectOptions(p.proofreader)}</select>` : `<strong>${getUserNameDisplay(p.proofreader)}</strong>`}</div>
-                            <div>📅 ${canAdmin ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due2||''}" onchange="updateStageDate('${tCode}', 'due2', this.value)">` : (p.due2 || '-')}</div>
-                        </div>
-
-                        <!-- المرحلة 3: التنسيق -->
-                        <div class="step-box ${p.stage===3 ? (p.rejected?'rejected-stage':'active-stage') : (p.stage>3?'done-stage':'')}">
-                            <div class="step-head"><span>3. 🎨 التنسيق الفني</span> ${p.stage>3?'✅':(p.stage===3?'⏳':'')}</div>
-                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'formatter', this.value)">${getUserSelectOptions(p.formatter)}</select>` : `<strong>${getUserNameDisplay(p.formatter)}</strong>`}</div>
-                            <div>📅 ${(canAdmin || (p.stage===3 && p.formatter===uName)) ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due3||''}" onchange="updateStageDate('${tCode}', 'due3', this.value)">` : (p.due3 || '-')}</div>
-                        </div>
-
-                        <!-- المرحلة 4: مسؤول تمبلت DCA -->
-                        <div class="step-box ${p.stage===4 ? 'active-stage' : (p.stage===5?'done-stage':'')}">
-                            <div class="step-head"><span>4. 📄 تمبلت DCA</span> ${p.stage===5?'🏆':(p.stage===4?'⏳':'')}</div>
-                            <div>👤 ${canAdmin ? `<select class="form-input" style="padding:0.15rem; font-size:0.72rem;" onchange="assignStageUser('${tCode}', 'templateUser', this.value)">${getUserSelectOptions(p.templateUser)}</select>` : `<strong>${getUserNameDisplay(p.templateUser)}</strong>`}</div>
-                            <div>📅 ${canAdmin ? `<input type="date" class="form-input" style="padding:0.1rem; font-size:0.7rem;" value="${p.due4||''}" onchange="updateStageDate('${tCode}', 'due4', this.value)">` : (p.due4 || '-')}</div>
-                        </div>
-                    </div>
-
-                    <!-- لوحة التفاصيل وإجراءات التسليم والاستلام والرفض -->
-                    <div class="topic-body-pane" id="topic-pane-${tCode}">
+                    <div class="topic-body-pane ${isOpen ? 'open' : ''}" id="topic-pane-${tCode}">
                         <div class="guide-grid">
                             <div class="guide-card">
                                 <h5>📝 المحتوى المطلوب كتابته بالتفصيل</h5>
@@ -1439,23 +1609,34 @@ function renderStructurePipelineView(viewport, catId, courseId) {
                                 </div>
                             </div>
                             <div class="guide-card">
-                                <h5>🔗 روابط ملفات المراحل الأربع</h5>
+                                <h5>🔗 روابط ملفات المراحل</h5>
                                 <div style="font-size:0.73rem; display:flex; flex-direction:column; gap:0.3rem;">
-                                    <div>1. ملف الكاتب: ${p.link1 ? `<a href="${p.link1}" target="_blank" style="color:var(--orange); font-weight:800;">فتح الملف ↗</a>` : 'لم يُرفق بعد'}</div>
-                                    <div>2. ملف المراجع اللغوي: ${p.link2 ? `<a href="${p.link2}" target="_blank" style="color:var(--orange); font-weight:800;">فتح الملف ↗</a>` : 'لم يُرفق بعد'}</div>
-                                    <div>3. ملف التنسيق: ${p.link3 ? `<a href="${p.link3}" target="_blank" style="color:var(--orange); font-weight:800;">فتح الملف ↗</a>` : 'لم يُرفق بعد'}</div>
-                                    <div>4. ملف تمبلت DCA النهائي: ${p.link4 ? `<a href="${p.link4}" target="_blank" style="color:#10b981; font-weight:800;">فتح التمبلت النهائي 🏆↗</a>` : 'لم يُرفق بعد'}</div>
+                                    ${stages.map((stg, idx) => {
+                                        const lnk = p.stageData[idx]?.link;
+                                        return `<div>${idx+1}. ${stg.name}: ${lnk ? `<a href="${lnk}" target="_blank" style="color:var(--orange); font-weight:800;">فتح الملف المرفق ↗</a>` : 'لم يُرفق بعد'}</div>`;
+                                    }).join("")}
                                 </div>
                             </div>
                         </div>
 
                         ${p.rejected && p.rejectReason ? `
-                            <div style="background:rgba(239,68,68,0.12); border:1px solid #ef4444; padding:0.7rem; border-radius:8px; margin-bottom:0.7rem; font-size:0.8rem; color:#ef4444; font-weight:700;">
+                            <div style="background:rgba(239,68,68,0.12); border:1px solid #ef4444; padding:0.7rem; border-radius:8px; margin-bottom:0.65rem; font-size:0.8rem; color:#ef4444; font-weight:700;">
                                 ⚠️ سبب الرفض والإرجاع من المرحلة التالية: "${p.rejectReason}"
                             </div>
                         ` : ''}
 
-                        ${renderStageActionControls(tCode, tTitle, p)}
+                        ${renderDynamicStageActionBox(tCode, tTitle, p)}
+
+                        ${canOverride ? renderAdminOverrideBar(tCode, p) : ''}
+
+                        ${p.history && p.history.length > 0 ? `
+                            <div style="margin-top:0.7rem; background:var(--card-bg); border:1px solid var(--border-color); border-radius:8px; padding:0.6rem 0.8rem; font-size:0.72rem;">
+                                <strong style="color:var(--orange);">📜 سجل حركات وتسليمات النقطة (Workflow Audit Log):</strong>
+                                <div style="max-height:110px; overflow-y:auto; margin-top:0.3rem; display:flex; flex-direction:column; gap:0.2rem;">
+                                    ${p.history.map(h => `<div>• <code>[${h.time}]</code> <strong>${h.user}:</strong> ${h.action}</div>`).join("")}
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
                 </div>`;
             });
@@ -1464,20 +1645,22 @@ function renderStructurePipelineView(viewport, catId, courseId) {
                 secsHtml += `
                 <div class="sec-container">
                     <div class="sec-head">
-                        <h3 style="font-size:0.98rem; font-weight:800; display:flex; align-items:center; gap:0.5rem;">
+                        <h3 style="font-size:0.96rem; font-weight:800; display:flex; align-items:center; gap:0.45rem;">
                             <span class="sec-code-pill">${sec.code}</span> ${sec.title}
                         </h3>
-                        ${canAdmin ? `
-                            <div style="display:flex; gap:0.35rem; align-items:center; flex-wrap:wrap; font-size:0.72rem; background:var(--bg-sec); padding:0.3rem 0.6rem; border-radius:6px;">
-                                <strong>تعيين جماعي للقسم:</strong>
-                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'writer', this.value)"><option value="">✍️ كاتب القسم...</option>${getUserSelectOptions("")}</select>
-                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'proofreader', this.value)"><option value="">🔍 مراجع القسم...</option>${getUserSelectOptions("")}</select>
-                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'formatter', this.value)"><option value="">🎨 منسق القسم...</option>${getUserSelectOptions("")}</select>
-                                <select class="form-input" style="width:auto; padding:0.15rem;" onchange="bulkAssignSecRole('${sec.code}', 'templateUser', this.value)"><option value="">📄 تمبلت القسم...</option>${getUserSelectOptions("")}</select>
+                        ${canAssign ? `
+                            <div style="display:flex; gap:0.3rem; align-items:center; flex-wrap:wrap; font-size:0.72rem; background:var(--bg-sec); padding:0.3rem 0.6rem; border-radius:6px;">
+                                <strong>توزيع جماعي للقسم:</strong>
+                                ${stages.map((stg, idx) => `
+                                    <select class="form-input" style="width:auto; padding:0.12rem; font-size:0.7rem;" onchange="bulkAssignSectionStage('${sec.code}', ${idx}, this.value)">
+                                        <option value="">${stg.icon} ${stg.name}...</option>
+                                        ${getUserOptionsForJob("", stg.jobKey)}
+                                    </select>
+                                `).join("")}
                             </div>
                         ` : ''}
                     </div>
-                    <div style="background:var(--orange-soft); border-right:4px solid var(--orange); padding:0.65rem 0.9rem; border-radius:6px; margin-bottom:0.8rem; font-size:0.78rem;">
+                    <div style="background:var(--orange-soft); border-right:4px solid var(--orange); padding:0.6rem 0.85rem; border-radius:6px; margin-bottom:0.75rem; font-size:0.77rem;">
                         <strong>🎯 هدف القسم:</strong> ${sec.why} | <strong>🗺️ طريقة العرض:</strong> ${sec.how}
                     </div>
                     <div>${topicsHtml}</div>
@@ -1488,10 +1671,8 @@ function renderStructurePipelineView(viewport, catId, courseId) {
         if (secsHtml !== "") {
             modulesHtml += `
             <div class="module-container">
-                <div class="module-head">
-                    <h2><span>الوحدة ${mod.code}:</span> ${mod.title}</h2>
-                </div>
-                <div style="padding:0.7rem 1.3rem; background:var(--bg-sec); font-size:0.8rem; color:var(--text-muted); border-bottom:1px solid var(--border-color);">
+                <div class="module-head"><h2><span>الوحدة ${mod.code}:</span> ${mod.title}</h2></div>
+                <div style="padding:0.65rem 1.2rem; background:var(--bg-sec); font-size:0.78rem; color:var(--text-muted); border-bottom:1px solid var(--border-color);">
                     <strong>📌 نظرة عامة:</strong> ${mod.overview}
                 </div>
                 ${secsHtml}
@@ -1501,262 +1682,731 @@ function renderStructurePipelineView(viewport, catId, courseId) {
 
     viewport.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; margin-bottom:1rem;">
-            <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-                <button class="btn btn-outline" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">⬅️ ${tText("رجوع لبوابات الكورس", "Back to Course Hub")}</button>
-                <input type="text" id="structSearchInput" class="form-input" style="width:240px;" placeholder="🔍 ابحث برقم النقطة أو الاسم..." oninput="renderStructurePipelineView(document.getElementById('mainViewPort'), '${catId}', '${courseId}')">
+            <div style="display:flex; gap:0.45rem; align-items:center; flex-wrap:wrap;">
+                <button class="btn btn-outline" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">⬅️ رجوع لبوابات الكورس</button>
+                <input type="text" id="structSearchInput" class="form-input" style="width:230px;" value="${prevSearch}" placeholder="🔍 ابحث برقم النقطة أو الاسم..." oninput="renderStructurePipelineView(document.getElementById('mainViewPort'), '${catId}', '${courseId}')">
                 <select class="form-input" style="width:auto;" onchange="portalState.filterMode=this.value; renderAllViews();">
                     <option value="ALL" ${portalState.filterMode==='ALL'?'selected':''}>📌 كل النقاط</option>
                     <option value="MY_TURN" ${portalState.filterMode==='MY_TURN'?'selected':''}>🔥 واقفة عند مرحلتي الآن</option>
-                    <option value="MY_ALL" ${portalState.filterMode==='MY_ALL'?'selected':''}>👤 كل النقاط المسندة لي</option>
+                    <option value="IN_PROGRESS" ${portalState.filterMode==='IN_PROGRESS'?'selected':''}>⚙️ جاري العمل عليها</option>
                     <option value="OVERDUE" ${portalState.filterMode==='OVERDUE'?'selected':''}>🚨 المتأخرات (Overdue)</option>
                     <option value="COMPLETED" ${portalState.filterMode==='COMPLETED'?'selected':''}>🏆 المكتملة نهائياً</option>
                 </select>
             </div>
-            <div style="display:flex; gap:0.4rem;">
-                <button class="btn btn-success" onclick="exportFullPipelineCSV()">📊 تصدير تقرير المراحل Excel</button>
-            </div>
+            <button class="btn btn-success" onclick="exportFullPipelineCSV()">📊 تصدير تقرير Excel شامل</button>
         </div>
         <div class="course-layout">
             <aside class="course-sidebar">
                 <div class="box-card">
                     <h3>
                         <span>📑 وحدات الكورس</span>
-                        <button class="btn btn-outline" style="padding:0.15rem 0.45rem; font-size:0.7rem;" onclick="selectStructureUnit('ALL')">الكل</button>
+                        <button class="btn btn-outline" style="padding:0.15rem 0.45rem; font-size:0.7rem;" onclick="portalState.selectedModule='ALL'; renderAllViews();">الكل</button>
                     </h3>
                     <ul class="unit-list">${unitsNavHtml}</ul>
                 </div>
             </aside>
             <div class="course-main">
-                ${modulesHtml || `<div class="box-card" style="text-align:center; padding:2.5rem;">لا توجد نقاط مطابقة للفلتر المحدد.</div>`}
+                ${modulesHtml || `<div class="box-card" style="text-align:center; padding:2.5rem;">لا توجد نقاط مطابقة للفلتر المحدد حالياً.</div>`}
             </div>
-        </div>
-    `;
+        </div>`;
 }
 
-// توليد أزرار التسليم والاستلام والموافقة والرفض حسب المرحلة الحالية وصلاحية اليوزر
-function renderStageActionControls(tCode, tTitle, p) {
+// ============================================================================
+// 🎯 صندوق إجراءات التسليم والاستلام الواضح لكل مرحلة + شريط تحكم السوبر أدمن
+// ============================================================================
+function renderDynamicStageActionBox(tCode, tTitle, p) {
+    const stages = portalState.workflowStages;
+    const completed = isCompletedTopic(p);
     const uName = portalState.currentUser.username;
-    const canAdmin = isAdminOrSuper();
-    const myTurn = isUserActiveInStage(p, uName);
+    const myTurn = isUserActiveInTopic(p, uName);
+    const canOverride = hasPerm("override_stage");
 
-    if (!myTurn && !canAdmin) {
+    if (completed) {
+        return `<div class="action-panel" style="border-color:#10b981;">
+            <strong style="color:#10b981;">🏆 هذه النقطة أتمت جميع المراحل بنجاح وتم اعتمادها بالكامل!</strong>
+        </div>`;
+    }
+
+    const curIdx = p.stageIdx;
+    const curStg = stages[curIdx];
+    const nextStg = stages[curIdx + 1];
+    const prevStg = curIdx > 0 ? stages[curIdx - 1] : null;
+    const sd = p.stageData[curIdx] || {};
+    const prevLink = curIdx > 0 ? (p.stageData[curIdx - 1]?.link || "") : "";
+
+    if (!myTurn && !canOverride) {
         return `<div class="action-panel" style="font-size:0.78rem; color:var(--text-muted);">
-            🔒 <strong>وضع العرض فقط:</strong> هذه النقطة حالياً في المرحلة (${p.stage}) وليست مسندة لحسابك في هذه المرحلة.
+            🔒 <strong>للعرض فقط:</strong> النقطة حالياً في مرحلة <strong>(${curStg.icon} ${curStg.name})</strong> عند العضو: <strong>${getUserNameDisplay(sd.assignee)}</strong>.
         </div>`;
     }
 
-    // المرحلة 1: الكاتب العلمي يكتب ويسلم للمراجع اللغوي
-    if (p.stage === 1) {
-        return `
-        <div class="action-panel">
-            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">✍️ إجراء المرحلة (1): الكتابة العلمية والتسليم للمراجع اللغوي (${getUserNameDisplay(p.proofreader)})</h4>
-            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
-                <input type="url" id="lnk1-${tCode}" class="form-input" style="flex:1; min-width:220px; direction:ltr;" placeholder="ضع رابط ملف المادة العلمية (Google Doc / Drive Link)..." value="${p.link1||''}">
-                <input type="text" id="nt1-${tCode}" class="form-input" style="flex:1; min-width:180px;" placeholder="ملاحظات للكاتب/المراجع..." value="${p.notes||''}">
-                <button class="btn btn-orange" onclick="submitStage1ToProofreader('${tCode}', '${tTitle}')">📤 تسليم للمراجع اللغوي + إشعار وإيميل</button>
-            </div>
-        </div>`;
-    }
+    const nextBtnLabel = nextStg
+        ? `📤 انتهيت من (${curStg.name}) ⬅️ تسليم إلى مرحلة (${nextStg.name} - ${getUserNameDisplay(p.stageData[curIdx+1]?.assignee)})`
+        : `🏆 اعتماد نهائي وإتمام النقطة بالكامل (${curStg.name})`;
 
-    // المرحلة 2: المراجع اللغوي (إما يوافق ويحدد موعد التنسيق، أو يرفض ويرجع للكاتب)
-    if (p.stage === 2) {
-        return `
-        <div class="action-panel">
-            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">🔍 إجراء المرحلة (2): قرار المراجع اللغوي (موافقة وتحويل للتنسيق أو رفض وإرجاع للكاتب)</h4>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:0.6rem;">
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">رابط الملف بعد المراجعة اللغوية:</label>
-                    <input type="url" id="lnk2-${tCode}" class="form-input" style="direction:ltr;" placeholder="https://..." value="${p.link2||p.link1||''}">
-                </div>
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">📅 تحديد موعد تسليم مرحلة التنسيق التالية:</label>
-                    <input type="date" id="due3-set-${tCode}" class="form-input" value="${p.due3||''}">
-                </div>
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">ملاحظات المراجعة / سبب الرفض (إن وجد):</label>
-                    <input type="text" id="rev2-comment-${tCode}" class="form-input" placeholder="اكتب ملاحظاتك أو أسباب الإرجاع للكاتب...">
-                </div>
-            </div>
-            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                <button class="btn btn-success" onclick="approveStage2ToFormatter('${tCode}', '${tTitle}')">✅ موافقة لغوية وتسليم لمسؤول التنسيق (${getUserNameDisplay(p.formatter)})</button>
-                <button class="btn btn-danger" onclick="rejectStage2BackToWriter('${tCode}', '${tTitle}')">❌ رفض الاستلام وإرجاع للكاتب لتعديل المشاكل</button>
-            </div>
-        </div>`;
-    }
-
-    // المرحلة 3: مسؤول التنسيق ينسق ويحدد التوقيت ويسلم لمسؤول التمبلت
-    if (p.stage === 3) {
-        return `
-        <div class="action-panel">
-            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">🎨 إجراء المرحلة (3): التنسيق الفني والتسليم لمسؤول تمبلت DCA (${getUserNameDisplay(p.templateUser)})</h4>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:0.6rem;">
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">رابط الملف المنسق:</label>
-                    <input type="url" id="lnk3-${tCode}" class="form-input" style="direction:ltr;" placeholder="https://..." value="${p.link3||p.link2||''}">
-                </div>
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">📅 توقيت مرحلة التنسيق / تسليم التمبلت:</label>
-                    <input type="date" id="due4-set-${tCode}" class="form-input" value="${p.due4||''}">
-                </div>
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">ملاحظات المنسق:</label>
-                    <input type="text" id="nt3-${tCode}" class="form-input" value="${p.notes||''}">
-                </div>
-            </div>
-            <button class="btn btn-orange" onclick="submitStage3ToTemplate('${tCode}', '${tTitle}')">📤 تسليم المحتوى المنسق لمسؤول تمبلت DCA</button>
-        </div>`;
-    }
-
-    // المرحلة 4: مسؤول تمبلت DCA (إما يوافق ويعتمد نهائياً، أو يرفض ويرجع للمنسق)
-    if (p.stage === 4) {
-        return `
-        <div class="action-panel">
-            <h4 style="color:var(--orange); font-size:0.85rem; margin-bottom:0.5rem;">📄 إجراء المرحلة (4): وضع المحتوى في تمبلت DCA الفورم (اعتماد نهائي أو إرجاع للتنسيق)</h4>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.5rem; margin-bottom:0.6rem;">
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">رابط ملف التمبلت النهائي (DCA Template Link):</label>
-                    <input type="url" id="lnk4-${tCode}" class="form-input" style="direction:ltr;" placeholder="https://..." value="${p.link4||''}">
-                </div>
-                <div>
-                    <label style="font-size:0.72rem; font-weight:700;">كومنتات التمبلت / سبب الإرجاع للتنسيق:</label>
-                    <input type="text" id="rev4-comment-${tCode}" class="form-input" placeholder="ملاحظاتك...">
-                </div>
-            </div>
-            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                <button class="btn btn-success" onclick="approveStage4Final('${tCode}', '${tTitle}')">🏆 موافقة واعتماد نهائي داخل تمبلت DCA</button>
-                <button class="btn btn-danger" onclick="rejectStage4BackToFormatter('${tCode}', '${tTitle}')">❌ رفض وإرجاع لمسؤول التنسيق لتعديل الكومنتات</button>
-            </div>
-        </div>`;
-    }
-
-    // المرحلة 5: مكتمل
     return `
-    <div class="action-panel" style="border-color:#10b981;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
-            <strong style="color:#10b981;">🏆 هذه النقطة مكتملة ومعتمدة بالكامل داخل تمبلت DCA!</strong>
-            ${canAdmin ? `<button class="btn btn-outline" onclick="patchPipelineItem('${tCode}', {stage: 4, rejected: false})">🔄 إعادة فتح للمرحلة 4 (Admin)</button>` : ''}
+    <div class="action-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.7rem;">
+            <h4 style="color:var(--orange); font-size:0.88rem;">
+                ${curStg.icon} إجراءات المرحلة (${curIdx + 1}): ${curStg.name} (المسؤول: ${getUserNameDisplay(sd.assignee)})
+            </h4>
+            <div style="display:flex; gap:0.4rem;">
+                <button class="btn ${p.subStatus==='in-progress'?'btn-success':'btn-outline'}" onclick="setTopicSubStatus('${tCode}', 'in-progress')">
+                    ⚙️ ${p.subStatus==='in-progress' ? 'جاري العمل عليها حالياً ✓' : 'اضغط هنا لبدء العمل (Start Working)'}
+                </button>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:0.6rem; margin-bottom:0.7rem;">
+            <div>
+                <label style="font-size:0.73rem; font-weight:700;">1️⃣ رابط ملف العمل لهذه المرحلة (Google Doc / Drive Link):</label>
+                <input type="url" id="act-link-${tCode}" class="form-input" style="direction:ltr;" placeholder="https://docs.google.com/..." value="${sd.link || prevLink}">
+            </div>
+            ${nextStg ? `
+            <div>
+                <label style="font-size:0.73rem; font-weight:700;">2️⃣ المدة المحددة للمرحلة القادمة (${nextStg.name}) بالأيام:</label>
+                <input type="number" min="1" id="act-next-sla-${tCode}" class="form-input" value="${p.stageData[curIdx+1]?.slaDays || nextStg.slaDays}">
+            </div>` : ''}
+            <div>
+                <label style="font-size:0.73rem; font-weight:700;">💬 ملاحظات التسليم / أو سبب الرفض والإرجاع:</label>
+                <input type="text" id="act-note-${tCode}" class="form-input" placeholder="اكتب ملاحظاتك أو سبب الإرجاع..." value="${sd.notes || ''}">
+            </div>
+        </div>
+
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+            <button class="btn btn-orange" onclick="handoverToNextStage('${tCode}', '${tTitle}')">${nextBtnLabel}</button>
+            ${(curStg.canReject && prevStg) ? `
+                <button class="btn btn-danger" onclick="rejectBackToPrevStage('${tCode}', '${tTitle}')">
+                    ❌ رفض الاستلام وإرجاع لمرحلة (${prevStg.name} - ${getUserNameDisplay(p.stageData[curIdx-1]?.assignee)})
+                </button>
+            ` : ''}
+        </div>
+    </div>`;
+}
+
+// شريط تحكم السوبر أدمن والأدمن للتحكم الكامل في النقطة وإعادتها لأي مرحلة في أي وقت
+function renderAdminOverrideBar(tCode, p) {
+    const stages = portalState.workflowStages;
+    return `
+    <div class="admin-override-bar">
+        <div><strong>👑 تحكم المدير المباشر في مرحلة النقطة (Admin Stage Control):</strong> يمكنك نقل أو إرجاع النقطة لأي مرحلة فوراً:</div>
+        <div style="display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap;">
+            <select id="ovr-sel-${tCode}" class="form-input" style="width:auto; padding:0.2rem 0.5rem; font-size:0.73rem;">
+                ${stages.map((s, idx) => `<option value="${idx}" ${p.stageIdx===idx?'selected':''}>المرحلة ${idx+1}: ${s.name}</option>`).join("")}
+                <option value="${stages.length}" ${p.stageIdx>=stages.length?'selected':''}>🏆 مكتمل نهائياً</option>
+            </select>
+            <button class="btn btn-navy" style="padding:0.25rem 0.6rem; font-size:0.72rem;" onclick="adminForceJumpStage('${tCode}')">تطبيق النقل الفوري</button>
+            <button class="btn btn-danger" style="padding:0.25rem 0.6rem; font-size:0.72rem;" onclick="adminResetSingleTopic('${tCode}')">🔄 تصفير النقطة للمرحلة 1</button>
         </div>
     </div>`;
 }
 
 // ============================================================================
-// ⚡ دوال تنفيذ انتقالات المراحل + الإشعارات + الإيميل التلقائي واليدوي
+// ⚡ تنفيذ التسليم والتسلم وحساب التواريخ الفعلي وإرسال الإشعارات
 // ============================================================================
-function selectStructureUnit(uCode) {
-    portalState.selectedModule = uCode;
-    renderAllViews();
-}
-
-function toggleStructTopic(tCode) {
-    const pane = document.getElementById(`topic-pane-${tCode}`);
-    if (pane) pane.classList.toggle("open");
-}
-
-async function patchPipelineItem(tCode, partial) {
+async function saveTopicPipeToCloud(tCode) {
     const k = getSafeCode(tCode);
-    const item = getPipeItem(tCode);
-    Object.assign(item, partial);
+    const p = getPipeItem(tCode);
     renderAllViews();
     try {
-        await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/pipeline/${k}.json`, {
-            method: "PATCH",
+        await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/pipeline/${k}.json`, {
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(partial)
+            body: JSON.stringify(p)
         });
     } catch (e) { console.error(e); }
 }
 
-async function assignStageUser(tCode, roleField, val) {
-    if (!isAdminOrSuper()) return;
-    await patchPipelineItem(tCode, { [roleField]: val });
+function addTopicHistory(p, actionText) {
+    const uDisplay = portalState.currentUser ? portalState.currentUser.displayName : "System";
+    p.history.unshift({
+        time: new Date().toLocaleString("ar-EG"),
+        user: uDisplay,
+        action: actionText
+    });
 }
 
-async function updateStageDate(tCode, dateField, val) {
-    await patchPipelineItem(tCode, { [dateField]: val });
+async function setTopicSubStatus(tCode, statusVal) {
+    const p = getPipeItem(tCode);
+    p.subStatus = statusVal;
+    const curSd = p.stageData[p.stageIdx];
+    if (curSd && !curSd.startDate) {
+        curSd.startDate = todayDateStr();
+        if (!curSd.dueDate) curSd.dueDate = addDaysToDateStr(curSd.startDate, curSd.slaDays);
+    }
+    addTopicHistory(p, `بدأ العمل في مرحلة (${portalState.workflowStages[p.stageIdx]?.name})`);
+    showToast("تم تحديث حالة المرحلة إلى: جاري العمل حالياً ⚙️");
+    await saveTopicPipeToCloud(tCode);
 }
 
-async function bulkAssignSecRole(secCode, roleField, username) {
-    if (!isAdminOrSuper() || !username) return;
-    const bulkPatch = {};
+async function handoverToNextStage(tCode, tTitle) {
+    const p = getPipeItem(tCode);
+    const stages = portalState.workflowStages;
+    const curIdx = p.stageIdx;
+    const curStg = stages[curIdx];
+    const nextStg = stages[curIdx + 1];
+
+    const linkVal = document.getElementById(`act-link-${tCode}`)?.value.trim() || "";
+    const noteVal = document.getElementById(`act-note-${tCode}`)?.value.trim() || "";
+    if (!linkVal) {
+        alert("⚠️ يرجى وضع رابط ملف العمل أولاً قبل التسليم للمرحلة التالية!");
+        return;
+    }
+
+    const nowDate = todayDateStr();
+    const curSd = p.stageData[curIdx];
+    if (!curSd.startDate) curSd.startDate = nowDate;
+    curSd.completedAt = nowDate;
+    curSd.link = linkVal;
+    curSd.notes = noteVal;
+
+    p.rejected = false;
+    p.rejectReason = "";
+    p.subStatus = "not-started";
+
+    if (nextStg) {
+        const nextSlaInput = document.getElementById(`act-next-sla-${tCode}`)?.value;
+        const nextSd = p.stageData[curIdx + 1];
+        if (nextSlaInput) nextSd.slaDays = Number(nextSlaInput);
+        // ميعاد التسليم الفعلي من المرحلة الحالية هو تاريخ البداية الفعلي للمرحلة القادمة!
+        nextSd.startDate = nowDate;
+        nextSd.dueDate = addDaysToDateStr(nowDate, nextSd.slaDays || nextStg.slaDays);
+        p.stageIdx = curIdx + 1;
+
+        addTopicHistory(p, `أتم مرحلة (${curStg.name}) وسلّم النقطة إلى (${nextStg.name}) باستحقاق ${nextSd.dueDate}`);
+        await saveTopicPipeToCloud(tCode);
+        showToast(`✅ تم تسليم النقطة ${tCode} إلى مرحلة (${nextStg.name}) بنجاح!`);
+        await sendWorkflowNotification(nextSd.assignee, tCode, `تم تسليم النقطة (${tCode} - ${tTitle}) إليك في مرحلة (${nextStg.name}). تاريخ الاستحقاق: ${nextSd.dueDate}`, linkVal);
+    } else {
+        p.stageIdx = stages.length;
+        addTopicHistory(p, `🏆 أتم المرحلة الأخيرة (${curStg.name}) واعتمد النقطة نهائياً!`);
+        await saveTopicPipeToCloud(tCode);
+        showToast(`🏆 مبارك! تم الاعتماد النهائي للنقطة ${tCode}!`);
+        await sendWorkflowNotification("admin", tCode, `🏆 اكتملت النقطة (${tCode} - ${tTitle}) في جميع المراحل بنجاح!`, linkVal);
+    }
+}
+
+async function rejectBackToPrevStage(tCode, tTitle) {
+    const p = getPipeItem(tCode);
+    const stages = portalState.workflowStages;
+    const curIdx = p.stageIdx;
+    if (curIdx <= 0) return;
+
+    const reason = document.getElementById(`act-note-${tCode}`)?.value.trim() || "";
+    if (!reason) {
+        alert("⚠️ يرجى كتابة أسباب الرفض والملاحظات في خانة الملاحظات قبل الإرجاع!");
+        return;
+    }
+
+    const curStg = stages[curIdx];
+    const prevStg = stages[curIdx - 1];
+    const prevSd = p.stageData[curIdx - 1];
+    const nowDate = todayDateStr();
+
+    p.stageIdx = curIdx - 1;
+    p.rejected = true;
+    p.rejectReason = reason;
+    p.subStatus = "in-progress";
+    // إعادة ضبط تاريخ بداية واستحقاق جديد للمرحلة السابقة لتعديل الملاحظات
+    prevSd.startDate = nowDate;
+    prevSd.dueDate = addDaysToDateStr(nowDate, prevSd.slaDays || prevStg.slaDays);
+
+    addTopicHistory(p, `❌ رفض الاستلام في مرحلة (${curStg.name}) وأرجعها إلى (${prevStg.name}). السبب: ${reason}`);
+    await saveTopicPipeToCloud(tCode);
+    showToast(`⚠️ تم إرجاع النقطة ${tCode} إلى مرحلة (${prevStg.name}) للتعديل.`);
+    await sendWorkflowNotification(prevSd.assignee, tCode, `⚠️ تم رفض وإرجاع النقطة (${tCode} - ${tTitle}) من مرحلة (${curStg.name}). السبب: ${reason}`, prevSd.link);
+}
+
+async function adminForceJumpStage(tCode) {
+    if (!hasPerm("override_stage")) return;
+    const selVal = Number(document.getElementById(`ovr-sel-${tCode}`).value);
+    const p = getPipeItem(tCode);
+    p.stageIdx = selVal;
+    p.rejected = false;
+    const stgName = selVal >= portalState.workflowStages.length ? "مكتمل نهائياً" : portalState.workflowStages[selVal].name;
+    addTopicHistory(p, `👑 قام المدير بنقل النقطة مباشرة إلى: (${stgName})`);
+    await saveTopicPipeToCloud(tCode);
+    showToast(`تم نقل النقطة ${tCode} إلى (${stgName}) بنجاح!`);
+}
+
+async function adminResetSingleTopic(tCode) {
+    if (!hasPerm("override_stage") || !confirm(`هل أنت متأكد من تصفير حالة النقطة ${tCode} وإعادتها للمرحلة 1 (غير مبدوءة)؟`)) return;
+    const p = getPipeItem(tCode);
+    p.stageIdx = 0;
+    p.subStatus = "not-started";
+    p.rejected = false;
+    p.rejectReason = "";
+    Object.keys(p.stageData).forEach(idx => {
+        p.stageData[idx].completedAt = "";
+        if (Number(idx) > 0) {
+            p.stageData[idx].startDate = "";
+            p.stageData[idx].dueDate = "";
+        }
+    });
+    addTopicHistory(p, `🔄 قام المدير بتصفير وإعادة ضبط النقطة للمرحلة الأولى.`);
+    await saveTopicPipeToCloud(tCode);
+    showToast(`تم تصفير النقطة ${tCode} وإعادتها للمرحلة الأولى!`);
+}
+
+async function resetAllTopicsPipeline() {
+    if (!hasPerm("override_stage") || !confirm("⚠️ هل تريد إعادة ضبط كل نقاط الكورس إلى المرحلة 1 (الكتابة العلمية) ومسح أي حالات مكتملة تجريبية؟")) return;
+    Object.keys(portalState.pipeline).forEach(k => {
+        portalState.pipeline[k].stageIdx = 0;
+        portalState.pipeline[k].subStatus = "not-started";
+        portalState.pipeline[k].rejected = false;
+    });
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/pipeline.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.pipeline)
+    });
+    closeModal("superSettingsModal");
+    renderAllViews();
+    showToast("✅ تم إعادة ضبط جميع نقاط الكورس للمرحلة الأولى بنجاح!");
+}
+
+async function assignTopicStageUser(tCode, stageIdx, username) {
+    if (!hasPerm("assign_tasks")) return;
+    const p = getPipeItem(tCode);
+    const sd = p.stageData[stageIdx];
+    sd.assignee = username;
+    if (stageIdx === 0 && !sd.startDate) {
+        sd.startDate = todayDateStr();
+        sd.dueDate = addDaysToDateStr(sd.startDate, sd.slaDays);
+    }
+    addTopicHistory(p, `تم تعيين (${getUserNameDisplay(username)}) للمرحلة ${stageIdx + 1}`);
+    await saveTopicPipeToCloud(tCode);
+    showToast(`تم تعيين ${getUserNameDisplay(username)} على النقطة ${tCode}`);
+    if (username) {
+        await sendWorkflowNotification(username, tCode, `تم تعيينك على النقطة (${tCode}) في مرحلة (${portalState.workflowStages[stageIdx]?.name}).`, "");
+    }
+}
+
+async function updateTopicStageSla(tCode, stageIdx, daysVal) {
+    const p = getPipeItem(tCode);
+    const sd = p.stageData[stageIdx];
+    sd.slaDays = Number(daysVal || 1);
+    if (sd.startDate) sd.dueDate = addDaysToDateStr(sd.startDate, sd.slaDays);
+    await saveTopicPipeToCloud(tCode);
+    showToast(`تم تحديث عدد أيام المرحلة إلى ${sd.slaDays} يوم`);
+}
+
+async function updateTopicStageDue(tCode, stageIdx, dateVal) {
+    const p = getPipeItem(tCode);
+    p.stageData[stageIdx].dueDate = dateVal;
+    await saveTopicPipeToCloud(tCode);
+    showToast(`تم تحديث تاريخ الاستحقاق إلى ${dateVal}`);
+}
+
+async function bulkAssignSectionStage(secCode, stageIdx, username) {
+    if (!hasPerm("assign_tasks") || !username) return;
+    const patchObj = {};
     COURSE_DATA.forEach(mod => {
         mod.sections.forEach(sec => {
             if (sec.code === secCode) {
                 sec.topics.forEach(t => {
-                    const item = getPipeItem(t[0]);
-                    item[roleField] = username;
-                    bulkPatch[getSafeCode(t[0])] = item;
+                    const p = getPipeItem(t[0]);
+                    p.stageData[stageIdx].assignee = username;
+                    if (stageIdx === 0 && !p.stageData[0].startDate) {
+                        p.stageData[0].startDate = todayDateStr();
+                        p.stageData[0].dueDate = addDaysToDateStr(p.stageData[0].startDate, p.stageData[0].slaDays);
+                    }
+                    patchObj[getSafeCode(t[0])] = p;
                 });
             }
         });
     });
     renderAllViews();
-    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/pipeline.json`, {
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/pipeline.json`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(bulkPatch)
+        body: JSON.stringify(patchObj)
     });
-}
-
-// 1 -> 2: تسليم من الكاتب إلى المراجع اللغوي
-async function submitStage1ToProofreader(tCode, tTitle) {
-    const lnk = document.getElementById(`lnk1-${tCode}`).value.trim();
-    const nt = document.getElementById(`nt1-${tCode}`).value.trim();
-    if (!lnk) { alert("⚠️ يرجى وضع رابط ملف المادة العلمية أولاً قبل التسليم للمراجع اللغوي!"); return; }
-    const p = getPipeItem(tCode);
-    await patchPipelineItem(tCode, { stage: 2, rejected: false, rejectReason: "", link1: lnk, notes: nt });
-    await sendWorkflowNotification(p.proofreader, tCode, `قام الكاتب بتسليم النقطة (${tCode} - ${tTitle}) إليك للمراجعة اللغوية.`, lnk);
-}
-
-// 2 -> 3: موافقة المراجع اللغوي وتحويل للتنسيق مع تحديد التوقيت
-async function approveStage2ToFormatter(tCode, tTitle) {
-    const lnk2 = document.getElementById(`lnk2-${tCode}`).value.trim();
-    const due3 = document.getElementById(`due3-set-${tCode}`).value;
-    const cm = document.getElementById(`rev2-comment-${tCode}`).value.trim();
-    if (!due3) { alert("⚠️ يرجى تحديد موعد تسليم مرحلة التنسيق التالية أولاً!"); return; }
-    const p = getPipeItem(tCode);
-    await patchPipelineItem(tCode, { stage: 3, rejected: false, rejectReason: "", link2: lnk2, due3: due3, notes: cm || p.notes });
-    await sendWorkflowNotification(p.formatter, tCode, `وافق المراجع اللغوي على النقطة (${tCode} - ${tTitle}) وحدد موعد تسليم التنسيق: ${due3}.`, lnk2);
-}
-
-// 2 -> 1: رفض المراجع اللغوي وإرجاع للكاتب
-async function rejectStage2BackToWriter(tCode, tTitle) {
-    const reason = document.getElementById(`rev2-comment-${tCode}`).value.trim();
-    if (!reason) { alert("⚠️ يرجى كتابة سبب الرفض والملاحظات اللغوية لإرجاعها للكاتب!"); return; }
-    const p = getPipeItem(tCode);
-    await patchPipelineItem(tCode, { stage: 1, rejected: true, rejectReason: reason });
-    await sendWorkflowNotification(p.writer, tCode, `⚠️ تم رفض وإرجاع النقطة (${tCode} - ${tTitle}) من المراجع اللغوي. السبب: ${reason}`, p.link1);
-}
-
-// 3 -> 4: تسليم المنسق إلى مسؤول تمبلت DCA
-async function submitStage3ToTemplate(tCode, tTitle) {
-    const lnk3 = document.getElementById(`lnk3-${tCode}`).value.trim();
-    const due4 = document.getElementById(`due4-set-${tCode}`).value;
-    const nt3 = document.getElementById(`nt3-${tCode}`).value.trim();
-    if (!lnk3) { alert("⚠️ يرجى وضع رابط الملف المنسق أولاً!"); return; }
-    const p = getPipeItem(tCode);
-    await patchPipelineItem(tCode, { stage: 4, rejected: false, rejectReason: "", link3: lnk3, due4: due4 || p.due4, notes: nt3 });
-    await sendWorkflowNotification(p.templateUser, tCode, `تم الانتهاء من تنسيق النقطة (${tCode} - ${tTitle}) وهي جاهزة لوضعها في تمبلت DCA.`, lnk3);
-}
-
-// 4 -> 5: موافقة مسؤول التمبلت واعتماد نهائي
-async function approveStage4Final(tCode, tTitle) {
-    const lnk4 = document.getElementById(`lnk4-${tCode}`).value.trim();
-    if (!lnk4) { alert("⚠️ يرجى وضع رابط ملف تمبلت DCA النهائي!"); return; }
-    await patchPipelineItem(tCode, { stage: 5, rejected: false, rejectReason: "", link4: lnk4 });
-    await sendWorkflowNotification("admin", tCode, `🏆 اكتملت النقطة (${tCode} - ${tTitle}) وتم وضعها واعتمادها داخل تمبلت DCA!`, lnk4);
-}
-
-// 4 -> 3: رفض مسؤول التمبلت وإرجاع لمسؤول التنسيق
-async function rejectStage4BackToFormatter(tCode, tTitle) {
-    const reason = document.getElementById(`rev4-comment-${tCode}`).value.trim();
-    if (!reason) { alert("⚠️ يرجى كتابة الكومنتات وسبب الإرجاع لمسؤول التنسيق!"); return; }
-    const p = getPipeItem(tCode);
-    await patchPipelineItem(tCode, { stage: 3, rejected: true, rejectReason: reason });
-    await sendWorkflowNotification(p.formatter, tCode, `⚠️ تم إرجاع النقطة (${tCode} - ${tTitle}) من مسؤول التمبلت لتعديل التنسيق. الملاحظات: ${reason}`, p.link3);
+    showToast(`✅ تم تعيين القسم ${secCode} بالكامل للعضو ${getUserNameDisplay(username)}`);
+    await sendWorkflowNotification(username, secCode, `تم تعيينك على جميع نقاط القسم (${secCode}) في مرحلة (${portalState.workflowStages[stageIdx]?.name}).`, "");
 }
 
 // ============================================================================
-// 🔔 نظام الإشعارات الداخلي + إرسال الإيميلات في الخلفية (EmailJS) + فتح الإيميل الرسمي
+// 👤 صفحة البروفايل الشخصي + إدارة الفريق وتعدد الوظائف + مصفوفة الصلاحيات + إدارة المراحل
+// ============================================================================
+function updateHeaderButtonsAndAvatar() {
+    if (!portalState.currentUser) return;
+    const uName = portalState.currentUser.username;
+    document.getElementById("activeUserBadge").textContent = portalState.currentUser.displayName;
+    document.getElementById("headerUserAvatar").src = getUserAvatarUrl(uName);
+
+    document.getElementById("btnUsersMgr").style.display = hasPerm("manage_users") ? "inline-flex" : "none";
+    document.getElementById("btnRolesMgr").style.display = hasPerm("manage_roles") ? "inline-flex" : "none";
+    document.getElementById("btnStagesMgr").style.display = hasPerm("manage_stages") ? "inline-flex" : "none";
+    document.getElementById("btnSuperSettings").style.display = hasPerm("manage_settings") ? "inline-flex" : "none";
+    updateUnreadBadge();
+}
+
+function openProfileModal() {
+    const uName = portalState.currentUser.username;
+    const uObj = portalState.users[uName] || portalState.currentUser;
+    document.getElementById("profModalAvatar").src = getUserAvatarUrl(uName);
+    document.getElementById("profModalName").textContent = uObj.displayName;
+    const rTitle = portalState.rolesConfig[uObj.sysRole]?.title || uObj.sysRole;
+    document.getElementById("profModalRoleInfo").textContent = `${rTitle} | الوظائف: ${getUserJobsText(uObj)}`;
+
+    document.getElementById("profNameInput").value = uObj.displayName || "";
+    document.getElementById("profEmailInput").value = uObj.email || "";
+    document.getElementById("profPhoneInput").value = uObj.phone || "";
+    document.getElementById("profBioInput").value = uObj.bio || "";
+    document.getElementById("profileModal").style.display = "flex";
+}
+
+function uploadMyAvatar(ev) {
+    const file = ev.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const uName = portalState.currentUser.username;
+        if (portalState.users[uName]) portalState.users[uName].avatar = e.target.result;
+        portalState.currentUser.avatar = e.target.result;
+        document.getElementById("profModalAvatar").src = e.target.result;
+        document.getElementById("headerUserAvatar").src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+async function saveMyProfileInfo() {
+    const uName = portalState.currentUser.username;
+    const newName = document.getElementById("profNameInput").value.trim();
+    const newEmail = document.getElementById("profEmailInput").value.trim();
+    const newPhone = document.getElementById("profPhoneInput").value.trim();
+    const newBio = document.getElementById("profBioInput").value.trim();
+
+    if (portalState.users[uName]) {
+        portalState.users[uName].displayName = newName || portalState.users[uName].displayName;
+        portalState.users[uName].email = newEmail;
+        portalState.users[uName].phone = newPhone;
+        portalState.users[uName].bio = newBio;
+        await saveUsersListToCloud();
+    }
+    portalState.currentUser.displayName = newName || portalState.currentUser.displayName;
+    portalState.currentUser.email = newEmail;
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(portalState.currentUser));
+    closeModal("profileModal");
+    renderAllViews();
+    showToast("✅ تم حفظ بياناتك وصورتك الشخصية بنجاح!");
+}
+
+async function changeMyPassword() {
+    const oldP = document.getElementById("oldPassInput").value.trim();
+    const newP = document.getElementById("newPassInput").value.trim();
+    if (!oldP || !newP) { alert("⚠️ يرجى كتابة كلمة المرور الحالية والجديدة!"); return; }
+    const uName = portalState.currentUser.username;
+    if (uName === "admin") { alert("حساب السوبر أدمن الرئيسي محمي بكود النظام."); return; }
+    const uObj = portalState.users[uName];
+    if (!uObj || uObj.pass !== oldP) { alert("❌ كلمة المرور الحالية غير صحيحة!"); return; }
+    uObj.pass = newP;
+    await saveUsersListToCloud();
+    document.getElementById("oldPassInput").value = "";
+    document.getElementById("newPassInput").value = "";
+    showToast("✅ تم تغيير كلمة المرور الخاصة بك بنجاح!");
+}
+
+// إدارة الفريق وتعدد الوظائف وتعديل العضو بعد الإضافة
+function openUsersModal() {
+    if (!hasPerm("manage_users")) return;
+    renderUsersModalContent();
+    document.getElementById("usersModal").style.display = "flex";
+}
+
+function renderUsersModalContent() {
+    // شارات الوظائف المتاحة
+    document.getElementById("jobTitlesBadges").innerHTML = portalState.jobCatalog.map(j =>
+        `<span style="background:var(--navy); color:#fff; padding:0.12rem 0.5rem; border-radius:12px; font-size:0.72rem; margin:0 0.15rem;">${j.title}</span>`
+    ).join("");
+
+    // قائمة مستويات الصلاحيات في الفورم
+    const roleSel = document.getElementById("uNewSysRole");
+    roleSel.innerHTML = Object.keys(portalState.rolesConfig).map(rKey =>
+        `<option value="${rKey}">مستوى الصلاحية: ${portalState.rolesConfig[rKey].title}</option>`
+    ).join("");
+
+    // مربعات اختيار الوظائف المتعددة (Checkboxes)
+    document.getElementById("userJobsCheckboxes").innerHTML = portalState.jobCatalog.map(j => `
+        <label class="perm-item">
+            <input type="checkbox" class="u-job-chk" value="${j.key}">
+            <span>${j.title}</span>
+        </label>
+    `).join("");
+
+    // جدول الأعضاء الحاليين مع زر (تعديل البيانات والصلاحية)
+    const keys = Object.keys(portalState.users);
+    document.getElementById("usersTableContainer").innerHTML = keys.map(k => {
+        const u = portalState.users[k];
+        const rName = portalState.rolesConfig[u.sysRole]?.title || u.sysRole;
+        return `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; padding:0.65rem; border-bottom:1px solid var(--border-color); font-size:0.77rem;">
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+                <img src="${getUserAvatarUrl(k)}" style="width:36px; height:36px; border-radius:50%; object-fit:cover;">
+                <div>
+                    <strong>${u.displayName}</strong> (<code>${u.username}</code>) | 📧 ${u.email || '-'}<br>
+                    <span style="color:var(--orange); font-weight:800;">${rName}</span> | <span>الوظائف: ${getUserJobsText(u)}</span>
+                    ${hasPerm("reset_passwords") ? ` | 🔑 Pass: <code>${u.pass}</code>` : ''}
+                </div>
+            </div>
+            <div style="display:flex; gap:0.35rem;">
+                <button class="btn btn-orange" style="padding:0.22rem 0.55rem; font-size:0.72rem;" onclick="loadUserIntoEditForm('${u.username}')">✏️ تعديل الصلاحية/الوظائف</button>
+                ${hasPerm("reset_passwords") ? `<button class="btn btn-outline" style="padding:0.22rem 0.55rem; font-size:0.72rem;" onclick="resetUserPassword('${u.username}')">🔄 Reset Pass</button>` : ''}
+                <button class="btn btn-danger" style="padding:0.22rem 0.55rem; font-size:0.72rem;" onclick="removeUserAccount('${u.username}')">🗑️</button>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+function loadUserIntoEditForm(uName) {
+    const u = portalState.users[uName];
+    if (!u) return;
+    document.getElementById("userFormHeading").textContent = `✏️ تعديل بيانات وصلاحيات ووظائف العضو (${u.displayName}):`;
+    document.getElementById("uNewName").value = u.displayName || "";
+    document.getElementById("uNewUser").value = u.username || "";
+    document.getElementById("uNewPass").value = u.pass || "";
+    document.getElementById("uNewEmail").value = u.email || "";
+    document.getElementById("uNewSysRole").value = u.sysRole || "user";
+
+    const uJobs = Array.isArray(u.jobs) ? u.jobs : (u.jobRole ? [u.jobRole] : []);
+    document.querySelectorAll(".u-job-chk").forEach(chk => {
+        chk.checked = uJobs.includes(chk.value);
+    });
+}
+
+function clearUserForm() {
+    document.getElementById("userFormHeading").textContent = "➕ إضافة عضو جديد أو تعديل عضو حالي:";
+    document.getElementById("uNewName").value = "";
+    document.getElementById("uNewUser").value = "";
+    document.getElementById("uNewPass").value = "";
+    document.getElementById("uNewEmail").value = "";
+    document.querySelectorAll(".u-job-chk").forEach(chk => chk.checked = false);
+}
+
+async function addNewJobTitle() {
+    const title = prompt("أدخل اسم الوظيفة الجديدة (مثال: 🎯 مدقق علمي / أو 🎙️ مسجل صوتي):");
+    if (!title) return;
+    const key = "job_" + Date.now();
+    portalState.jobCatalog.push({ key, title: title.trim() });
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/jobCatalog.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.jobCatalog)
+    });
+    renderUsersModalContent();
+    showToast("✅ تم إضافة المسمى الوظيفي الجديد بنجاح!");
+}
+
+async function createOrUpdateUser() {
+    if (!hasPerm("manage_users")) return;
+    const name = document.getElementById("uNewName").value.trim();
+    const user = document.getElementById("uNewUser").value.trim().toLowerCase().replace(/\s+/g, "");
+    const pass = document.getElementById("uNewPass").value.trim();
+    const email = document.getElementById("uNewEmail").value.trim();
+    const sysRole = document.getElementById("uNewSysRole").value;
+    const selectedJobs = [...document.querySelectorAll(".u-job-chk:checked")].map(c => c.value);
+
+    if (!name || !user || !pass) { alert("⚠️ يرجى ملء الاسم واسم المستخدم وكلمة المرور!"); return; }
+    const existing = portalState.users[user] || {};
+    portalState.users[user] = {
+        username: user,
+        pass: pass,
+        displayName: name,
+        email: email,
+        phone: existing.phone || "",
+        bio: existing.bio || "",
+        avatar: existing.avatar || "",
+        sysRole: sysRole,
+        jobs: selectedJobs
+    };
+    await saveUsersListToCloud();
+    clearUserForm();
+    renderUsersModalContent();
+    renderAllViews();
+    showToast(`✅ تم حفظ بيانات وصلاحيات ووظائف (${name}) بنجاح!`);
+}
+
+async function resetUserPassword(uName) {
+    if (!hasPerm("reset_passwords")) return;
+    const newP = prompt(`🔑 أدخل كلمة المرور الجديدة للعضو (${portalState.users[uName].displayName}):`, "123456");
+    if (!newP) return;
+    portalState.users[uName].pass = newP.trim();
+    await saveUsersListToCloud();
+    renderUsersModalContent();
+    showToast("✅ تم عمل Reset لكلمة المرور بنجاح!");
+}
+
+async function removeUserAccount(uName) {
+    if (!hasPerm("manage_users") || !confirm("هل أنت متأكد من حذف هذا الحساب؟")) return;
+    delete portalState.users[uName];
+    await saveUsersListToCloud();
+    renderUsersModalContent();
+    renderAllViews();
+}
+
+async function saveUsersListToCloud() {
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/users.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.users)
+    });
+}
+
+// ============================================================================
+// 🛡️ إدارة مستويات الصلاحيات المخصصة (Roles & Permissions Matrix)
+// ============================================================================
+function openRolesModal() {
+    if (!hasPerm("manage_roles")) return;
+    renderRolesModalContent();
+    document.getElementById("rolesModal").style.display = "flex";
+}
+
+function renderRolesModalContent() {
+    const rKeys = Object.keys(portalState.rolesConfig);
+    document.getElementById("rolesListBox").innerHTML = rKeys.map(k => {
+        const r = portalState.rolesConfig[k];
+        return `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem; border-bottom:1px solid var(--border-color); font-size:0.78rem;">
+            <div>
+                <strong>${r.title}</strong> (<code>${r.id}</code>)<br>
+                <span style="color:var(--text-muted); font-size:0.72rem;">عدد الصلاحيات الممنوحة: ${(r.perms||[]).length} من ${ALL_PERMISSIONS_LIST.length}</span>
+            </div>
+            <div style="display:flex; gap:0.35rem;">
+                <button class="btn btn-orange" style="padding:0.2rem 0.55rem; font-size:0.72rem;" onclick="loadRoleIntoForm('${r.id}')">✏️ تعديل صلاحيات المستوى</button>
+                ${(r.id !== 'superadmin' && r.id !== 'user') ? `<button class="btn btn-danger" style="padding:0.2rem 0.55rem; font-size:0.72rem;" onclick="deleteCustomRole('${r.id}')">🗑️</button>` : ''}
+            </div>
+        </div>`;
+    }).join("");
+
+    document.getElementById("rolePermsCheckboxes").innerHTML = ALL_PERMISSIONS_LIST.map(p => `
+        <label class="perm-item">
+            <input type="checkbox" class="role-perm-chk" value="${p.key}">
+            <span>${p.label}</span>
+        </label>
+    `).join("");
+}
+
+function loadRoleIntoForm(rId) {
+    const r = portalState.rolesConfig[rId];
+    if (!r) return;
+    document.getElementById("roleIdInput").value = r.id;
+    document.getElementById("roleTitleInput").value = r.title;
+    document.querySelectorAll(".role-perm-chk").forEach(chk => {
+        chk.checked = (r.perms || []).includes(chk.value);
+    });
+}
+
+async function saveCustomRole() {
+    const rId = document.getElementById("roleIdInput").value.trim().toLowerCase().replace(/\s+/g, "_");
+    const rTitle = document.getElementById("roleTitleInput").value.trim();
+    if (!rId || !rTitle) { alert("⚠️ يرجى كتابة كود المستوى واسمه!"); return; }
+    const perms = [...document.querySelectorAll(".role-perm-chk:checked")].map(c => c.value);
+    portalState.rolesConfig[rId] = { id: rId, title: rTitle, perms };
+
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/rolesConfig.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.rolesConfig)
+    });
+    renderRolesModalContent();
+    renderAllViews();
+    showToast(`✅ تم حفظ مستوى الصلاحية (${rTitle}) بنجاح!`);
+}
+
+async function deleteCustomRole(rId) {
+    if (!confirm("هل أنت متأكد من حذف هذا المستوى؟")) return;
+    delete portalState.rolesConfig[rId];
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/rolesConfig.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.rolesConfig)
+    });
+    renderRolesModalContent();
+}
+
+// ============================================================================
+// 🔄 إدارة مراحل خط الإنتاج الديناميكية (Workflow Stages Builder)
+// ============================================================================
+function openStagesModal() {
+    if (!hasPerm("manage_stages")) return;
+    renderStagesModalContent();
+    document.getElementById("stagesModal").style.display = "flex";
+}
+
+function renderStagesModalContent() {
+    document.getElementById("stgJobKey").innerHTML = portalState.jobCatalog.map(j =>
+        `<option value="${j.key}">الوظيفة المسؤولة: ${j.title}</option>`
+    ).join("");
+
+    document.getElementById("stagesListBox").innerHTML = portalState.workflowStages.map((s, idx) => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem; border-bottom:1px solid var(--border-color); font-size:0.78rem;">
+            <div>
+                <strong>المرحلة ${idx + 1}: ${s.icon} ${s.name}</strong> | ⏱️ المدة الافتراضية: <strong>${s.slaDays} أيام</strong> |
+                صلاحية الرفض والإرجاع: <strong>${s.canReject ? 'نعم ✅' : 'لا'}</strong>
+            </div>
+            <div style="display:flex; gap:0.35rem;">
+                <button class="btn btn-orange" style="padding:0.2rem 0.55rem; font-size:0.72rem;" onclick="loadStageIntoForm(${idx})">✏️ تعديل</button>
+                ${portalState.workflowStages.length > 1 ? `<button class="btn btn-danger" style="padding:0.2rem 0.55rem; font-size:0.72rem;" onclick="deleteWorkflowStage(${idx})">🗑️</button>` : ''}
+            </div>
+        </div>
+    `).join("");
+}
+
+function loadStageIntoForm(idx) {
+    const s = portalState.workflowStages[idx];
+    if (!s) return;
+    document.getElementById("editStageIdx").value = idx;
+    document.getElementById("stgNameAr").value = s.name;
+    document.getElementById("stgIcon").value = s.icon;
+    document.getElementById("stgJobKey").value = s.jobKey;
+    document.getElementById("stgSlaDays").value = s.slaDays;
+    document.getElementById("stgCanReject").checked = !!s.canReject;
+}
+
+async function saveWorkflowStage() {
+    const idx = Number(document.getElementById("editStageIdx").value);
+    const name = document.getElementById("stgNameAr").value.trim();
+    const icon = document.getElementById("stgIcon").value.trim() || "⚡";
+    const jobKey = document.getElementById("stgJobKey").value;
+    const slaDays = Number(document.getElementById("stgSlaDays").value || 2);
+    const canReject = document.getElementById("stgCanReject").checked;
+
+    if (!name) { alert("⚠️ يرجى كتابة اسم المرحلة!"); return; }
+    const stgObj = { id: "st_" + Date.now(), name, icon, jobKey, slaDays, canReject };
+
+    if (idx >= 0 && idx < portalState.workflowStages.length) {
+        portalState.workflowStages[idx] = stgObj;
+    } else {
+        portalState.workflowStages.push(stgObj);
+    }
+    document.getElementById("editStageIdx").value = "-1";
+    document.getElementById("stgNameAr").value = "";
+
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/workflowStages.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.workflowStages)
+    });
+    renderStagesModalContent();
+    renderAllViews();
+    showToast(`✅ تم حفظ المرحلة (${name}) وتحديث خط الإنتاج!`);
+}
+
+async function deleteWorkflowStage(idx) {
+    if (!confirm("هل أنت متأكد من حذف هذه المرحلة من خط الإنتاج؟")) return;
+    portalState.workflowStages.splice(idx, 1);
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/workflowStages.json`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(portalState.workflowStages)
+    });
+    renderStagesModalContent();
+    renderAllViews();
+}
+
+// ============================================================================
+// 🔔 الإشعارات، البوابات الفرعية، وإعدادات البوابة واللوجو والمزامنة اللحظية
 // ============================================================================
 async function sendWorkflowNotification(toUsername, topicCode, msgText, fileLink = "") {
     const fromUser = portalState.currentUser ? portalState.currentUser.displayName : "System";
@@ -1774,62 +2424,38 @@ async function sendWorkflowNotification(toUsername, topicCode, msgText, fileLink
     updateUnreadBadge();
 
     try {
-        await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/notifications.json`, {
+        await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/notifications.json`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(portalState.notifications.slice(0, 150))
         });
-    } catch (e) { console.error(e); }
-
-    // إرسال إيميل أوتوماتيك في الخلفية إذا تم تفعيل EmailJS
-    const targetUserObj = portalState.users[toUsername];
-    const targetEmail = targetUserObj ? targetUserObj.email : "";
-    if (portalState.settings.ejsService && portalState.settings.ejsTemplate && portalState.settings.ejsKey && targetEmail) {
-        try {
-            await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    service_id: portalState.settings.ejsService,
-                    template_id: portalState.settings.ejsTemplate,
-                    user_id: portalState.settings.ejsKey,
-                    template_params: {
-                        to_email: targetEmail,
-                        to_name: targetUserObj.displayName,
-                        from_name: fromUser,
-                        topic_code: topicCode,
-                        message: msgText,
-                        file_link: fileLink
-                    }
-                })
-            });
-        } catch (err) { console.warn("EmailJS background send skipped:", err); }
-    }
-
-    // سؤال المستخدم إذا كان يرغب أيضاً بفتح الإيميل الرسمي مباشرة
-    if (targetEmail && confirm(`✅ تم التسليم وإرسال إشعار داخلي إلى (${targetUserObj.displayName}).\nهل ترغب أيضاً في فتح برنامج الإيميل الرسمي لإرسال نسخة بريدية مرفق بها رابط الملف؟`)) {
-        const subject = encodeURIComponent(`[DCA Portal] إشعار تسليم النقطة ${topicCode}`);
-        const body = encodeURIComponent(`مرحباً ${targetUserObj.displayName}،\n\n${msgText}\n\nرابط الملف المرفق:\n${fileLink}\n\nمع تحيات،\n${fromUser} - DCA Portal`);
-        window.open(`mailto:${targetEmail}?subject=${subject}&body=${body}`, "_blank");
-    }
+    } catch (e) {}
 }
 
 function updateUnreadBadge() {
     if (!portalState.currentUser) return;
     const uName = portalState.currentUser.username;
-    const unread = portalState.notifications.filter(n => (n.toUser === uName || (isSuperAdmin() && n.toUser === "admin")) && !n.read).length;
-    document.getElementById("unreadNotifCount").textContent = unread;
+    const unread = portalState.notifications.filter(n => (n.toUser === uName || (uName === "admin" && n.toUser === "admin")) && !n.read).length;
+    const badge = document.getElementById("unreadNotifCount");
+    const bell = document.getElementById("bellBtn");
+    badge.textContent = unread;
+    if (unread > 0) bell.classList.add("bell-shake");
+    else bell.classList.remove("bell-shake");
+
+    if (unread > lastKnownNotifCount && lastKnownNotifCount !== 0) {
+        showToast("🔔 لديك إشعار جديد في صندوق الرسائل!");
+    }
+    lastKnownNotifCount = unread;
 }
 
 function openInboxModal() {
     const container = document.getElementById("inboxListContainer");
     const uName = portalState.currentUser.username;
-    const myNotifs = portalState.notifications.filter(n => isAdminOrSuper() || n.toUser === uName);
+    const myNotifs = portalState.notifications.filter(n => uName === "admin" || n.toUser === uName || n.fromUser === portalState.currentUser.displayName);
 
-    if (myNotifs.length === 0) {
-        container.innerHTML = `<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">لا توجد رسائل أو إشعارات حالياً.</p>`;
-    } else {
-        container.innerHTML = myNotifs.map(n => `
+    container.innerHTML = myNotifs.length === 0
+        ? `<p style="text-align:center; padding:1.5rem; color:var(--text-muted);">لا توجد إشعارات حالياً.</p>`
+        : myNotifs.map(n => `
             <div style="background:var(--bg-sec); border:1px solid var(--border-color); border-right:4px solid var(--orange); padding:0.75rem; border-radius:8px; font-size:0.8rem;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:0.3rem;">
                     <strong>من: ${n.fromUser} ⬅️ إلى: ${getUserNameDisplay(n.toUser)}</strong>
@@ -1837,24 +2463,20 @@ function openInboxModal() {
                 </div>
                 <p style="margin-bottom:0.4rem;">${n.message}</p>
                 <div style="display:flex; gap:0.5rem;">
-                    <button class="btn btn-orange" style="padding:0.2rem 0.6rem; font-size:0.72rem;" onclick="closeModal('inboxModal'); jumpToTopic('${n.topicCode}')">الذهاب للنقطة ${n.topicCode}</button>
-                    ${n.fileLink ? `<a href="${n.fileLink}" target="_blank" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.72rem;">🔗 فتح المرفق</a>` : ''}
+                    <button class="btn btn-orange" style="padding:0.2rem 0.6rem; font-size:0.72rem;" onclick="closeModal('inboxModal'); jumpToTopic('${n.topicCode}')">فتح النقطة ${n.topicCode}</button>
+                    ${n.fileLink ? `<a href="${n.fileLink}" target="_blank" class="btn btn-outline" style="padding:0.2rem 0.6rem; font-size:0.72rem;">🔗 فتح الملف المرفق</a>` : ''}
                 </div>
             </div>
         `).join("");
-    }
 
-    // تعليم كمقروء
     portalState.notifications.forEach(n => { if (n.toUser === uName) n.read = true; });
     updateUnreadBadge();
     document.getElementById("inboxModal").style.display = "flex";
 }
 
-// ============================================================================
-// 🛠️ إدارة الأزرار الديناميكية وأدوات الكورس (التاسكات، الجدول، اللينكات)
-// ============================================================================
 function renderCustomToolBoard(viewport, catId, courseId, toolObj) {
     const items = (portalState.portalTree.customItems && portalState.portalTree.customItems[toolObj.id]) || [];
+    const canManage = hasPerm("manage_portal_nodes") || hasPerm("assign_tasks");
     viewport.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1rem;">
             <div>
@@ -1862,36 +2484,34 @@ function renderCustomToolBoard(viewport, catId, courseId, toolObj) {
                 <p style="font-size:0.8rem; color:var(--text-muted);">${tText(toolObj.descAr, toolObj.descEn)}</p>
             </div>
             <div style="display:flex; gap:0.5rem;">
-                ${isAdminOrSuper() ? `<button class="btn btn-orange" onclick="addCustomBoardItem('${toolObj.id}')">➕ ${tText("إضافة بند/لينك جديد", "Add New Entry")}</button>` : ''}
-                <button class="btn btn-outline" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">⬅️ ${tText("رجوع لبوابات الكورس", "Back to Course Hub")}</button>
+                ${canManage ? `<button class="btn btn-orange" onclick="addCustomBoardItem('${toolObj.id}')">➕ إضافة بند / لينك جديد</button>` : ''}
+                <button class="btn btn-outline" onclick="navigatePortal('COURSE', '${catId}', '${courseId}')">⬅️ رجوع لبوابات الكورس</button>
             </div>
         </div>
         <div class="portal-grid">
-            ${items.length === 0 ? `<div class="box-card" style="grid-column:1/-1; text-align:center; padding:2.5rem;">لا توجد عناصر مضافة بعد. اضغط على (إضافة بند/لينك جديد) لإضافة محتوى هنا.</div>` :
+            ${items.length === 0 ? `<div class="box-card" style="grid-column:1/-1; text-align:center; padding:2.5rem;">لا توجد عناصر مضافة بعد.</div>` :
             items.map((it, idx) => `
                 <div class="portal-card">
                     <div>
                         <h3>${it.title}</h3>
                         <p>${it.details}</p>
-                        ${it.dueDate ? `<div style="font-size:0.75rem; font-weight:700; color:var(--orange); margin-bottom:0.5rem;">📅 الموعد/التاريخ: ${it.dueDate}</div>` : ''}
+                        ${it.dueDate ? `<div style="font-size:0.75rem; font-weight:700; color:var(--orange); margin-bottom:0.5rem;">📅 التاريخ: ${it.dueDate}</div>` : ''}
                     </div>
                     <div class="portal-card-footer">
-                        ${it.link ? `<a href="${it.link}" target="_blank" class="btn btn-orange">🔗 فتح الرابط / الملف ↗</a>` : '<span></span>'}
-                        ${isAdminOrSuper() ? `<button class="btn btn-danger" onclick="deleteCustomBoardItem('${toolObj.id}', ${idx})">🗑️ حذف</button>` : ''}
+                        ${it.link ? `<a href="${it.link}" target="_blank" class="btn btn-orange">🔗 فتح الرابط ↗</a>` : '<span></span>'}
+                        ${canManage ? `<button class="btn btn-danger" onclick="deleteCustomBoardItem('${toolObj.id}', ${idx})">🗑️ حذف</button>` : ''}
                     </div>
                 </div>
             `).join("")}
-        </div>
-    `;
+        </div>`;
 }
 
 async function addCustomBoardItem(toolId) {
-    const title = prompt("أدخل العنوان (مثال: تاسك الوحدة الأولى / أو رابط فولدر التمبلت):");
+    const title = prompt("أدخل العنوان:");
     if (!title) return;
     const details = prompt("أدخل الوصف أو التفاصيل:") || "";
-    const link = prompt("أدخل الرابط (URL) إن وجد (اختياري):") || "";
+    const link = prompt("أدخل الرابط (URL) إن وجد:") || "";
     const dueDate = prompt("أدخل التاريخ أو الموعد (اختياري):") || "";
-
     if (!portalState.portalTree.customItems) portalState.portalTree.customItems = {};
     if (!portalState.portalTree.customItems[toolId]) portalState.portalTree.customItems[toolId] = [];
     portalState.portalTree.customItems[toolId].push({ title, details, link, dueDate });
@@ -1906,55 +2526,50 @@ async function deleteCustomBoardItem(toolId, idx) {
     renderAllViews();
 }
 
-// إضافة / تعديل / حذف أزرار البوابة في أي مستوى (للسوبر أدمن)
 async function addPortalNode(type, catId = null, courseId = null) {
-    if (!isSuperAdmin()) return;
-    const titleAr = prompt("أدخل اسم الزرار/القسم بالعربية:");
+    if (!hasPerm("manage_portal_nodes")) return;
+    const titleAr = prompt("أدخل الاسم بالعربية:");
     if (!titleAr) return;
-    const titleEn = prompt("أدخل اسم الزرار/القسم بالإنجليزية (اختياري):") || titleAr;
-    const descAr = prompt("أدخل وصفاً مختصراً للقسم:") || "";
-    const icon = prompt("أدخل أيقونة (Emoji) للقسم (مثال: 📚 أو 🛠️):", "📁") || "📁";
+    const descAr = prompt("أدخل الوصف المختصر:") || "";
+    const icon = prompt("أدخل الأيقونة (Emoji):", "📁") || "📁";
     const newId = "node_" + Date.now();
 
     if (type === "CATEGORY") {
-        portalState.portalTree.categories.push({ id: newId, icon, titleAr, titleEn, descAr, descEn: descAr });
+        portalState.portalTree.categories.push({ id: newId, icon, titleAr, titleEn: titleAr, descAr, descEn: descAr });
         portalState.portalTree.courses[newId] = [];
     } else if (type === "COURSE") {
         if (!portalState.portalTree.courses[catId]) portalState.portalTree.courses[catId] = [];
-        portalState.portalTree.courses[catId].push({ id: newId, icon, titleAr, titleEn, descAr, descEn: descAr });
+        portalState.portalTree.courses[catId].push({ id: newId, icon, titleAr, titleEn: titleAr, descAr, descEn: descAr });
         portalState.portalTree.courseTools[newId] = [
-            { id: "tool_struct_" + newId, type: "STRUCTURE", icon: "🏗️", titleAr: "استركشر وماتريال الكورس", titleEn: "Course Structure", descAr: "إدارة محتوى الكورس", descEn: "Course structure" },
-            { id: "tool_links_" + newId,  type: "LINKS",     icon: "🔗", titleAr: "أهم اللينكات والمراجع", titleEn: "Important Links", descAr: "روابط وقوالب الكورس", descEn: "Links & Templates" }
+            { id: "tool_struct_" + newId, type: "STRUCTURE", icon: "🏗️", titleAr: "استركشر وماتريال الكورس", titleEn: "Course Structure", descAr: "إدارة محتوى الكورس", descEn: "Course structure" }
         ];
     } else if (type === "TOOL") {
         if (!portalState.portalTree.courseTools[courseId]) portalState.portalTree.courseTools[courseId] = [];
-        portalState.portalTree.courseTools[courseId].push({ id: newId, type: "BOARD", icon, titleAr, titleEn, descAr, descEn: descAr });
+        portalState.portalTree.courseTools[courseId].push({ id: newId, type: "BOARD", icon, titleAr, titleEn: titleAr, descAr, descEn: descAr });
     }
     await savePortalTreeToCloud();
     renderAllViews();
 }
 
 async function editPortalNode(type, id1, id2 = null, id3 = null) {
-    if (!isSuperAdmin()) return;
+    if (!hasPerm("manage_portal_nodes")) return;
     let target = null;
     if (type === "CATEGORY") target = portalState.portalTree.categories.find(x => x.id === id1);
     if (type === "COURSE") target = (portalState.portalTree.courses[id1] || []).find(x => x.id === id2);
     if (type === "TOOL") target = (portalState.portalTree.courseTools[id2] || []).find(x => x.id === id3);
     if (!target) return;
-
-    const newTitleAr = prompt("تعديل العنوان بالعربية:", target.titleAr);
-    if (!newTitleAr) return;
-    target.titleAr = newTitleAr;
-    target.titleEn = prompt("تعديل العنوان بالإنجليزية:", target.titleEn) || newTitleAr;
+    const newT = prompt("تعديل الاسم:", target.titleAr);
+    if (!newT) return;
+    target.titleAr = newT;
+    target.titleEn = newT;
     target.descAr = prompt("تعديل الوصف:", target.descAr) || "";
     target.icon = prompt("تعديل الأيقونة:", target.icon) || target.icon;
-
     await savePortalTreeToCloud();
     renderAllViews();
 }
 
 async function deletePortalNode(type, id1, id2 = null, id3 = null) {
-    if (!isSuperAdmin() || !confirm("⚠️ هل أنت متأكد من حذف هذا القسم/الزرار؟")) return;
+    if (!hasPerm("manage_portal_nodes") || !confirm("هل أنت متأكد من الحذف؟")) return;
     if (type === "CATEGORY") portalState.portalTree.categories = portalState.portalTree.categories.filter(x => x.id !== id1);
     if (type === "COURSE") portalState.portalTree.courses[id1] = (portalState.portalTree.courses[id1] || []).filter(x => x.id !== id2);
     if (type === "TOOL") portalState.portalTree.courseTools[id2] = (portalState.portalTree.courseTools[id2] || []).filter(x => x.id !== id3);
@@ -1963,21 +2578,18 @@ async function deletePortalNode(type, id1, id2 = null, id3 = null) {
 }
 
 async function savePortalTreeToCloud() {
-    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/portalTree.json`, {
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/portalTree.json`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(portalState.portalTree)
     });
 }
 
-// ============================================================================
-// 👥 إدارة الحسابات، تغيير الباسورد، Reset Password، ورفع اللوجو (Light/Dark)
-// ============================================================================
 function closeModal(id) { document.getElementById(id).style.display = "none"; }
-function openPasswordModal() { document.getElementById("passwordModal").style.display = "flex"; }
 
 function openSuperSettingsModal() {
-    if (!isSuperAdmin()) return;
+    if (!hasPerm("manage_settings")) return;
+    document.getElementById("portalSubtitleInput").value = portalState.settings.subtitleAr || "";
     document.getElementById("ejsService").value = portalState.settings.ejsService || "";
     document.getElementById("ejsTemplate").value = portalState.settings.ejsTemplate || "";
     document.getElementById("ejsKey").value = portalState.settings.ejsKey || "";
@@ -1997,129 +2609,45 @@ function uploadLogoFile(ev, mode) {
 }
 
 async function savePortalSettings() {
+    portalState.settings.subtitleAr = document.getElementById("portalSubtitleInput").value.trim() || portalState.settings.subtitleAr;
     portalState.settings.ejsService = document.getElementById("ejsService").value.trim();
     portalState.settings.ejsTemplate = document.getElementById("ejsTemplate").value.trim();
     portalState.settings.ejsKey = document.getElementById("ejsKey").value.trim();
-    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/settings.json`, {
+    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4/settings.json`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(portalState.settings)
     });
     applyThemeAndLogos();
     closeModal("superSettingsModal");
-    alert("✅ تم حفظ اللوجوهات وإعدادات البوابة في السحابة بنجاح!");
+    showToast("✅ تم حفظ إعدادات البوابة واللوجوهات بنجاح!");
 }
 
-async function changeMyPassword() {
-    const oldP = document.getElementById("oldPassInput").value.trim();
-    const newP = document.getElementById("newPassInput").value.trim();
-    if (!oldP || !newP) { alert("⚠️ يرجى ملء الحقلين!"); return; }
-    const uName = portalState.currentUser.username;
-    if (uName === "admin") { alert("حساب السوبر أدمن الرئيسي محمي بكود النظام."); return; }
-
-    const uObj = portalState.users[uName];
-    if (!uObj || uObj.pass !== oldP) { alert("❌ كلمة المرور الحالية غير صحيحة!"); return; }
-    uObj.pass = newP;
-    await saveUsersListToCloud();
-    closeModal("passwordModal");
-    alert("✅ تم تغيير كلمة المرور الخاصة بك بنجاح!");
-}
-
-function openUsersModal() {
-    if (!isAdminOrSuper()) return;
-    renderUsersModalList();
-    document.getElementById("usersModal").style.display = "flex";
-}
-
-function renderUsersModalList() {
-    const box = document.getElementById("usersTableContainer");
-    const keys = Object.keys(portalState.users);
-    box.innerHTML = keys.map(k => {
-        const u = portalState.users[k];
-        return `
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; padding:0.6rem; border-bottom:1px solid var(--border-color); font-size:0.78rem;">
-            <div>
-                <strong>${u.displayName}</strong> (<code>${u.username}</code>) | 📧 ${u.email || '-'}<br>
-                <span style="color:var(--orange); font-weight:700;">صلاحية الموقع: ${u.sysRole}</span> | <span>الوظيفة: ${u.jobRole}</span>
-                ${isSuperAdmin() ? ` | 🔑 Pass: <code>${u.pass}</code>` : ''}
-            </div>
-            <div style="display:flex; gap:0.35rem;">
-                ${isSuperAdmin() ? `
-                    <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.72rem;" onclick="resetUserPassword('${u.username}')">🔄 Reset Password</button>
-                    <button class="btn btn-danger" style="padding:0.2rem 0.5rem; font-size:0.72rem;" onclick="removeUserAccount('${u.username}')">🗑️ حذف</button>
-                ` : ''}
-            </div>
-        </div>`;
-    }).join("");
-}
-
-async function createOrUpdateUser() {
-    if (!isAdminOrSuper()) return;
-    const name = document.getElementById("uNewName").value.trim();
-    const user = document.getElementById("uNewUser").value.trim().toLowerCase().replace(/\s+/g, "");
-    const pass = document.getElementById("uNewPass").value.trim();
-    const email = document.getElementById("uNewEmail").value.trim();
-    const sysRole = document.getElementById("uNewSysRole").value;
-    const jobRole = document.getElementById("uNewJobRole").value;
-
-    if (!name || !user || !pass) { alert("⚠️ يرجى إدخال الاسم واسم المستخدم وكلمة المرور!"); return; }
-    if (sysRole === "superadmin" && !isSuperAdmin()) { alert("⚠️ السوبر أدمن فقط يمكنه منح صلاحية Super Admin!"); return; }
-
-    portalState.users[user] = { username: user, pass, displayName: name, email, sysRole, jobRole };
-    await saveUsersListToCloud();
-    renderUsersModalList();
-    renderAllViews();
-    alert("✅ تم حفظ حساب العضو بنجاح!");
-}
-
-async function resetUserPassword(uName) {
-    if (!isSuperAdmin()) return;
-    const newP = prompt(`🔑 أدخل كلمة المرور الجديدة للمستخدم (${portalState.users[uName].displayName}):`, "123456");
-    if (!newP) return;
-    portalState.users[uName].pass = newP.trim();
-    await saveUsersListToCloud();
-    renderUsersModalList();
-    alert("✅ تم عمل Reset لكلمة المرور بنجاح!");
-}
-
-async function removeUserAccount(uName) {
-    if (!isSuperAdmin() || !confirm("هل أنت متأكد من حذف هذا الحساب؟")) return;
-    delete portalState.users[uName];
-    await saveUsersListToCloud();
-    renderUsersModalList();
-    renderAllViews();
-}
-
-async function saveUsersListToCloud() {
-    await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3/users.json`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(portalState.users)
-    });
-}
-
-// ============================================================================
-// ☁️ المزامنة السحابية، تسجيل الدخول، وتصدير Excel
-// ============================================================================
 async function syncFromCloud(manual = false) {
     try {
         document.getElementById("cloudSyncIndicator").textContent = "⏳ جاري المزامنة...";
-        const res = await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3.json`);
+        const res = await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4.json`);
         if (res.ok) {
             const data = await res.json();
             if (data) {
                 if (data.users) portalState.users = data.users;
                 if (data.settings) portalState.settings = Object.assign(portalState.settings, data.settings);
+                if (data.rolesConfig) portalState.rolesConfig = data.rolesConfig;
+                if (data.jobCatalog) portalState.jobCatalog = data.jobCatalog;
+                if (data.workflowStages) portalState.workflowStages = data.workflowStages;
                 if (data.portalTree) portalState.portalTree = data.portalTree;
                 if (data.pipeline) portalState.pipeline = data.pipeline;
                 if (data.notifications) portalState.notifications = data.notifications;
             } else {
-                await fetch(`${FIREBASE_BASE_URL}/dca_portal_v3.json`, {
+                await fetch(`${FIREBASE_BASE_URL}/dca_portal_v4.json`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         users: portalState.users,
                         settings: portalState.settings,
+                        rolesConfig: portalState.rolesConfig,
+                        jobCatalog: portalState.jobCatalog,
+                        workflowStages: portalState.workflowStages,
                         portalTree: portalState.portalTree,
                         pipeline: portalState.pipeline,
                         notifications: portalState.notifications
@@ -2127,9 +2655,15 @@ async function syncFromCloud(manual = false) {
                 });
             }
             applyThemeAndLogos();
-            if (portalState.currentUser) renderAllViews();
+            // إذا لم يكن المستخدم يكتب حالياً داخل حقل إدخال، نحدث الواجهة مع الحفاظ على النقاط المفتوحة!
+            const activeTag = document.activeElement?.tagName;
+            if (portalState.currentUser && (manual || (activeTag !== "INPUT" && activeTag !== "TEXTAREA" && activeTag !== "SELECT"))) {
+                renderAllViews();
+            } else if (portalState.currentUser) {
+                updateUnreadBadge();
+            }
             document.getElementById("cloudSyncIndicator").textContent = "☁️ متصل بالسحابة لحظياً ✓";
-            if (manual) alert("✅ تم تحديث كافة البيانات من السحابة!");
+            if (manual) showToast("✅ تم تحديث كافة البيانات من السحابة!");
         }
     } catch (e) {
         document.getElementById("cloudSyncIndicator").textContent = "⚠️ تعذر الاتصال بالسحابة";
@@ -2146,7 +2680,7 @@ async function handleAuthLogin(ev) {
     await syncFromCloud(false);
 
     if (u === MASTER_SUPER_USER && p === MASTER_SUPER_PASS) {
-        portalState.currentUser = { username: "admin", displayName: "Super Admin (المدير العام)", email: "", sysRole: "superadmin", jobRole: "template" };
+        portalState.currentUser = { username: "admin", displayName: "Super Admin (المدير العام)", email: "", sysRole: "superadmin", jobs: ["writer","proofreader","formatter","template"] };
     } else if (portalState.users[u] && portalState.users[u].pass === p) {
         portalState.currentUser = portalState.users[u];
     } else {
@@ -2155,16 +2689,9 @@ async function handleAuthLogin(ev) {
     }
 
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(portalState.currentUser));
-    enterPortalSession();
-}
-
-function enterPortalSession() {
     document.getElementById("loginOverlay").style.display = "none";
-    document.getElementById("activeUserBadge").textContent = `👤 ${portalState.currentUser.displayName}`;
-    document.getElementById("btnSuperSettings").style.display = isSuperAdmin() ? "inline-flex" : "none";
-    document.getElementById("btnUsersMgr").style.display = isAdminOrSuper() ? "inline-flex" : "none";
-    applyLanguage();
     renderAllViews();
+    showToast(`مرحباً بك ${portalState.currentUser.displayName} في بوابة DCA!`);
 }
 
 function handleLogout() {
@@ -2175,27 +2702,31 @@ function handleLogout() {
 }
 
 function exportFullPipelineCSV() {
-    let rows = [["كود الوحدة", "كود القسم", "كود النقطة", "عنوان النقطة", "المرحلة الحالية", "مرتجع؟", "الكاتب (1)", "موعد (1)", "المراجع اللغوي (2)", "موعد (2)", "المنسق (3)", "موعد (3)", "مسؤول التمبلت (4)", "موعد (4)", "رابط التمبلت النهائي"]];
+    const stages = portalState.workflowStages;
+    const head = ["كود الوحدة", "كود القسم", "كود النقطة", "عنوان النقطة", "المرحلة الحالية", "مرتجع؟"];
+    stages.forEach((s, idx) => { head.push(`${s.name} (المسؤول)`, `${s.name} (استحقاق)`, `${s.name} (تاريخ التسليم)`); });
+    let rows = [head];
+
     COURSE_DATA.forEach(mod => {
         mod.sections.forEach(sec => {
             sec.topics.forEach(t => {
                 const p = getPipeItem(t[0]);
-                rows.push([
-                    mod.code, sec.code, t[0], t[1], `المرحلة ${p.stage}`, p.rejected ? "نعم" : "لا",
-                    getUserNameDisplay(p.writer), p.due1||"",
-                    getUserNameDisplay(p.proofreader), p.due2||"",
-                    getUserNameDisplay(p.formatter), p.due3||"",
-                    getUserNameDisplay(p.templateUser), p.due4||"",
-                    p.link4 || p.link3 || p.link2 || p.link1 || ""
-                ]);
+                const stName = isCompletedTopic(p) ? "مكتمل" : stages[p.stageIdx]?.name;
+                const row = [mod.code, sec.code, t[0], t[1], stName, p.rejected ? "نعم" : "لا"];
+                stages.forEach((s, idx) => {
+                    const sd = p.stageData[idx] || {};
+                    row.push(getUserNameDisplay(sd.assignee), sd.dueDate || "", sd.completedAt || "");
+                });
+                rows.push(row);
             });
         });
     });
+
     let csv = "\uFEFF" + rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "DCA_Portal_Pipeline_Report.csv";
+    a.download = "DCA_Portal_Enterprise_Report.csv";
     a.click();
 }
 
@@ -2206,10 +2737,11 @@ window.onload = async function() {
     if (saved) {
         try {
             portalState.currentUser = JSON.parse(saved);
-            enterPortalSession();
-        } catch (e) { console.error(e); }
+            document.getElementById("loginOverlay").style.display = "none";
+            renderAllViews();
+        } catch (e) {}
     }
-    setInterval(() => { if (portalState.currentUser) syncFromCloud(false); }, 18000);
+    setInterval(() => { if (portalState.currentUser) syncFromCloud(false); }, 10000);
 };
 </script>
 </body>
